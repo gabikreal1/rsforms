@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "381779685536",
+    "project_id": "rsforms-6e943",
+    "storage_bucket": "rsforms-6e943.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381779685536:android:0c21ce5cea6f008c9b59c5",
+        "android_client_info": {
+          "package_name": "com.example.rsforms"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381779685536-5avt4suo2u0haah206v4pkf7basescjc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDaHODaRXw3IrA1xL3d36Wl_KKy7-txQjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381779685536-5avt4suo2u0haah206v4pkf7basescjc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
