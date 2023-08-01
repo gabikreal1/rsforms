@@ -1,15 +1,33 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rsforms/Classes/job.dart';
+import 'package:rsforms/Models/jobModel.dart';
+import 'package:rsforms/Providers/companyProvider.dart';
+import 'package:rsforms/Providers/jobProvider.dart';
 import 'package:rsforms/Screens/calendar.dart';
+import 'package:provider/provider.dart';
+import 'package:rsforms/firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  Company company = Company.fromDocument(await FirebaseFirestore.instance
+      .collection('companies')
+      .doc('p7NxaqeggifpoF0R9aGS')
+      .get());
+
+  runApp(MyApp(
+    company: company,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  Company company;
+  MyApp({super.key, required this.company});
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -17,24 +35,21 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    Company company = Company(
-        name: "RS LOCK AND SAFE",
-        address: "109 Cropley Court Cavendish street",
-        city: "London",
-        postcode: "N1 7HH",
-        phoneNumber: "07946031981",
-        bankName: "Barclays Bank",
-        accountNumber: "03423573",
-        sortCode: "20-32-06");
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'RsForms',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: Calendar(
-        company: company,
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<JobProvider>(create: (context) {
+          return JobProvider(company);
+        })
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'RsForms',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: Calendar(),
       ),
     );
   }

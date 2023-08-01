@@ -1,166 +1,452 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rsforms/Components/JobEditTile.dart';
+import 'package:rsforms/Providers/companyProvider.dart';
+import 'package:rsforms/Providers/serviceProvider.dart';
+import 'package:rsforms/Screens/service_adder.dart';
 
-import '../Classes/job.dart';
+import '../Models/jobModel.dart';
+import '../Providers/jobProvider.dart';
 
-class JobEditor extends StatefulWidget {
-  Job job;
-  JobEditor({super.key, required this.job});
-  @override
-  State<JobEditor> createState() => _JobEditorState();
+const List<Widget> icons = <Widget>[
+  Padding(
+    padding: EdgeInsets.symmetric(horizontal: 8.0),
+    child: SizedBox(
+      width: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.check),
+          Text("Completed"),
+        ],
+      ),
+    ),
+  ),
+  Padding(
+    padding: EdgeInsets.symmetric(horizontal: 8.0),
+    child: SizedBox(
+      width: 100,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.timer),
+          Text("Awaiting"),
+        ],
+      ),
+    ),
+  ),
+];
+
+String formatDescription(String description) {
+  if (description.length > 18) {
+    return "${description.substring(0, 15)}...";
+  }
+  return description;
 }
 
-class _JobEditorState extends State<JobEditor> {
-  late final TextEditingController _cityController =
-      TextEditingController(text: widget.job.city);
-  bool cityChange = false;
-
-  String formatTime(DateTime dateTime) {
-    String hour = dateTime.hour.toString();
-    String minute = dateTime.minute
-        .toString()
-        .padLeft(2, '0'); // padLeft will add a '0' if minute is less than 10
-    return '$hour:$minute';
-  }
-
-  void UpdateCity() {
-    setState(() {
-      if (cityChange) {
-        widget.job.city = _cityController.text.trim();
-      }
-      print("lol");
-      cityChange = !cityChange;
-    });
-  }
+class JobEditor extends StatelessWidget {
+  final String jobId;
+  final DateTime day;
+  const JobEditor({super.key, required this.jobId, required this.day});
 
   @override
   Widget build(BuildContext context) {
+    final jobProvider = Provider.of<JobProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Color(0xff31384d),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: 30,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 15.0, right: 15.0, bottom: 15.0, top: 2),
-                    child: Column(
+          child: Consumer<JobProvider>(
+            builder: (context, provider, child) {
+              var job = provider.jobs[day]!.where((e) => e.id == jobId).first;
+
+              List<bool> _selectedCompletion = <bool>[job.completed, !job.completed];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(30),
-                              color: Color(0xff31384d)),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 15, vertical: 2),
-                            child: Text(
-                              "City",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 15),
-                            ),
-                          ),
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(Icons.arrow_back),
+                          color: Colors.white,
                         ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: cityChange
-                                    ? Container(
-                                        height: 40,
-                                        child: TextFormField(
-                                          decoration: InputDecoration(
-                                              contentPadding: EdgeInsets.all(2),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.black)),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
-                                                      color: Colors.grey))),
-                                          controller: _cityController,
-                                          onFieldSubmitted: (value) =>
-                                              UpdateCity(),
-                                        ),
-                                      )
-                                    : Text(
-                                        "${widget.job.city}",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                            IconButton(
-                                onPressed: () {
-                                  UpdateCity();
-                                },
-                                icon: Icon(Icons.edit))
-                          ],
+                        Spacer(),
+                        IconButton(
+                          onPressed: () => {},
+                          icon: Icon(Icons.settings),
+                          color: Colors.white,
                         ),
                       ],
                     ),
-                  ),
+                    JobEditTile(
+                      TileName: "Provider",
+                      TileDescription: "${job.subCompany}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "subcompany", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobEditTile(
+                      TileName: "Job No",
+                      TileDescription: "${job.jobNo}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "jobno", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobEditTile(
+                      TileName: "Address",
+                      TileDescription: "${job.address}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "address", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobEditTile(
+                      TileName: "Postcode",
+                      TileDescription: "${job.postcode}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "postcode", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobEditTile(
+                      TileName: "Sub-Contractor",
+                      TileDescription: "${job.subContractor}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "subcontractor", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobEditTile(
+                      TileName: "Desciprtion",
+                      TileDescription: "${job.description}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "description", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobTimeEditTile(
+                      date: job.earlyTime,
+                      TileName: "Early Time",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "timestart", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    JobTimeEditTile(
+                      date: job.lateTime,
+                      TileName: "Late Time",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "timefinish", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    //Completed Toggle Button
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                              child: Text(
+                                "Completed",
+                                style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Center(
+                              child: ToggleButtons(
+                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                children: icons,
+                                isSelected: _selectedCompletion,
+                                onPressed: (index) {
+                                  jobProvider.updateJob(jobId, "completed", index == 0);
+                                  _selectedCompletion[0] = !_selectedCompletion[0];
+                                  _selectedCompletion[1] = !_selectedCompletion[1];
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+
+                    job.completed
+                        ? Column(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                                        child: Text(
+                                          "Service/Part",
+                                          style:
+                                              TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      ChangeNotifierProvider<ServiceProvider>(
+                                        create: (context) {
+                                          return ServiceProvider(jobId, provider.company.id);
+                                        },
+                                        child: Consumer<ServiceProvider>(
+                                          builder: (context, value, child) {
+                                            if (value.services.isNotEmpty) {
+                                              return Column(
+                                                children: [
+                                                  ListView.builder(
+                                                    physics: const NeverScrollableScrollPhysics(),
+                                                    shrinkWrap: true,
+                                                    itemCount: value.services.length,
+                                                    itemBuilder: (context, index) {
+                                                      Services service = value.services[index];
+                                                      return Padding(
+                                                          padding: EdgeInsets.symmetric(vertical: 5),
+                                                          child: Container(
+                                                            decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.circular(25.0),
+                                                              border: Border.all(color: Colors.black),
+                                                              color: Colors.white,
+                                                              boxShadow: List.from([
+                                                                BoxShadow(color: Colors.grey, offset: Offset(5, 5))
+                                                              ]),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                              child: ListTile(
+                                                                onTap: () {
+                                                                  showCupertinoModalPopup(
+                                                                    context: context,
+                                                                    builder: (context) {
+                                                                      return CupertinoActionSheet(
+                                                                        title:
+                                                                            Text("What actions do you want to take?"),
+                                                                        actions: [
+                                                                          CupertinoActionSheetAction(
+                                                                            child: Text("Edit"),
+                                                                            onPressed: () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                          ),
+                                                                          CupertinoActionSheetAction(
+                                                                            child: Text("Delete"),
+                                                                            onPressed: () {
+                                                                              value.deleteService(service.id!);
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            isDestructiveAction: true,
+                                                                          ),
+                                                                        ],
+                                                                        cancelButton: CupertinoActionSheetAction(
+                                                                          child: Text("Cancel"),
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                        ),
+                                                                      );
+                                                                    },
+                                                                  );
+                                                                },
+                                                                title: Column(
+                                                                  children: [
+                                                                    Text(
+                                                                      "${service.typeofCharge} ",
+                                                                      style: TextStyle(fontSize: 15),
+                                                                    ),
+                                                                    Text(
+                                                                      service.description,
+                                                                      textAlign: TextAlign.center,
+                                                                      style: TextStyle(fontSize: 10),
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: 5,
+                                                                    ),
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                      children: [
+                                                                        Text(
+                                                                          " £${service.price} X ",
+                                                                          style: TextStyle(fontSize: 10),
+                                                                        ),
+                                                                        Text(
+                                                                          "${service.quantity}",
+                                                                          style: TextStyle(fontSize: 10),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    SizedBox(
+                                                                      height: 5,
+                                                                    ),
+                                                                    Text(
+                                                                      " £${service.totalPrice}",
+                                                                      style: TextStyle(
+                                                                          fontSize: 14, fontWeight: FontWeight.bold),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ));
+                                                    },
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Text("Total Price: £${value.totalPrice}"),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: [
+                                                        ElevatedButton(
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor: Color(0xff31384d),
+                                                          ),
+                                                          onPressed: () async {
+                                                            await Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (context) => ServiceAdder(
+                                                                  Add: (typeofCharge, description, quantity, price) {
+                                                                    Services service = Services(
+                                                                        description: description,
+                                                                        price: price,
+                                                                        quantity: quantity,
+                                                                        typeofCharge: typeofCharge);
+                                                                    jobProvider.addService(job.id, service);
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            );
+                                                          },
+                                                          child: Row(
+                                                            children: [
+                                                              Icon(Icons.add_rounded),
+                                                              Text(
+                                                                "Add new Service/Part",
+                                                                style: TextStyle(color: Colors.white),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
+                                            } else {
+                                              return Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 10),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Color(0xff31384d),
+                                                      ),
+                                                      onPressed: () async {
+                                                        await Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) => ServiceAdder(
+                                                              Add: (typeofCharge, description, quantity, price) {
+                                                                Services service = Services(
+                                                                    description: description,
+                                                                    price: price,
+                                                                    quantity: quantity,
+                                                                    typeofCharge: typeofCharge);
+                                                                jobProvider.addService(job.id, service);
+                                                              },
+                                                            ),
+                                                          ),
+                                                        );
+                                                      },
+                                                      child: Row(
+                                                        children: [
+                                                          Icon(Icons.add_rounded),
+                                                          Text(
+                                                            "Add new Service/Part",
+                                                            style: TextStyle(color: Colors.white),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () {},
+                                    label: Text("Generate Invoice"),
+                                    icon: Icon(Icons.document_scanner),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            height: 10,
+                          ),
+                  ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "address: ${widget.job.address}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "postcode: ${widget.job.postcode}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "description: ${widget.job.description}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "job number: ${widget.job.jobNo}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "time: ${formatTime(widget.job.time)}",
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14),
-                ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       ),

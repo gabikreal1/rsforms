@@ -29,6 +29,13 @@
             {
               "client_id": "381779685536-5avt4suo2u0haah206v4pkf7basescjc.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "381779685536-llt839i9mpo7949ij2ei6t9k8jqgdor3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rsforms"
+              }
             }
           ]
         }
