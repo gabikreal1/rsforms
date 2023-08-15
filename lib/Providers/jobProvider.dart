@@ -64,7 +64,6 @@ class JobProvider with ChangeNotifier {
       DocumentReference docRef =
           await FirebaseFirestore.instance.collection('companies').doc(_company.id).collection('jobs').add(job.toMap());
 
-      _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => []).add(job);
       notifyListeners();
     } catch (e) {
       //change it

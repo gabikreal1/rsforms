@@ -2,10 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Job {
-  String id;
+  String? id;
 
   DateTime earlyTime;
   DateTime lateTime;
+  DateTime? invoiceTime;
 
   List<String>? pictures;
 
@@ -21,7 +22,8 @@ class Job {
   bool completed;
 
   Job({
-    required this.id,
+    this.invoiceTime,
+    this.id,
     required this.lateTime,
     required this.completed,
     required this.subCompany,
@@ -37,12 +39,12 @@ class Job {
 
   Map<String, dynamic> toMap() {
     return {
-      'subcomapany': subCompany,
+      'subcompany': subCompany,
       'jobno': jobNo,
       'invoicenumber': invoiceNumber,
       'description': description,
       'timestart': earlyTime.millisecondsSinceEpoch,
-      'timeFinish': lateTime.millisecondsSinceEpoch,
+      'timefinish': lateTime.millisecondsSinceEpoch,
       'address': address,
       'postcode': postcode,
       'completed': completed,
@@ -54,17 +56,19 @@ class Job {
   factory Job.fromdocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Job(
-        id: doc.id,
-        subCompany: data['subcompany'] ?? "None",
-        jobNo: data['jobno'] ?? "None",
-        invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
-        description: data["description"] ?? "None",
-        earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
-        lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"]),
-        address: data["address"] ?? "None",
-        postcode: data["postcode"] ?? "None",
-        completed: data['completed'] ?? false,
-        subContractor: data["subcontractor"] ?? "You");
+      id: doc.id,
+      subCompany: data['subcompany'] ?? "None",
+      jobNo: data['jobno'] ?? "None",
+      invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
+      description: data["description"] ?? "None",
+      earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
+      lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
+      address: data["address"] ?? "None",
+      postcode: data["postcode"] ?? "None",
+      completed: data['completed'] ?? false,
+      subContractor: data["subcontractor"] ?? "You",
+      invoiceTime: DateTime.fromMillisecondsSinceEpoch(data["invoicetime"] ?? DateTime.now().millisecondsSinceEpoch),
+    );
   }
 }
 
@@ -78,9 +82,11 @@ class Company {
   String accountNumber;
   String sortCode;
   String id;
+  int InvoiceCounter;
 
   Company(
-      {required this.id,
+      {required this.InvoiceCounter,
+      required this.id,
       required this.name,
       required this.address,
       required this.city,
@@ -94,6 +100,7 @@ class Company {
 
     return Company(
         id: doc.id,
+        InvoiceCounter: doc["invoice_counter"] ?? 0,
         name: data['name'] ?? " ",
         address: data['address'] ?? " ",
         city: data['town'] ?? " ",

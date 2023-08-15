@@ -6,9 +6,10 @@ import 'package:rsforms/Providers/companyProvider.dart';
 import '../Models/jobModel.dart';
 
 class ServiceProvider with ChangeNotifier {
-  final List<Services> services = [];
+  final List<Services> _services = [];
   double totalPrice = 0;
 
+  List<Services> get services => _services;
   StreamSubscription? _firebaseSubscription;
   late String _jobId;
   late String _companyId;
@@ -26,13 +27,13 @@ class ServiceProvider with ChangeNotifier {
         .collection('services')
         .snapshots()
         .listen((event) {
-      services.clear();
+      _services.clear();
       Services service;
       totalPrice = 0;
       for (var doc in event.docs) {
         service = Services.fromdocument(doc);
         totalPrice += service.totalPrice;
-        services.add(service);
+        _services.add(service);
       }
       notifyListeners();
     });
@@ -47,6 +48,17 @@ class ServiceProvider with ChangeNotifier {
         .collection('services')
         .doc(serviceId)
         .delete();
+  }
+
+  Future<void> updateService(String ServiceId, String description, double price, int quantity, String type) async {
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_companyId)
+        .collection('jobs')
+        .doc(_jobId)
+        .collection('services')
+        .doc(ServiceId)
+        .update(<String, dynamic>{'description': description, 'price': price, 'quantity': quantity, 'type': type});
   }
 
   @override

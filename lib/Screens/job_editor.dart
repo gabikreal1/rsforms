@@ -3,11 +3,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rsforms/APIs/InvoiceApi.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
+import 'package:rsforms/Models/invoiceModel.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/serviceProvider.dart';
 import 'package:rsforms/Screens/service_adder.dart';
-
+import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:rsforms/Screens/service_editor.dart';
+import 'package:share_plus/share_plus.dart';
 import '../Models/jobModel.dart';
 import '../Providers/jobProvider.dart';
 
@@ -205,238 +209,299 @@ class JobEditor extends StatelessWidget {
                     job.completed
                         ? Column(
                             children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
-                                        child: Text(
-                                          "Service/Part",
-                                          style:
-                                              TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
-                                        ),
+                              ChangeNotifierProvider<ServiceProvider>(
+                                create: (context) {
+                                  return ServiceProvider(jobId, provider.company.id);
+                                },
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(30),
                                       ),
-                                      ChangeNotifierProvider<ServiceProvider>(
-                                        create: (context) {
-                                          return ServiceProvider(jobId, provider.company.id);
-                                        },
-                                        child: Consumer<ServiceProvider>(
-                                          builder: (context, value, child) {
-                                            if (value.services.isNotEmpty) {
-                                              return Column(
-                                                children: [
-                                                  ListView.builder(
-                                                    physics: const NeverScrollableScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemCount: value.services.length,
-                                                    itemBuilder: (context, index) {
-                                                      Services service = value.services[index];
-                                                      return Padding(
-                                                          padding: EdgeInsets.symmetric(vertical: 5),
-                                                          child: Container(
-                                                            decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius.circular(25.0),
-                                                              border: Border.all(color: Colors.black),
-                                                              color: Colors.white,
-                                                              boxShadow: List.from([
-                                                                BoxShadow(color: Colors.grey, offset: Offset(5, 5))
-                                                              ]),
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                                              child: ListTile(
-                                                                onTap: () {
-                                                                  showCupertinoModalPopup(
-                                                                    context: context,
-                                                                    builder: (context) {
-                                                                      return CupertinoActionSheet(
-                                                                        title:
-                                                                            Text("What actions do you want to take?"),
-                                                                        actions: [
-                                                                          CupertinoActionSheetAction(
-                                                                            child: Text("Edit"),
-                                                                            onPressed: () {
-                                                                              Navigator.pop(context);
-                                                                            },
+                                      child: Padding(
+                                          padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                                                child: Text(
+                                                  "Service/Part",
+                                                  style: TextStyle(
+                                                      color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                              Consumer<ServiceProvider>(
+                                                builder: (context, value, child) {
+                                                  if (value.services.isNotEmpty) {
+                                                    return Column(
+                                                      children: [
+                                                        ListView.builder(
+                                                          physics: const NeverScrollableScrollPhysics(),
+                                                          shrinkWrap: true,
+                                                          itemCount: value.services.length,
+                                                          itemBuilder: (context, index) {
+                                                            Services service = value.services[index];
+                                                            return Padding(
+                                                                padding: EdgeInsets.symmetric(vertical: 5),
+                                                                child: Container(
+                                                                  decoration: BoxDecoration(
+                                                                    borderRadius: BorderRadius.circular(25.0),
+                                                                    border: Border.all(color: Colors.black),
+                                                                    color: Colors.white,
+                                                                    boxShadow: List.from([
+                                                                      BoxShadow(
+                                                                          color: Colors.grey, offset: Offset(5, 5))
+                                                                    ]),
+                                                                  ),
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                                                    child: ListTile(
+                                                                      onTap: () {
+                                                                        showCupertinoModalPopup(
+                                                                          context: context,
+                                                                          builder: (context) {
+                                                                            return CupertinoActionSheet(
+                                                                              title: Text(
+                                                                                  "What actions do you want to take?"),
+                                                                              actions: [
+                                                                                CupertinoActionSheetAction(
+                                                                                  child: Text("Edit"),
+                                                                                  onPressed: () async {
+                                                                                    await Navigator.push(
+                                                                                      context,
+                                                                                      MaterialPageRoute(
+                                                                                        builder: (context) =>
+                                                                                            ServiceEditor(
+                                                                                          Edit: (typeofCharge,
+                                                                                              description,
+                                                                                              quantity,
+                                                                                              price) {
+                                                                                            value.updateService(
+                                                                                                service.id!,
+                                                                                                description,
+                                                                                                price,
+                                                                                                quantity,
+                                                                                                typeofCharge);
+                                                                                          },
+                                                                                          type: service.typeofCharge,
+                                                                                          quantity: service.quantity,
+                                                                                          description:
+                                                                                              service.description,
+                                                                                          price: service.price,
+                                                                                        ),
+                                                                                      ),
+                                                                                    );
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                ),
+                                                                                CupertinoActionSheetAction(
+                                                                                  child: Text("Delete"),
+                                                                                  onPressed: () {
+                                                                                    value.deleteService(service.id!);
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  isDestructiveAction: true,
+                                                                                ),
+                                                                              ],
+                                                                              cancelButton: CupertinoActionSheetAction(
+                                                                                child: Text("Cancel"),
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                              ),
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                      },
+                                                                      title: Column(
+                                                                        children: [
+                                                                          Text(
+                                                                            "${service.typeofCharge} ",
+                                                                            style: TextStyle(fontSize: 15),
                                                                           ),
-                                                                          CupertinoActionSheetAction(
-                                                                            child: Text("Delete"),
-                                                                            onPressed: () {
-                                                                              value.deleteService(service.id!);
-                                                                              Navigator.pop(context);
-                                                                            },
-                                                                            isDestructiveAction: true,
+                                                                          Text(
+                                                                            service.description,
+                                                                            textAlign: TextAlign.center,
+                                                                            style: TextStyle(fontSize: 10),
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 5,
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                                            children: [
+                                                                              Text(
+                                                                                " £${service.price} X ",
+                                                                                style: TextStyle(fontSize: 10),
+                                                                              ),
+                                                                              Text(
+                                                                                "${service.quantity}",
+                                                                                style: TextStyle(fontSize: 10),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                          SizedBox(
+                                                                            height: 5,
+                                                                          ),
+                                                                          Text(
+                                                                            " £${service.totalPrice}",
+                                                                            style: TextStyle(
+                                                                                fontSize: 14,
+                                                                                fontWeight: FontWeight.bold),
                                                                           ),
                                                                         ],
-                                                                        cancelButton: CupertinoActionSheetAction(
-                                                                          child: Text("Cancel"),
-                                                                          onPressed: () {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                        ),
-                                                                      );
-                                                                    },
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ));
+                                                          },
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text("Total Price: £${value.totalPrice}"),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Padding(
+                                                          padding: const EdgeInsets.symmetric(vertical: 10),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              ElevatedButton(
+                                                                style: ElevatedButton.styleFrom(
+                                                                  backgroundColor: Color(0xff31384d),
+                                                                ),
+                                                                onPressed: () async {
+                                                                  await Navigator.push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                      builder: (context) => ServiceAdder(
+                                                                        Add: (typeofCharge, description, quantity,
+                                                                            price) {
+                                                                          Services service = Services(
+                                                                              description: description,
+                                                                              price: price,
+                                                                              quantity: quantity,
+                                                                              typeofCharge: typeofCharge);
+                                                                          jobProvider.addService(job.id!, service);
+                                                                        },
+                                                                      ),
+                                                                    ),
                                                                   );
                                                                 },
-                                                                title: Column(
+                                                                child: Row(
                                                                   children: [
+                                                                    Icon(Icons.add_rounded),
                                                                     Text(
-                                                                      "${service.typeofCharge} ",
-                                                                      style: TextStyle(fontSize: 15),
-                                                                    ),
-                                                                    Text(
-                                                                      service.description,
-                                                                      textAlign: TextAlign.center,
-                                                                      style: TextStyle(fontSize: 10),
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                        Text(
-                                                                          " £${service.price} X ",
-                                                                          style: TextStyle(fontSize: 10),
-                                                                        ),
-                                                                        Text(
-                                                                          "${service.quantity}",
-                                                                          style: TextStyle(fontSize: 10),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                    SizedBox(
-                                                                      height: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      " £${service.totalPrice}",
-                                                                      style: TextStyle(
-                                                                          fontSize: 14, fontWeight: FontWeight.bold),
+                                                                      "Add new Service/Part",
+                                                                      style: TextStyle(color: Colors.white),
                                                                     ),
                                                                   ],
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ));
-                                                    },
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text("Total Price: £${value.totalPrice}"),
-                                                  SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Padding(
-                                                    padding: const EdgeInsets.symmetric(vertical: 10),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                      children: [
-                                                        ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-                                                            backgroundColor: Color(0xff31384d),
-                                                          ),
-                                                          onPressed: () async {
-                                                            await Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                builder: (context) => ServiceAdder(
-                                                                  Add: (typeofCharge, description, quantity, price) {
-                                                                    Services service = Services(
-                                                                        description: description,
-                                                                        price: price,
-                                                                        quantity: quantity,
-                                                                        typeofCharge: typeofCharge);
-                                                                    jobProvider.addService(job.id, service);
-                                                                  },
-                                                                ),
-                                                              ),
-                                                            );
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Icon(Icons.add_rounded),
-                                                              Text(
-                                                                "Add new Service/Part",
-                                                                style: TextStyle(color: Colors.white),
-                                                              ),
                                                             ],
                                                           ),
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              return Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 10),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Color(0xff31384d),
-                                                      ),
-                                                      onPressed: () async {
-                                                        await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) => ServiceAdder(
-                                                              Add: (typeofCharge, description, quantity, price) {
-                                                                Services service = Services(
-                                                                    description: description,
-                                                                    price: price,
-                                                                    quantity: quantity,
-                                                                    typeofCharge: typeofCharge);
-                                                                jobProvider.addService(job.id, service);
+                                                        SizedBox(
+                                                          height: 20,
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                          children: [
+                                                            ElevatedButton.icon(
+                                                              onPressed: () async {
+                                                                if (job.invoiceTime == null) {
+                                                                  jobProvider.updateJob(job.id!, "invoicetime",
+                                                                      DateTime.now().millisecondsSinceEpoch);
+                                                                  Provider.of<CompanyProvider>(context, listen: false)
+                                                                      .incrementInvoiceCounter();
+                                                                }
+                                                                var invoice = Invoice(
+                                                                    company: provider.company,
+                                                                    job: job,
+                                                                    services: value.services);
+                                                                final pdfInvoice = await InvoiceApi.generate(invoice);
+
+                                                                print(pdfInvoice.path);
+                                                                print(await pdfInvoice.length());
+                                                                Share.shareXFiles(
+                                                                  [XFile(pdfInvoice.path, mimeType: "application/pdf")],
+                                                                  text: "pdf",
+                                                                );
+                                                                // try {
+                                                                //   Navigator.push(
+                                                                //       context,
+                                                                //       MaterialPageRoute(
+                                                                //           builder: (context) => Scaffold(
+                                                                //                 body: PDFView(
+                                                                //                   filePath: pdfInvoice.path,
+                                                                //                 ),
+                                                                //               )));
+                                                                // } catch (e) {
+                                                                //   print(e);
+                                                                // }
                                                               },
+                                                              label: Text("Generate Invoice"),
+                                                              icon: Icon(Icons.document_scanner_rounded),
                                                             ),
-                                                          ),
-                                                        );
-                                                      },
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                      ],
+                                                    );
+                                                  } else {
+                                                    return Padding(
+                                                      padding: const EdgeInsets.symmetric(vertical: 10),
                                                       child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
-                                                          Icon(Icons.add_rounded),
-                                                          Text(
-                                                            "Add new Service/Part",
-                                                            style: TextStyle(color: Colors.white),
+                                                          ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                              backgroundColor: Color(0xff31384d),
+                                                            ),
+                                                            onPressed: () async {
+                                                              await Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                  builder: (context) => ServiceAdder(
+                                                                    Add: (typeofCharge, description, quantity, price) {
+                                                                      Services service = Services(
+                                                                          description: description,
+                                                                          price: price,
+                                                                          quantity: quantity,
+                                                                          typeofCharge: typeofCharge);
+                                                                      jobProvider.addService(job.id!, service);
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              );
+                                                            },
+                                                            child: Row(
+                                                              children: [
+                                                                Icon(Icons.add_rounded),
+                                                                Text(
+                                                                  "Add new Service/Part",
+                                                                  style: TextStyle(color: Colors.white),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            }
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          )),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {},
-                                    label: Text("Generate Invoice"),
-                                    icon: Icon(Icons.document_scanner),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
                               ),
                             ],
                           )

@@ -35,44 +35,54 @@ const List<Widget> icons = <Widget>[
   ),
 ];
 
-class ServiceAdder extends StatefulWidget {
+class ServiceEditor extends StatefulWidget {
   List<bool> _selectedCompletion = <bool>[true, false];
+  String type;
+  String description;
+  int quantity;
+  double price;
   Function(
     String type,
     String description,
     int quantity,
     double price,
-  ) Add;
-  ServiceAdder({super.key, required this.Add});
+  ) Edit;
+  ServiceEditor(
+      {super.key,
+      required this.Edit,
+      required this.type,
+      required this.description,
+      required this.quantity,
+      required this.price});
 
   @override
-  State<ServiceAdder> createState() => _ServiceAdderState();
+  State<ServiceEditor> createState() => _ServiceEditorState();
 }
 
-// add step states and active as did in job_adder
-// not null checker.
-//make custom onContinue() and onCancel() buttons.
-class _ServiceAdderState extends State<ServiceAdder> {
+class _ServiceEditorState extends State<ServiceEditor> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _quantityController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
-  int currentStep = 0;
+  int currentStep = 3;
 
-  StepState checkStepState(index) {
-    if (index == currentStep) {
-      return StepState.editing;
-    } else if (index < currentStep) {
-      return StepState.complete;
-    }
-    return StepState.indexed;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _descriptionController.text = widget.description;
+    _quantityController.text = "${widget.quantity}";
+    _priceController.text = "${widget.price}";
+    setState(() {
+      if (widget.type != "Labour") {
+        widget._selectedCompletion = <bool>[false, true];
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     List<Step> getSteps() => [
           Step(
-            isActive: currentStep >= 0,
-            state: checkStepState(0),
             title: widget._selectedCompletion[0] ? Text("Labour") : Text("Parts"),
             content: Center(
               child: ToggleButtons(
@@ -89,8 +99,6 @@ class _ServiceAdderState extends State<ServiceAdder> {
             ),
           ),
           Step(
-            isActive: currentStep >= 1,
-            state: checkStepState(1),
             title: Text("Description"),
             content: Center(
               child: TextFormField(
@@ -106,8 +114,6 @@ class _ServiceAdderState extends State<ServiceAdder> {
             ),
           ),
           Step(
-            isActive: currentStep >= 2,
-            state: checkStepState(2),
             title: Text("Quantity"),
             content: Center(
               child: TextFormField(
@@ -123,8 +129,6 @@ class _ServiceAdderState extends State<ServiceAdder> {
             ),
           ),
           Step(
-            isActive: currentStep >= 3,
-            state: checkStepState(3),
             title: Text("Price"),
             content: Center(
               child: TextFormField(
@@ -167,13 +171,6 @@ class _ServiceAdderState extends State<ServiceAdder> {
                 Stepper(
                   steps: getSteps(),
                   currentStep: currentStep,
-                  onStepTapped: (value) {
-                    if (value < currentStep) {
-                      setState(() {
-                        currentStep = value;
-                      });
-                    }
-                  },
                   onStepContinue: () {
                     if (currentStep < getSteps().length - 1) {
                       setState(() {
@@ -182,7 +179,7 @@ class _ServiceAdderState extends State<ServiceAdder> {
                     } else {
                       var typeofcharge = widget._selectedCompletion[0] ? "Labour" : "Parts";
 
-                      widget.Add(
+                      widget.Edit(
                         typeofcharge,
                         _descriptionController.text,
                         int.parse(_quantityController.text.trim()),

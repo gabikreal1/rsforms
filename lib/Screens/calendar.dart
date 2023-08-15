@@ -19,8 +19,7 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   void launchMaps(String address) async {
-    String googleUrl =
-        'https://www.google.com/maps/search/?api=1&query=$address';
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
     try {
       await launchUrlString(googleUrl, mode: LaunchMode.externalApplication);
     } catch (e) {
@@ -30,9 +29,7 @@ class _CalendarState extends State<Calendar> {
 
   String formatTime(DateTime dateTime) {
     String hour = dateTime.hour.toString();
-    String minute = dateTime.minute
-        .toString()
-        .padLeft(2, '0'); // padLeft will add a '0' if minute is less than 10
+    String minute = dateTime.minute.toString().padLeft(2, '0'); // padLeft will add a '0' if minute is less than 10
     return '$hour:$minute';
   }
 
@@ -65,8 +62,7 @@ class _CalendarState extends State<Calendar> {
                             height: 5,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors
-                                  .black, // color that contrasts with the cell color
+                              color: Colors.black, // color that contrasts with the cell color
                             ),
                           ),
                         );
@@ -75,10 +71,8 @@ class _CalendarState extends State<Calendar> {
                     },
                   ),
                   calendarStyle: CalendarStyle(
-                    selectedDecoration: BoxDecoration(
-                        color: Color(0xff31384c), shape: BoxShape.circle),
-                    todayDecoration: BoxDecoration(
-                        color: Color(0x8831384c), shape: BoxShape.circle),
+                    selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
+                    todayDecoration: BoxDecoration(color: Color(0x8831384c), shape: BoxShape.circle),
                   ),
                   availableCalendarFormats: const {
                     CalendarFormat.month: 'Month',
@@ -86,17 +80,14 @@ class _CalendarState extends State<Calendar> {
                   headerStyle: HeaderStyle(
                       formatButtonVisible: false,
                       titleCentered: true,
-                      formatButtonDecoration:
-                          BoxDecoration(color: Colors.transparent),
+                      formatButtonDecoration: BoxDecoration(color: Colors.transparent),
                       leftChevronVisible: false,
                       rightChevronVisible: false,
                       titleTextStyle: TextStyle(fontSize: 18)),
                   shouldFillViewport: true,
                   availableGestures: AvailableGestures.all,
                   eventLoader: (day) {
-                    return jobProvider
-                            .jobs[DateTime(day.year, day.month, day.day)] ??
-                        [];
+                    return jobProvider.jobs[DateTime(day.year, day.month, day.day)] ?? [];
                   },
                   firstDay: DateTime.utc(1990, 1, 1),
                   lastDay: DateTime.utc(2040, 12, 31),
@@ -120,15 +111,14 @@ class _CalendarState extends State<Calendar> {
                       SizedBox(
                         width: 10,
                       ),
-                      IconButton(
-                          onPressed: () => {}, icon: Icon(Icons.arrow_back)),
+                      IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_back)),
                       Spacer(),
                       IconButton(
                           onPressed: () async {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => JobAdder(),
+                                builder: (context) => JobAdder(date: jobProvider.focusedDay),
                               ),
                             );
                           },
@@ -147,22 +137,17 @@ class _CalendarState extends State<Calendar> {
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   decoration: BoxDecoration(
                       color: Color(0xff31384d),
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(50),
-                          topRight: Radius.circular(50))),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))),
                   height: double.infinity,
                   width: double.infinity,
                   child: Consumer<JobProvider>(
                     builder: (context, jobprovider, child) {
                       if (jobprovider.jobs[jobprovider.selectedDay] != null &&
-                          jobProvider
-                              .jobs[jobprovider.selectedDay]!.isNotEmpty) {
+                          jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
                         return ListView.builder(
-                          itemCount:
-                              jobprovider.jobs[jobprovider.selectedDay]?.length,
+                          itemCount: jobprovider.jobs[jobprovider.selectedDay]?.length,
                           itemBuilder: (context, index) {
-                            final job = jobprovider
-                                .jobs[jobprovider.selectedDay]![index];
+                            final job = jobprovider.jobs[jobprovider.selectedDay]![index];
 
                             return Padding(
                               padding: EdgeInsets.symmetric(vertical: 5),
@@ -172,8 +157,7 @@ class _CalendarState extends State<Calendar> {
                                   color: Colors.white,
                                 ),
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 6.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
                                   child: ListTile(
                                     onTap: () async {
                                       //todo:rerouting
@@ -181,11 +165,8 @@ class _CalendarState extends State<Calendar> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) => JobEditor(
-                                            jobId: job.id,
-                                            day: DateTime(
-                                                job.earlyTime.year,
-                                                job.earlyTime.month,
-                                                job.earlyTime.day),
+                                            jobId: job.id!,
+                                            day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
                                           ),
                                         ),
                                       );
@@ -198,8 +179,7 @@ class _CalendarState extends State<Calendar> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
                                               ListTile(
-                                                leading: Icon(
-                                                    Icons.navigation_rounded),
+                                                leading: Icon(Icons.navigation_rounded),
                                                 title: Text('Navigate'),
                                                 onTap: () {
                                                   Navigator.pop(context);
@@ -214,13 +194,10 @@ class _CalendarState extends State<Calendar> {
                                                   await Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          JobEditor(
-                                                        jobId: job.id,
+                                                      builder: (context) => JobEditor(
+                                                        jobId: job.id!,
                                                         day: DateTime(
-                                                            job.earlyTime.year,
-                                                            job.earlyTime.month,
-                                                            job.earlyTime.day),
+                                                            job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
                                                       ),
                                                     ),
                                                   );
@@ -235,58 +212,33 @@ class _CalendarState extends State<Calendar> {
                                                       context: context,
                                                       builder: (context) {
                                                         return AlertDialog(
-                                                          backgroundColor:
-                                                              Color(0xff31384d),
+                                                          backgroundColor: Color(0xff31384d),
                                                           title: Text(
                                                             "Confirm",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .white),
+                                                            style: TextStyle(color: Colors.white),
                                                           ),
                                                           actions: [
                                                             ElevatedButton(
-                                                              onPressed: () =>
-                                                                  Navigator.pop(
-                                                                      context),
+                                                              onPressed: () => Navigator.pop(context),
                                                               child: Container(
                                                                 width: 75,
                                                                 child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .center,
-                                                                  children: [
-                                                                    Text(
-                                                                        "Cancel "),
-                                                                    Icon(Icons
-                                                                        .cancel)
-                                                                  ],
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [Text("Cancel "), Icon(Icons.cancel)],
                                                                 ),
                                                               ),
                                                             ),
                                                             ElevatedButton(
                                                                 onPressed: () {
-                                                                  Provider.of<JobProvider>(
-                                                                          context,
-                                                                          listen:
-                                                                              false)
-                                                                      .deleteJob(
-                                                                          job.id);
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                  Provider.of<JobProvider>(context, listen: false)
+                                                                      .deleteJob(job.id!);
+                                                                  Navigator.pop(context);
                                                                 },
-                                                                child:
-                                                                    Container(
+                                                                child: Container(
                                                                   width: 75,
                                                                   child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    children: [
-                                                                      Text(
-                                                                          "Delete "),
-                                                                      Icon(Icons
-                                                                          .delete)
-                                                                    ],
+                                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                                    children: [Text("Delete "), Icon(Icons.delete)],
                                                                   ),
                                                                 )),
                                                           ],
@@ -306,9 +258,7 @@ class _CalendarState extends State<Calendar> {
                                             Text(
                                               '${formatProviderName(job.subCompany)}',
                                               style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15),
+                                                  color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                                             ),
                                             SizedBox(
                                               width: 4,
@@ -320,17 +270,14 @@ class _CalendarState extends State<Calendar> {
                                                 shape: BoxShape.circle,
                                                 color: job.completed
                                                     ? Colors.green
-                                                    : Colors
-                                                        .yellow, // color that contrasts with the cell color
+                                                    : Colors.yellow, // color that contrasts with the cell color
                                               ),
                                             ),
                                             Spacer(),
                                             Text(
                                               '${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
                                               style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 13,
-                                                  fontWeight: FontWeight.bold),
+                                                  color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         ),
@@ -341,26 +288,20 @@ class _CalendarState extends State<Calendar> {
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                             '${job.address}',
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
+                                            style: TextStyle(color: Colors.black, fontSize: 12),
                                           ),
                                         ),
                                         Row(
                                           children: [
                                             Text(
                                               '${job.postcode} ',
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12),
+                                              style: TextStyle(color: Colors.black, fontSize: 12),
                                             ),
                                             Spacer(),
                                             Text(
                                               '${job.subContractor} ',
                                               style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 10),
+                                                  color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
                                             ),
                                           ],
                                         ),

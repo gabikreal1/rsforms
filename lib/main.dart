@@ -15,10 +15,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Company company = Company.fromDocument(await FirebaseFirestore.instance
-      .collection('companies')
-      .doc('p7NxaqeggifpoF0R9aGS')
-      .get());
+  Company company =
+      Company.fromDocument(await FirebaseFirestore.instance.collection('companies').doc('p7NxaqeggifpoF0R9aGS').get());
 
   runApp(MyApp(
     company: company,
