@@ -59,7 +59,7 @@ class JobEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final jobProvider = Provider.of<JobProvider>(context, listen: false);
-
+    final companyProvider = Provider.of<CompanyProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Color(0xff31384d),
       body: SafeArea(
@@ -416,11 +416,10 @@ class JobEditor extends StatelessWidget {
                                                                 if (job.invoiceTime == null) {
                                                                   jobProvider.updateJob(job.id!, "invoicetime",
                                                                       DateTime.now().millisecondsSinceEpoch);
-                                                                  Provider.of<CompanyProvider>(context, listen: false)
-                                                                      .incrementInvoiceCounter();
+                                                                  await companyProvider.incrementInvoiceCounter();
                                                                 }
                                                                 var invoice = Invoice(
-                                                                    company: provider.company,
+                                                                    company: companyProvider.company,
                                                                     job: job,
                                                                     services: value.services);
                                                                 final pdfInvoice = await InvoiceApi.generate(invoice);
@@ -431,18 +430,6 @@ class JobEditor extends StatelessWidget {
                                                                   [XFile(pdfInvoice.path, mimeType: "application/pdf")],
                                                                   text: "pdf",
                                                                 );
-                                                                // try {
-                                                                //   Navigator.push(
-                                                                //       context,
-                                                                //       MaterialPageRoute(
-                                                                //           builder: (context) => Scaffold(
-                                                                //                 body: PDFView(
-                                                                //                   filePath: pdfInvoice.path,
-                                                                //                 ),
-                                                                //               )));
-                                                                // } catch (e) {
-                                                                //   print(e);
-                                                                // }
                                                               },
                                                               label: Text("Generate Invoice"),
                                                               icon: Icon(Icons.document_scanner_rounded),

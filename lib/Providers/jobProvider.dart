@@ -27,6 +27,12 @@ class JobProvider with ChangeNotifier {
     _listenToFirebase();
   }
 
+  void setCompany(Company company) {
+    _company = company;
+    _firebaseSubscription?.cancel();
+    _listenToFirebase();
+  }
+
   void setStartOfMonth(DateTime newStartOfMonth) {
     _startOfMonth = newStartOfMonth;
     _endOfMonth = DateTime(newStartOfMonth.year, newStartOfMonth.month + 1);
@@ -44,6 +50,7 @@ class JobProvider with ChangeNotifier {
         .collection('companies')
         .doc(_company.id)
         .collection('jobs')
+
         // .where('timestart',
         //     isGreaterThanOrEqualTo: Timestamp.fromDate(_startOfMonth))
         // .where('timefinish',
@@ -51,6 +58,7 @@ class JobProvider with ChangeNotifier {
         .snapshots()
         .listen((event) {
       _jobs.clear();
+
       for (var document in event.docs) {
         Job job = Job.fromdocument(document);
         _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => []).add(job);
@@ -103,12 +111,15 @@ class JobProvider with ChangeNotifier {
         .doc(jobId)
         .collection('services')
         .get();
+
     var res = List<Services>.empty(growable: true);
     for (var doc in resp.docs) {
       res.add(Services.fromdocument(doc));
     }
     return res;
   }
+
+  //relocate it to companyProvider
 
   @override
   void dispose() {

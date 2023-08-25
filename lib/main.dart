@@ -15,8 +15,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Company company =
-      Company.fromDocument(await FirebaseFirestore.instance.collection('companies').doc('p7NxaqeggifpoF0R9aGS').get());
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+  Company company = Company(
+      InvoiceCounter: 0,
+      accountNumber: "0",
+      address: "a",
+      sortCode: "0",
+      phoneNumber: "0",
+      city: "0",
+      bankName: "b",
+      name: "s",
+      id: "0",
+      postcode: "9");
 
   runApp(MyApp(
     company: company,
@@ -34,20 +44,31 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
 
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider<JobProvider>(create: (context) {
-          return JobProvider(company);
-        })
-      ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'RsForms',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) {
+        return CompanyProvider();
+      },
+      builder: (context, child) => MultiProvider(
+        providers: [
+          ChangeNotifierProxyProvider<CompanyProvider, JobProvider>(
+            create: (context) {
+              return JobProvider(Provider.of<CompanyProvider>(context, listen: false).company);
+            },
+            update: (context, company, _) {
+              _!.setCompany(company.company);
+              return _;
+            },
+          )
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'RsForms',
+          theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+            useMaterial3: true,
+          ),
+          home: Calendar(),
         ),
-        home: Calendar(),
       ),
     );
   }

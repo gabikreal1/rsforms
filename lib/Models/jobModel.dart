@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class Job {
   String? id;
@@ -67,7 +68,7 @@ class Job {
       postcode: data["postcode"] ?? "None",
       completed: data['completed'] ?? false,
       subContractor: data["subcontractor"] ?? "You",
-      invoiceTime: DateTime.fromMillisecondsSinceEpoch(data["invoicetime"] ?? DateTime.now().millisecondsSinceEpoch),
+      invoiceTime: data["invoicetime"] != null ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"]) : null,
     );
   }
 }
@@ -95,12 +96,10 @@ class Company {
       required this.bankName,
       required this.accountNumber,
       required this.sortCode});
-  factory Company.fromDocument(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
+  factory Company.fromDocument(dynamic data, String id) {
     return Company(
-        id: doc.id,
-        InvoiceCounter: doc["invoice_counter"] ?? 0,
+        id: id,
+        InvoiceCounter: data["invoice_counter"] ?? 0,
         name: data['name'] ?? " ",
         address: data['address'] ?? " ",
         city: data['town'] ?? " ",

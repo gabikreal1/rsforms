@@ -6,7 +6,18 @@ import 'package:flutter/services.dart';
 import '../Models/jobModel.dart';
 
 class CompanyProvider with ChangeNotifier {
-  late Company _company;
+  Company _company = Company(
+      InvoiceCounter: 0,
+      accountNumber: "0",
+      address: "a",
+      sortCode: "0",
+      phoneNumber: "0",
+      city: "0",
+      bankName: "b",
+      name: "s",
+      id: "0",
+      postcode: "9");
+  StreamSubscription? _firebaseSubscription;
   Company get company {
     return _company;
   }
@@ -16,14 +27,26 @@ class CompanyProvider with ChangeNotifier {
   }
 
   void _listenToFirebase() async {
-    _company = Company.fromDocument(
-        await FirebaseFirestore.instance.collection('companies').doc('p7NxaqeggifpoF0R9aGS').get());
+    _firebaseSubscription = await FirebaseFirestore.instance
+        .collection('companies')
+        .doc('p7NxaqeggifpoF0R9aGS')
+        .snapshots()
+        .listen((event) {
+      _company = Company.fromDocument(event.data(), event.id);
+      notifyListeners();
+    });
   }
 
-  void incrementInvoiceCounter() async {
-    FirebaseFirestore.instance
+  Future<void> incrementInvoiceCounter() async {
+    await FirebaseFirestore.instance
         .collection('companies')
         .doc('p7NxaqeggifpoF0R9aGS')
         .update({"invoice_counter": FieldValue.increment(1)});
+  }
+
+  @override
+  void dispose() {
+    _firebaseSubscription?.cancel();
+    super.dispose();
   }
 }
