@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rsforms/Components/NavDrawer.dart';
 import 'package:rsforms/Providers/jobProvider.dart';
 import 'package:rsforms/Screens/job_adder.dart';
 import 'package:rsforms/Screens/job_editor.dart';
@@ -40,11 +41,18 @@ class _CalendarState extends State<Calendar> {
     return providerName;
   }
 
+  final GlobalKey<ScaffoldState> _key = GlobalKey();
+  //break widgets into smaller one's
+  //move th jobtile into jobtile.
+  //create different file for drawer
   @override
   Widget build(BuildContext context) {
     final jobProvider = context.watch<JobProvider>();
 
     return Scaffold(
+      // move it into different file.
+      key: _key,
+      drawer: NavDrawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -111,7 +119,7 @@ class _CalendarState extends State<Calendar> {
                       SizedBox(
                         width: 10,
                       ),
-                      IconButton(onPressed: () => {}, icon: Icon(Icons.arrow_back)),
+                      IconButton(onPressed: () => {_key.currentState!.openDrawer()}, icon: Icon(Icons.menu)),
                       Spacer(),
                       IconButton(
                           onPressed: () async {

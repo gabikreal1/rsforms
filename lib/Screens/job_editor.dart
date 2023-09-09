@@ -58,8 +58,9 @@ class JobEditor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jobProvider = Provider.of<JobProvider>(context, listen: false);
     final companyProvider = Provider.of<CompanyProvider>(context, listen: false);
+    final jobProvider = Provider.of<JobProvider>(context, listen: false);
+
     return Scaffold(
       backgroundColor: Color(0xff31384d),
       body: SafeArea(

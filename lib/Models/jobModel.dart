@@ -142,3 +142,15 @@ class Services {
         quantity: data['quantity']);
   }
 }
+
+class User {
+  String companyId;
+  String first_name;
+  String last_name;
+  User({required this.companyId, required this.first_name, required this.last_name});
+
+  factory User.fromdocument(DocumentSnapshot doc) {
+    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    return User(companyId: data['company'], first_name: data['first_name'], last_name: data['last_name']);
+  }
+}

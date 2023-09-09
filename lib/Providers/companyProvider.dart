@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../Models/jobModel.dart';
@@ -22,16 +24,18 @@ class CompanyProvider with ChangeNotifier {
     return _company;
   }
 
+  late String companyID;
   CompanyProvider() {
     _listenToFirebase();
   }
 
   void _listenToFirebase() async {
-    _firebaseSubscription = await FirebaseFirestore.instance
-        .collection('companies')
-        .doc('p7NxaqeggifpoF0R9aGS')
-        .snapshots()
-        .listen((event) {
+    var snap = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (snap.data() != null) {
+      companyID = snap.data()!["company"];
+    }
+    _firebaseSubscription =
+        await FirebaseFirestore.instance.collection('companies').doc(companyID).snapshots().listen((event) {
       _company = Company.fromDocument(event.data(), event.id);
       notifyListeners();
     });
@@ -42,6 +46,13 @@ class CompanyProvider with ChangeNotifier {
         .collection('companies')
         .doc('p7NxaqeggifpoF0R9aGS')
         .update({"invoice_counter": FieldValue.increment(1)});
+  }
+
+  Future<void> updateCompany(String attribute, dynamic value) async {
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_company.id)
+        .update(<String, dynamic>{attribute: value});
   }
 
   @override
