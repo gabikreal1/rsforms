@@ -143,14 +143,17 @@ class Services {
   }
 }
 
-class User {
+class rsUser {
   String companyId;
-  String first_name;
-  String last_name;
-  User({required this.companyId, required this.first_name, required this.last_name});
+  String firstname;
+  String lastname;
+  rsUser({required this.companyId, required this.firstname, required this.lastname});
 
-  factory User.fromdocument(DocumentSnapshot doc) {
+  factory rsUser.fromdocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return User(companyId: data['company'], first_name: data['first_name'], last_name: data['last_name']);
+    return rsUser(
+        companyId: data['company'] ?? "none",
+        firstname: data['first_name'] ?? "Guest",
+        lastname: data['last_name'] ?? "");
   }
 }

@@ -20,22 +20,20 @@ class CompanyProvider with ChangeNotifier {
       id: "0",
       postcode: "9");
   StreamSubscription? _firebaseSubscription;
+  late rsUser _user;
   Company get company {
     return _company;
   }
 
   late String companyID;
-  CompanyProvider() {
+  CompanyProvider(rsUser user) {
+    _user = user;
     _listenToFirebase();
   }
 
   void _listenToFirebase() async {
-    var snap = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
-    if (snap.data() != null) {
-      companyID = snap.data()!["company"];
-    }
     _firebaseSubscription =
-        await FirebaseFirestore.instance.collection('companies').doc(companyID).snapshots().listen((event) {
+        await FirebaseFirestore.instance.collection('companies').doc(_user.companyId).snapshots().listen((event) {
       _company = Company.fromDocument(event.data(), event.id);
       notifyListeners();
     });
@@ -44,7 +42,7 @@ class CompanyProvider with ChangeNotifier {
   Future<void> incrementInvoiceCounter() async {
     await FirebaseFirestore.instance
         .collection('companies')
-        .doc('p7NxaqeggifpoF0R9aGS')
+        .doc(_company.id)
         .update({"invoice_counter": FieldValue.increment(1)});
   }
 
@@ -53,6 +51,12 @@ class CompanyProvider with ChangeNotifier {
         .collection('companies')
         .doc(_company.id)
         .update(<String, dynamic>{attribute: value});
+  }
+
+  void setUser(rsUser user) {
+    _company = company;
+    _firebaseSubscription?.cancel();
+    _listenToFirebase();
   }
 
   @override

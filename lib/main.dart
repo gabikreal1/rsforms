@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
                 home: CompanyAdder(),
               );
             }
-            ;
+
             return ChangeNotifierProxyProvider<UserProvider, CompanyProvider>(
               create: (context) {
                 return CompanyProvider(Provider.of<UserProvider>(context, listen: false).user);
