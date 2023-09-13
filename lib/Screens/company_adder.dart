@@ -10,6 +10,6 @@ class CompanyAdder extends StatefulWidget {
 class _CompanyAdderState extends State<CompanyAdder> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold();
   }
 }
