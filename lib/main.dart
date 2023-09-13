@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,10 +40,13 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          
           return ChangeNotifierProvider(create: (context) {
             return UserProvider();
-          }, builder: (context, child) {
-            if (Provider.of<UserProvider>(context, listen: false).user.companyId == "0") {
+          }, 
+          
+          builder: (context, child) {
+            if (Provider.of<UserProvider>(context, listen: true).user.companyId == "0") {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'RsForms',

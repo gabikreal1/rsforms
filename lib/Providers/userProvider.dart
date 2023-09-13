@@ -18,14 +18,16 @@ class UserProvider extends ChangeNotifier {
   }
 
   void listenToFirebase() async {
-    _firebaseSubscription = FirebaseFirestore.instance
+    _firebaseSubscription = await FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .listen((event) {
       _user = rsUser.fromdocument(event);
+      notifyListeners();
     });
     notifyListeners();
+
   }
 
   @override
