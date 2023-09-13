@@ -21,6 +21,7 @@ class _JobAdderState extends State<JobAdder> {
   TextEditingController _postcodeController = TextEditingController();
   TextEditingController _subContractorController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
+  TextEditingController _YHSController = TextEditingController();
   DateTime earlyTime = DateTime.now();
   DateTime lateTime = DateTime.now();
 
@@ -31,6 +32,7 @@ class _JobAdderState extends State<JobAdder> {
     earlyTime = widget.date;
     lateTime = widget.date;
     _jobNoController.text = "Sub/";
+    _YHSController.text = "None";
   }
 
   StepState checkStepState(index) {
@@ -146,6 +148,27 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 5,
               state: checkStepState(5)),
           Step(
+              title: Text("YHS (Optional)"),
+              content: Center(
+                child: Column(
+                  children: [
+                    Text("Leave it as None if you won't use it"),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(2),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                          hintText: "YHS",
+                          hintStyle: TextStyle(color: Colors.grey)),
+                      controller: _YHSController,
+                      maxLines: null,
+                    ),
+                  ],
+                ),
+              ),
+              isActive: curstep >= 6,
+              state: checkStepState(6)),
+          Step(
               title: Text("Early Time"),
               content: SizedBox(
                 height: 120,
@@ -159,8 +182,8 @@ class _JobAdderState extends State<JobAdder> {
                   },
                 ),
               ),
-              isActive: curstep >= 6,
-              state: checkStepState(6)),
+              isActive: curstep >= 7,
+              state: checkStepState(7)),
           Step(
               title: Text("Late Time"),
               content: SizedBox(
@@ -175,8 +198,8 @@ class _JobAdderState extends State<JobAdder> {
                   },
                 ),
               ),
-              isActive: curstep >= 7,
-              state: checkStepState(7)),
+              isActive: curstep >= 8,
+              state: checkStepState(8)),
         ];
 
     return Scaffold(
@@ -238,7 +261,8 @@ class _JobAdderState extends State<JobAdder> {
                           earlyTime: earlyTime,
                           address: _addressController.text.trim(),
                           postcode: _postcodeController.text.trim(),
-                          subContractor: _subContractorController.text.trim());
+                          subContractor: _subContractorController.text.trim(),
+                          YHS: _YHSController.text.trim());
                       jobProvider.addJob(job);
 
                       Navigator.pop(context);

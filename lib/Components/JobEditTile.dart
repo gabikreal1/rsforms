@@ -52,75 +52,86 @@ class _JobEditTileState extends State<JobEditTile> {
             Row(
               children: [
                 Expanded(
-                  child: change
-                      ? Container(
-                          height: 40,
-                          child: Form(
-                            key: _TileKey,
-                            child: TextFormField(
-                              decoration: const InputDecoration(
-                                  contentPadding: EdgeInsets.all(2),
-                                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
-                                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
-                              controller: _controller,
-                              onFieldSubmitted: (value) {
-                                if (_TileKey.currentState != null) {
-                                  if (_TileKey.currentState!.validate() && change) {
-                                    widget.Update!(value);
-                                  }
-                                  if (_TileKey.currentState!.validate()) {
-                                    setState(() {
-                                      change = !change;
-                                    });
-                                  }
-                                }
-                              },
-                            ),
-                          ),
-                        )
-                      : GestureDetector(
-                          onTap: () {
-                            if (_TileKey.currentState != null) {
-                              if (_TileKey.currentState!.validate() && change) {
-                                widget.Update!(_controller.text.trim());
-                              }
-                              if (_TileKey.currentState!.validate()) {
-                                setState(() {
-                                  change = !change;
-                                });
-                              }
-                            } else {
-                              setState(() {
-                                change = !change;
-                              });
-                            }
-                          },
-                          child: SelectableText(
-                            widget.TileDescription,
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                ),
-                IconButton(
-                    onPressed: () {
-                      if (_TileKey.currentState != null) {
-                        if (_TileKey.currentState!.validate() && change) {
-                          widget.Update!(_controller.text.trim());
-                        }
-                        if (_TileKey.currentState!.validate()) {
-                          setState(() {
-                            change = !change;
-                          });
-                        }
-                      } else {
-                        setState(() {
-                          change = !change;
-                        });
-                      }
-                    },
-                    icon: Icon(Icons.edit))
+                    child: TextFormField(
+                  decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.all(2),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
+                  controller: _controller,
+                  onFieldSubmitted: (value) {
+                    widget.Update(value);
+                  },
+                ))
+
+                //   child: change
+                //       ? Container(
+                //           height: 40,
+                //           child: Form(
+                //             key: _TileKey,
+                // child: TextFormField(
+                //   decoration: const InputDecoration(
+                //       contentPadding: EdgeInsets.all(2),
+                //       enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                //       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
+                //   controller: _controller,
+                //   onFieldSubmitted: (value) {
+                //     if (_TileKey.currentState != null) {
+                //       if (_TileKey.currentState!.validate() && change) {
+                //         widget.Update!(value);
+                //       }
+                //                   if (_TileKey.currentState!.validate()) {
+                //                     setState(() {
+                //                       change = !change;
+                //                     });
+                //                   }
+                //                 }
+                //               },
+                //             ),
+                //           ),
+                //         )
+                //       : GestureDetector(
+                //           onTap: () {
+                //             if (_TileKey.currentState != null) {
+                //               if (_TileKey.currentState!.validate() && change) {
+                //                 widget.Update!(_controller.text.trim());
+                //               }
+                //               if (_TileKey.currentState!.validate()) {
+                //                 setState(() {
+                //                   change = !change;
+                //                 });
+                //               }
+                //             } else {
+                //               setState(() {
+                //                 change = !change;
+                //               });
+                //             }
+                //           },
+                //           child: SelectableText(
+                //             widget.TileDescription,
+                //             style: TextStyle(
+                //               fontSize: 16,
+                //             ),
+                //           ),
+                //         ),
+                // ),
+                // IconButton(
+                //     onPressed: () {
+                //       if (_TileKey.currentState != null) {
+                //         if (_TileKey.currentState!.validate() && change) {
+                //           widget.Update!(_controller.text.trim());
+                //         }
+                //         if (_TileKey.currentState!.validate()) {
+                //           setState(() {
+                //             change = !change;
+                //           });
+                //         }
+                //       } else {
+                //         setState(() {
+                //           change = !change;
+                //         });
+                //       }
+                //     },
+                //     icon: Icon(Icons.edit))
               ],
             ),
           ],

@@ -284,7 +284,7 @@ class InvoiceApi {
     final bytes = await pdf.save();
 
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/${invoice.company.InvoiceCounter}.pdf');
+    final file = File('${dir.path}/RS${invoice.company.InvoiceCounter}_${invoice.job.subCompany}.pdf');
     print(file.path);
     await file.writeAsBytes(bytes);
 

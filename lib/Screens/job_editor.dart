@@ -150,6 +150,18 @@ class JobEditor extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
+                    if (job.YHS != "None")
+                      JobEditTile(
+                        TileName: "YHS",
+                        TileDescription: "${job.YHS}",
+                        Update: (value) {
+                          jobProvider.updateJob(jobId, "YHS", value);
+                        },
+                      ),
+
+                    SizedBox(
+                      height: 10,
+                    ),
                     JobTimeEditTile(
                       date: job.earlyTime,
                       TileName: "Early Time",
@@ -429,7 +441,8 @@ class JobEditor extends StatelessWidget {
                                                                 print(await pdfInvoice.length());
                                                                 Share.shareXFiles(
                                                                   [XFile(pdfInvoice.path, mimeType: "application/pdf")],
-                                                                  text: "pdf",
+                                                                  text:
+                                                                      "RS${invoice.company.InvoiceCounter} \n Invoice for: ${invoice.job.subCompany} \n from: ${invoice.company.name} \n jobNo: ${invoice.job.jobNo}",
                                                                 );
                                                               },
                                                               label: Text("Generate Invoice"),

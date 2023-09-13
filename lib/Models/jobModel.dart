@@ -16,27 +16,28 @@ class Job {
   String jobNo;
   String invoiceNumber;
   String description;
+  String YHS;
 
   String address;
 
   String postcode;
   bool completed;
 
-  Job({
-    this.invoiceTime,
-    this.id,
-    required this.lateTime,
-    required this.completed,
-    required this.subCompany,
-    required this.jobNo,
-    required this.invoiceNumber,
-    required this.description,
-    this.pictures,
-    required this.earlyTime,
-    required this.address,
-    required this.postcode,
-    required this.subContractor,
-  });
+  Job(
+      {this.invoiceTime,
+      this.id,
+      required this.lateTime,
+      required this.completed,
+      required this.subCompany,
+      required this.jobNo,
+      required this.invoiceNumber,
+      required this.description,
+      this.pictures,
+      required this.earlyTime,
+      required this.address,
+      required this.postcode,
+      required this.subContractor,
+      required this.YHS});
 
   Map<String, dynamic> toMap() {
     return {
@@ -50,6 +51,7 @@ class Job {
       'postcode': postcode,
       'completed': completed,
       'subcontractor': subContractor,
+      'YHS': YHS,
     };
   }
 
@@ -65,6 +67,7 @@ class Job {
       earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
       lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
       address: data["address"] ?? "None",
+      YHS: data["YHS"] ?? "None",
       postcode: data["postcode"] ?? "None",
       completed: data['completed'] ?? false,
       subContractor: data["subcontractor"] ?? "You",

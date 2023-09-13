@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Components/NavDrawer.dart';
@@ -20,9 +21,14 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   void launchMaps(String address) async {
-    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=$address';
+    String googleUrlIOS = 'comgooglemaps://?q=$address';
+    final googleUrlAndroid = 'https://www.google.com/maps/search/?api=1&query=$address';
     try {
-      await launchUrlString(googleUrl, mode: LaunchMode.externalApplication);
+      if (await canLaunchUrlString(googleUrlIOS)) {
+        await launchUrlString(googleUrlIOS, mode: LaunchMode.externalApplication);
+      }
+      if (await canLaunchUrlString(googleUrlAndroid))
+        await launchUrlString(googleUrlAndroid, mode: LaunchMode.externalApplication);
     } catch (e) {
       print(e);
     }
@@ -51,297 +57,295 @@ class _CalendarState extends State<Calendar> {
 
     return Scaffold(
       // move it into different file.
+      backgroundColor: Color(0xff31384d),
       key: _key,
       drawer: NavDrawer(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Flexible(
-              flex: 5,
-              child: Stack(children: [
-                TableCalendar(
-                  calendarBuilders: CalendarBuilders(
-                    markerBuilder: (context, date, events) {
-                      if (events.isNotEmpty) {
-                        return Positioned(
-                          bottom: -1, // position slightly below the cell number
-                          child: Container(
-                            width: 5, // increase the size of the marker
-                            height: 5,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.black, // color that contrasts with the cell color
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Flexible(
+                flex: 5,
+                child: Stack(children: [
+                  TableCalendar(
+                    calendarBuilders: CalendarBuilders(
+                      markerBuilder: (context, date, events) {
+                        if (events.isNotEmpty) {
+                          return Positioned(
+                            bottom: -1, // position slightly below the cell number
+                            child: Container(
+                              width: 5, // increase the size of the marker
+                              height: 5,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.black, // color that contrasts with the cell color
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                      return Container();
+                          );
+                        }
+                        return Container();
+                      },
+                    ),
+                    calendarStyle: CalendarStyle(
+                      selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
+                      todayDecoration: BoxDecoration(color: Color(0x8831384c), shape: BoxShape.circle),
+                    ),
+                    availableCalendarFormats: const {
+                      CalendarFormat.month: 'Month',
+                    },
+                    headerStyle: HeaderStyle(
+                        formatButtonVisible: false,
+                        titleCentered: true,
+                        formatButtonDecoration: BoxDecoration(color: Colors.transparent),
+                        leftChevronVisible: false,
+                        rightChevronVisible: false,
+                        titleTextStyle: TextStyle(fontSize: 18)),
+                    shouldFillViewport: true,
+                    availableGestures: AvailableGestures.all,
+                    eventLoader: (day) {
+                      return jobProvider.jobs[DateTime(day.year, day.month, day.day)] ?? [];
+                    },
+                    firstDay: DateTime.utc(1990, 1, 1),
+                    lastDay: DateTime.utc(2040, 12, 31),
+                    focusedDay: jobProvider.focusedDay,
+                    selectedDayPredicate: (day) {
+                      return isSameDay(jobProvider.selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      jobProvider.setSelectedDay(selectedDay);
+                    },
+                    onPageChanged: (focusedDay) {
+                      jobProvider.setStartOfMonth(focusedDay);
+                      jobProvider.setSelectedDay(focusedDay);
                     },
                   ),
-                  calendarStyle: CalendarStyle(
-                    selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
-                    todayDecoration: BoxDecoration(color: Color(0x8831384c), shape: BoxShape.circle),
-                  ),
-                  availableCalendarFormats: const {
-                    CalendarFormat.month: 'Month',
-                  },
-                  headerStyle: HeaderStyle(
-                      formatButtonVisible: false,
-                      titleCentered: true,
-                      formatButtonDecoration: BoxDecoration(color: Colors.transparent),
-                      leftChevronVisible: false,
-                      rightChevronVisible: false,
-                      titleTextStyle: TextStyle(fontSize: 18)),
-                  shouldFillViewport: true,
-                  availableGestures: AvailableGestures.all,
-                  eventLoader: (day) {
-                    return jobProvider.jobs[DateTime(day.year, day.month, day.day)] ?? [];
-                  },
-                  firstDay: DateTime.utc(1990, 1, 1),
-                  lastDay: DateTime.utc(2040, 12, 31),
-                  focusedDay: jobProvider.focusedDay,
-                  selectedDayPredicate: (day) {
-                    return isSameDay(jobProvider.selectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    jobProvider.setSelectedDay(selectedDay);
-                  },
-                  onPageChanged: (focusedDay) {
-                    jobProvider.setStartOfMonth(focusedDay);
-                    jobProvider.setSelectedDay(focusedDay);
-                  },
-                ),
-                Container(
-                  height: 40,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 10,
-                      ),
-                      IconButton(onPressed: () => {_key.currentState!.openDrawer()}, icon: Icon(Icons.menu)),
-                      Spacer(),
-                      IconButton(
-                          onPressed: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => JobAdder(date: jobProvider.focusedDay),
-                              ),
-                            );
-                          },
-                          icon: Icon(Icons.add)),
-                      SizedBox(
-                        width: 10,
-                      )
-                    ],
-                  ),
-                ),
-              ]),
-            ),
-            Flexible(
-              flex: 5,
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
-                  decoration: BoxDecoration(
-                      color: Color(0xff31384d),
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))),
-                  height: double.infinity,
-                  width: double.infinity,
-                  child: Consumer<JobProvider>(
-                    builder: (context, jobprovider, child) {
-                      if (jobprovider.jobs[jobprovider.selectedDay] != null &&
-                          jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
-                        return ListView.builder(
-                          itemCount: jobprovider.jobs[jobprovider.selectedDay]?.length,
-                          itemBuilder: (context, index) {
-                            final job = jobprovider.jobs[jobprovider.selectedDay]![index];
-
-                            return Padding(
-                              padding: EdgeInsets.symmetric(vertical: 5),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  color: Colors.white,
+                  Container(
+                    height: 40,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        IconButton(onPressed: () => {_key.currentState!.openDrawer()}, icon: Icon(Icons.menu)),
+                        Spacer(),
+                        IconButton(
+                            onPressed: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => JobAdder(date: jobProvider.focusedDay),
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                  child: ListTile(
-                                    onTap: () async {
-                                      //todo:rerouting
-                                      await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => JobEditor(
-                                            jobId: job.id!,
-                                            day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
+                              );
+                            },
+                            icon: Icon(Icons.add)),
+                        SizedBox(
+                          width: 10,
+                        )
+                      ],
+                    ),
+                  ),
+                ]),
+              ),
+              Flexible(
+                flex: 5,
+                child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    decoration: BoxDecoration(
+                        color: Color(0xff31384d),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))),
+                    height: double.infinity,
+                    width: double.infinity,
+                    child: Consumer<JobProvider>(
+                      builder: (context, jobprovider, child) {
+                        if (jobprovider.jobs[jobprovider.selectedDay] != null &&
+                            jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
+                          jobProvider.jobs[jobprovider.selectedDay]!.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
+                          return ListView.builder(
+                            itemCount: jobprovider.jobs[jobprovider.selectedDay]?.length,
+                            itemBuilder: (context, index) {
+                              final job = jobprovider.jobs[jobprovider.selectedDay]![index];
+
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(25.0),
+                                    color: Colors.white,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 6.0),
+                                    child: ListTile(
+                                      onTap: () async {
+                                        //todo:rerouting
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => JobEditor(
+                                              jobId: job.id!,
+                                              day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
+                                            ),
                                           ),
-                                        ),
-                                      );
-                                    },
-                                    onLongPress: () {
-                                      showModalBottomSheet(
-                                        context: context,
-                                        builder: (context) {
-                                          return Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              ListTile(
-                                                leading: Icon(Icons.navigation_rounded),
-                                                title: Text('Navigate'),
-                                                onTap: () {
-                                                  Navigator.pop(context);
-                                                  launchMaps("${job.postcode}");
-                                                },
-                                              ),
-                                              ListTile(
-                                                leading: Icon(Icons.edit),
-                                                title: Text('Edit'),
-                                                onTap: () async {
-                                                  Navigator.pop(context);
-                                                  await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) => JobEditor(
-                                                        jobId: job.id!,
-                                                        day: DateTime(
-                                                            job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
+                                        );
+                                      },
+                                      onLongPress: () {
+                                        showCupertinoModalPopup(
+                                          context: context,
+                                          builder: (context) {
+                                            return CupertinoActionSheet(
+                                              title: Text("What actions do you want to take?"),
+                                              actions: [
+                                                CupertinoActionSheetAction(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    launchMaps("${job.postcode}");
+                                                  },
+                                                  child: Text("✈️ Navigate"),
+                                                ),
+                                                CupertinoActionSheetAction(
+                                                  child: Text("Edit"),
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) => JobEditor(
+                                                          jobId: job.id!,
+                                                          day: DateTime(job.earlyTime.year, job.earlyTime.month,
+                                                              job.earlyTime.day),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                              ListTile(
-                                                leading: Icon(Icons.delete),
-                                                title: Text('Delete'),
-                                                onTap: () async {
-                                                  Navigator.pop(context);
-                                                  showDialog(
+                                                    );
+                                                  },
+                                                ),
+                                                CupertinoActionSheetAction(
+                                                  child: Text("Delete"),
+                                                  onPressed: () async {
+                                                    Navigator.pop(context);
+                                                    showCupertinoDialog(
                                                       context: context,
                                                       builder: (context) {
-                                                        return AlertDialog(
-                                                          backgroundColor: Color(0xff31384d),
+                                                        return CupertinoAlertDialog(
                                                           title: Text(
-                                                            "Confirm",
-                                                            style: TextStyle(color: Colors.white),
+                                                            "Confirm Deletion",
                                                           ),
                                                           actions: [
-                                                            ElevatedButton(
-                                                              onPressed: () => Navigator.pop(context),
-                                                              child: Container(
-                                                                width: 75,
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [Text("Cancel "), Icon(Icons.cancel)],
-                                                                ),
-                                                              ),
+                                                            CupertinoDialogAction(
+                                                                onPressed: () => Navigator.pop(context),
+                                                                child: Text("Cancel")),
+                                                            CupertinoDialogAction(
+                                                              onPressed: () {
+                                                                Provider.of<JobProvider>(context, listen: false)
+                                                                    .deleteJob(job.id!);
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: Text("Delete "),
+                                                              isDestructiveAction: true,
                                                             ),
-                                                            ElevatedButton(
-                                                                onPressed: () {
-                                                                  Provider.of<JobProvider>(context, listen: false)
-                                                                      .deleteJob(job.id!);
-                                                                  Navigator.pop(context);
-                                                                },
-                                                                child: Container(
-                                                                  width: 75,
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                                    children: [Text("Delete "), Icon(Icons.delete)],
-                                                                  ),
-                                                                )),
                                                           ],
                                                         );
-                                                      });
+                                                      },
+                                                    );
+                                                  },
+                                                  isDestructiveAction: true,
+                                                ),
+                                              ],
+                                              cancelButton: CupertinoActionSheetAction(
+                                                child: Text("Cancel"),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
                                                 },
                                               ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    title: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${formatProviderName(job.subCompany)}',
-                                              style: TextStyle(
-                                                  color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
-                                            ),
-                                            SizedBox(
-                                              width: 4,
-                                            ),
-                                            Container(
-                                              width: 6,
-                                              height: 6,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: job.completed
-                                                    ? Colors.green
-                                                    : Colors.yellow, // color that contrasts with the cell color
+                                            );
+                                          },
+                                        );
+                                      },
+                                      title: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${formatProviderName(job.subCompany)}',
+                                                style: TextStyle(
+                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                                               ),
-                                            ),
-                                            Spacer(),
-                                            Text(
-                                              '${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
-                                              style: TextStyle(
-                                                  color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 2,
-                                        ),
-                                        Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            '${job.address}',
-                                            style: TextStyle(color: Colors.black, fontSize: 12),
+                                              SizedBox(
+                                                width: 4,
+                                              ),
+                                              Container(
+                                                width: 6,
+                                                height: 6,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: job.completed
+                                                      ? Colors.green
+                                                      : Colors.yellow, // color that contrasts with the cell color
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                '${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
+                                                style: TextStyle(
+                                                    color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${job.postcode} ',
+                                          SizedBox(
+                                            height: 2,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              '${job.address}',
                                               style: TextStyle(color: Colors.black, fontSize: 12),
                                             ),
-                                            Spacer(),
-                                            Text(
-                                              '${job.subContractor} ',
-                                              style: TextStyle(
-                                                  color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${job.postcode} ',
+                                                style: TextStyle(color: Colors.black, fontSize: 12),
+                                              ),
+                                              Spacer(),
+                                              Text(
+                                                '${job.subContractor} ',
+                                                style: TextStyle(
+                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
+                              );
+                            },
+                          );
+                        } else {
+                          return Column(
+                            children: const [
+                              SizedBox(
+                                height: 20,
                               ),
-                            );
-                          },
-                        );
-                      } else {
-                        return Column(
-                          children: const [
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              "There are no any jobs on this day",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                              Text(
+                                "There are no any jobs on this day",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
                               ),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  )),
-            ),
-          ],
+                            ],
+                          );
+                        }
+                      },
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
     );
