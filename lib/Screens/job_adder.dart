@@ -22,6 +22,7 @@ class _JobAdderState extends State<JobAdder> {
   TextEditingController _subContractorController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _YHSController = TextEditingController();
+  TextEditingController _numberController = TextEditingController();
   DateTime earlyTime = DateTime.now();
   DateTime lateTime = DateTime.now();
 
@@ -31,7 +32,6 @@ class _JobAdderState extends State<JobAdder> {
     super.initState();
     earlyTime = widget.date;
     lateTime = widget.date;
-    _jobNoController.text = "Sub/";
     _YHSController.text = "None";
   }
 
@@ -148,6 +148,27 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 5,
               state: checkStepState(5)),
           Step(
+              title: Text("Site Contact Number"),
+              content: Center(
+                child: Column(
+                  children: [
+                    Text("Provide just the number"),
+                    TextFormField(
+                      decoration: const InputDecoration(
+                          contentPadding: EdgeInsets.all(2),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                          hintText: "Contact Number",
+                          hintStyle: TextStyle(color: Colors.grey)),
+                      controller: _numberController,
+                      maxLines: null,
+                    ),
+                  ],
+                ),
+              ),
+              isActive: curstep >= 6,
+              state: checkStepState(6)),
+          Step(
               title: Text("YHS (Optional)"),
               content: Center(
                 child: Column(
@@ -166,8 +187,8 @@ class _JobAdderState extends State<JobAdder> {
                   ],
                 ),
               ),
-              isActive: curstep >= 6,
-              state: checkStepState(6)),
+              isActive: curstep >= 7,
+              state: checkStepState(7)),
           Step(
               title: Text("Early Time"),
               content: SizedBox(
@@ -179,18 +200,21 @@ class _JobAdderState extends State<JobAdder> {
                   mode: CupertinoDatePickerMode.dateAndTime,
                   onDateTimeChanged: (DateTime newTime) {
                     earlyTime = newTime;
+                    setState(() {
+                      lateTime = newTime;
+                    });
                   },
                 ),
               ),
-              isActive: curstep >= 7,
-              state: checkStepState(7)),
+              isActive: curstep >= 8,
+              state: checkStepState(8)),
           Step(
               title: Text("Late Time"),
               content: SizedBox(
                 height: 120,
                 child: CupertinoDatePicker(
                   backgroundColor: Colors.white,
-                  initialDateTime: earlyTime,
+                  initialDateTime: lateTime,
                   use24hFormat: true,
                   mode: CupertinoDatePickerMode.dateAndTime,
                   onDateTimeChanged: (DateTime newTime) {
@@ -198,8 +222,8 @@ class _JobAdderState extends State<JobAdder> {
                   },
                 ),
               ),
-              isActive: curstep >= 8,
-              state: checkStepState(8)),
+              isActive: curstep >= 9,
+              state: checkStepState(9)),
         ];
 
     return Scaffold(
@@ -252,6 +276,7 @@ class _JobAdderState extends State<JobAdder> {
                       });
                     } else {
                       Job job = Job(
+                          contactNumber: _numberController.text.trim(),
                           lateTime: lateTime,
                           completed: false,
                           subCompany: _providerController.text.trim(),

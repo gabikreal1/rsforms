@@ -62,76 +62,131 @@ class _JobEditTileState extends State<JobEditTile> {
                     widget.Update(value);
                   },
                 ))
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-                //   child: change
-                //       ? Container(
-                //           height: 40,
-                //           child: Form(
-                //             key: _TileKey,
-                // child: TextFormField(
-                //   decoration: const InputDecoration(
-                //       contentPadding: EdgeInsets.all(2),
-                //       enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
-                //       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
-                //   controller: _controller,
-                //   onFieldSubmitted: (value) {
-                //     if (_TileKey.currentState != null) {
-                //       if (_TileKey.currentState!.validate() && change) {
-                //         widget.Update!(value);
-                //       }
-                //                   if (_TileKey.currentState!.validate()) {
-                //                     setState(() {
-                //                       change = !change;
-                //                     });
-                //                   }
-                //                 }
-                //               },
-                //             ),
-                //           ),
-                //         )
-                //       : GestureDetector(
-                //           onTap: () {
-                //             if (_TileKey.currentState != null) {
-                //               if (_TileKey.currentState!.validate() && change) {
-                //                 widget.Update!(_controller.text.trim());
-                //               }
-                //               if (_TileKey.currentState!.validate()) {
-                //                 setState(() {
-                //                   change = !change;
-                //                 });
-                //               }
-                //             } else {
-                //               setState(() {
-                //                 change = !change;
-                //               });
-                //             }
-                //           },
-                //           child: SelectableText(
-                //             widget.TileDescription,
-                //             style: TextStyle(
-                //               fontSize: 16,
-                //             ),
-                //           ),
-                //         ),
-                // ),
-                // IconButton(
-                //     onPressed: () {
-                //       if (_TileKey.currentState != null) {
-                //         if (_TileKey.currentState!.validate() && change) {
-                //           widget.Update!(_controller.text.trim());
-                //         }
-                //         if (_TileKey.currentState!.validate()) {
-                //           setState(() {
-                //             change = !change;
-                //           });
-                //         }
-                //       } else {
-                //         setState(() {
-                //           change = !change;
-                //         });
-                //       }
-                //     },
-                //     icon: Icon(Icons.edit))
+class MultiLineJobEditTile extends StatefulWidget {
+  String TileName;
+  String TileDescription;
+
+  Function(String value) Update;
+  Function()? Callback;
+
+  MultiLineJobEditTile(
+      {super.key, required this.TileName, required this.TileDescription, required this.Update, this.Callback});
+
+  @override
+  State<MultiLineJobEditTile> createState() => _MultiLineJobEditTileState();
+}
+
+class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
+  bool change = false;
+  late final TextEditingController _controller;
+  final _TileKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controller = TextEditingController(text: widget.TileDescription);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+              child: Text(
+                "${widget.TileName}",
+                style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: change
+                      ? Form(
+                          key: _TileKey,
+                          child: TextFormField(
+                            decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.all(2),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
+                            controller: _controller,
+                            maxLines: null,
+                            onFieldSubmitted: (value) {
+                              if (_TileKey.currentState != null) {
+                                if (_TileKey.currentState!.validate() && change) {
+                                  widget.Update!(value);
+                                }
+                                if (_TileKey.currentState!.validate()) {
+                                  setState(() {
+                                    change = !change;
+                                  });
+                                }
+                              }
+                            },
+                          ),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            if (widget.Callback != null) {
+                              widget.Callback!();
+                            }
+                          },
+                          child: (widget.Callback == null)
+                              ? SelectableText(
+                                  widget.TileDescription,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                )
+                              : Text(
+                                  widget.TileDescription,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                )),
+                ),
+                IconButton(
+                  onPressed: () {
+                    if (_TileKey.currentState != null) {
+                      if (_TileKey.currentState!.validate() && change) {
+                        widget.Update!(_controller.text.trim());
+                      }
+                      if (_TileKey.currentState!.validate()) {
+                        setState(() {
+                          change = !change;
+                        });
+                      }
+                    } else {
+                      setState(() {
+                        change = !change;
+                      });
+                    }
+                  },
+                  icon: Icon(Icons.edit),
+                ),
               ],
             ),
           ],

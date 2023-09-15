@@ -67,6 +67,7 @@
 	<array>
 		<string>comgooglemaps</string>
 		<string>comgooglemaps-x-callback</string>
+		<string>tel</string>
 	</array>
 </dict>
 </plist>

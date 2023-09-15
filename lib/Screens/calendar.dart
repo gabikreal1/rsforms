@@ -21,14 +21,13 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   void launchMaps(String address) async {
-    String googleUrlIOS = 'comgooglemaps://?q=$address';
-    final googleUrlAndroid = 'https://www.google.com/maps/search/?api=1&query=$address';
+    final googleUrlIOS = Uri.parse('comgooglemaps://?q=$address');
+    final googleUrlAndroid = Uri.parse('https://www.google.com/maps/search/?api=1&query=$address');
     try {
-      if (await canLaunchUrlString(googleUrlIOS)) {
-        await launchUrlString(googleUrlIOS, mode: LaunchMode.externalApplication);
+      if (await canLaunchUrl(googleUrlIOS)) {
+        await launchUrl(googleUrlIOS, mode: LaunchMode.externalApplication);
       }
-      if (await canLaunchUrlString(googleUrlAndroid))
-        await launchUrlString(googleUrlAndroid, mode: LaunchMode.externalApplication);
+      if (await canLaunchUrl(googleUrlAndroid)) await launchUrl(googleUrlAndroid, mode: LaunchMode.externalApplication);
     } catch (e) {
       print(e);
     }
@@ -310,7 +309,7 @@ class _CalendarState extends State<Calendar> {
                                               ),
                                               Spacer(),
                                               Text(
-                                                '${job.subContractor} ',
+                                                '${job.subContractor.toUpperCase()} ',
                                                 style: TextStyle(
                                                     color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
                                               ),

@@ -10,6 +10,7 @@ import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/serviceProvider.dart';
 import 'package:rsforms/Screens/service_adder.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:rsforms/Screens/service_editor.dart';
 import 'package:share_plus/share_plus.dart';
 import '../Models/jobModel.dart';
@@ -140,11 +141,30 @@ class JobEditor extends StatelessWidget {
                     SizedBox(
                       height: 10,
                     ),
-                    JobEditTile(
+                    MultiLineJobEditTile(
                       TileName: "Desciprtion",
                       TileDescription: "${job.description}",
                       Update: (value) {
                         jobProvider.updateJob(jobId, "description", value);
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    MultiLineJobEditTile(
+                      TileName: "Contact Number",
+                      TileDescription: "${job.contactNumber}",
+                      Update: (value) {
+                        jobProvider.updateJob(jobId, "contactnumber", value);
+                      },
+                      Callback: () async {
+                        Uri url = Uri(
+                          scheme: 'tel',
+                          path: job.contactNumber,
+                        );
+                        if (await canLaunchUrl(url)) {
+                          await launchUrl(url);
+                        }
                       },
                     ),
                     SizedBox(
@@ -248,6 +268,13 @@ class JobEditor extends StatelessWidget {
                                               Consumer<ServiceProvider>(
                                                 builder: (context, value, child) {
                                                   if (value.services.isNotEmpty) {
+                                                    for (var i = 0; i < value.services.length; i++) {
+                                                      if (value.services[i].typeofCharge == "Labour") {
+                                                        var temp = value.services[i];
+                                                        value.services.removeAt(i);
+                                                        value.services.insert(0, temp);
+                                                      }
+                                                    }
                                                     return Column(
                                                       children: [
                                                         ListView.builder(
@@ -346,7 +373,7 @@ class JobEditor extends StatelessWidget {
                                                                             mainAxisAlignment: MainAxisAlignment.center,
                                                                             children: [
                                                                               Text(
-                                                                                " £${service.price} X ",
+                                                                                " £${service.price.toStringAsFixed(2)} X ",
                                                                                 style: TextStyle(fontSize: 10),
                                                                               ),
                                                                               Text(
@@ -359,7 +386,7 @@ class JobEditor extends StatelessWidget {
                                                                             height: 5,
                                                                           ),
                                                                           Text(
-                                                                            " £${service.totalPrice}",
+                                                                            " £${service.totalPrice.toStringAsFixed(2)}",
                                                                             style: TextStyle(
                                                                                 fontSize: 14,
                                                                                 fontWeight: FontWeight.bold),
@@ -374,7 +401,7 @@ class JobEditor extends StatelessWidget {
                                                         SizedBox(
                                                           height: 10,
                                                         ),
-                                                        Text("Total Price: £${value.totalPrice}"),
+                                                        Text("Total Price: £${value.totalPrice.toStringAsFixed(2)}"),
                                                         SizedBox(
                                                           height: 10,
                                                         ),
@@ -421,6 +448,7 @@ class JobEditor extends StatelessWidget {
                                                         SizedBox(
                                                           height: 20,
                                                         ),
+                                                        Text("Invoice No:  ${job.invoiceNumber}"),
                                                         Column(
                                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                                           children: [
@@ -429,8 +457,15 @@ class JobEditor extends StatelessWidget {
                                                                 if (job.invoiceTime == null) {
                                                                   jobProvider.updateJob(job.id!, "invoicetime",
                                                                       DateTime.now().millisecondsSinceEpoch);
+
                                                                   await companyProvider.incrementInvoiceCounter();
+                                                                  await jobProvider.updateJob(
+                                                                      job.id!,
+                                                                      "invoicenumber",
+                                                                      companyProvider.company.InvoiceCounter
+                                                                          .toString());
                                                                 }
+                                                                //2082
                                                                 var invoice = Invoice(
                                                                     company: companyProvider.company,
                                                                     job: job,
@@ -439,10 +474,11 @@ class JobEditor extends StatelessWidget {
 
                                                                 print(pdfInvoice.path);
                                                                 print(await pdfInvoice.length());
+
                                                                 Share.shareXFiles(
                                                                   [XFile(pdfInvoice.path, mimeType: "application/pdf")],
                                                                   text:
-                                                                      "RS${invoice.company.InvoiceCounter} \n Invoice for: ${invoice.job.subCompany} \n from: ${invoice.company.name} \n jobNo: ${invoice.job.jobNo}",
+                                                                      "Invoice \n Many Thanks, \n ${invoice.company.name}",
                                                                 );
                                                               },
                                                               label: Text("Generate Invoice"),

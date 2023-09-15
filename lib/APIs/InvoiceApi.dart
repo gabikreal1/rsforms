@@ -110,7 +110,7 @@ class InvoiceApi {
                               style: pw.TextStyle(fontSize: 12),
                             ),
                             pw.Text(
-                              "RS ${invoice.company.InvoiceCounter}",
+                              "RS ${invoice.job.invoiceNumber}",
                               style: pw.TextStyle(fontSize: 12),
                             )
                           ],
@@ -284,8 +284,13 @@ class InvoiceApi {
     final bytes = await pdf.save();
 
     final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/RS${invoice.company.InvoiceCounter}_${invoice.job.subCompany}.pdf');
-    print(file.path);
+    var file;
+    if (invoice.job.invoiceNumber != "Hasn't been set yet") {
+      file = File('${dir.path}/RS${invoice.job.invoiceNumber}_${invoice.job.subCompany}.pdf');
+    } else {
+      file = File('${dir.path}/RS${invoice.company.InvoiceCounter}_${invoice.job.subCompany}.pdf');
+    }
+
     await file.writeAsBytes(bytes);
 
     return file;

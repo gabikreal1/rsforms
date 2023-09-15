@@ -9,6 +9,7 @@ class Job {
   DateTime lateTime;
   DateTime? invoiceTime;
 
+  String contactNumber;
   List<String>? pictures;
 
   String subCompany;
@@ -33,6 +34,7 @@ class Job {
       required this.invoiceNumber,
       required this.description,
       this.pictures,
+      required this.contactNumber,
       required this.earlyTime,
       required this.address,
       required this.postcode,
@@ -41,6 +43,7 @@ class Job {
 
   Map<String, dynamic> toMap() {
     return {
+      'contactnumber': contactNumber,
       'subcompany': subCompany,
       'jobno': jobNo,
       'invoicenumber': invoiceNumber,
@@ -60,6 +63,7 @@ class Job {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Job(
       id: doc.id,
+      contactNumber: data['contactnumber'] ?? "0",
       subCompany: data['subcompany'] ?? "None",
       jobNo: data['jobno'] ?? "None",
       invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
