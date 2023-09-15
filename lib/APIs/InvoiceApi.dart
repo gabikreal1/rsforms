@@ -109,10 +109,16 @@ class InvoiceApi {
                               invoice.job.jobNo,
                               style: pw.TextStyle(fontSize: 12),
                             ),
-                            pw.Text(
-                              "RS ${invoice.job.invoiceNumber}",
-                              style: pw.TextStyle(fontSize: 12),
-                            )
+                            if (invoice.job.invoiceNumber != "Hasn't been set yet")
+                              pw.Text(
+                                "RS ${invoice.job.invoiceNumber}",
+                                style: pw.TextStyle(fontSize: 12),
+                              )
+                            else
+                              pw.Text(
+                                "RS ${invoice.company.InvoiceCounter}",
+                                style: pw.TextStyle(fontSize: 12),
+                              )
                           ],
                         ),
                         height: 70),
