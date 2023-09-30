@@ -2,12 +2,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/APIs/InvoiceApi.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
 import 'package:rsforms/Models/invoiceModel.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/serviceProvider.dart';
+import 'package:rsforms/Screens/ViewPdf.dart';
 import 'package:rsforms/Screens/service_adder.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -68,6 +70,32 @@ class JobEditor extends StatelessWidget {
         child: SingleChildScrollView(
           child: Consumer<JobProvider>(
             builder: (context, provider, child) {
+              if (provider.jobs[day] == null || provider.jobs[day]!.where((e) => e.id == jobId).length == 0) {
+                return Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: Icon(Icons.arrow_back),
+                          color: Colors.white,
+                        ),
+                        Spacer(),
+                        IconButton(
+                          onPressed: () => {},
+                          icon: Icon(Icons.settings),
+                          color: Colors.white,
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "Job has been deleted/moved to another day.",
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                );
+              }
+
               var job = provider.jobs[day]!.where((e) => e.id == jobId).first;
 
               List<bool> _selectedCompletion = <bool>[job.completed, !job.completed];
@@ -472,14 +500,21 @@ class JobEditor extends StatelessWidget {
                                                                     services: value.services);
                                                                 final pdfInvoice = await InvoiceApi.generate(invoice);
 
-                                                                print(pdfInvoice.path);
-                                                                print(await pdfInvoice.length());
-
-                                                                Share.shareXFiles(
-                                                                  [XFile(pdfInvoice.path, mimeType: "application/pdf")],
-                                                                  text:
-                                                                      "Invoice \n Many Thanks, \n ${invoice.company.name}",
+                                                                // ignore: use_build_context_synchronously
+                                                                await Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder: (context) => pdfViewPage(
+                                                                      path: pdfInvoice.path,
+                                                                      invoice: invoice,
+                                                                    ),
+                                                                  ),
                                                                 );
+                                                                // Share.shareXFiles(
+                                                                //   [XFile(pdfInvoice.path, mimeType: "application/pdf")],
+                                                                //   text:
+                                                                //       "Invoice \n Many Thanks, \n ${invoice.company.name}",
+                                                                // );
                                                               },
                                                               label: Text("Generate Invoice"),
                                                               icon: Icon(Icons.document_scanner_rounded),

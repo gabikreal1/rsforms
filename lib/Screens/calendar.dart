@@ -87,6 +87,7 @@ class _CalendarState extends State<Calendar> {
                         return Container();
                       },
                     ),
+                    startingDayOfWeek: StartingDayOfWeek.monday,
                     calendarStyle: CalendarStyle(
                       selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
                       todayDecoration: BoxDecoration(color: Color(0x8831384c), shape: BoxShape.circle),
@@ -148,6 +149,7 @@ class _CalendarState extends State<Calendar> {
                   ),
                 ]),
               ),
+              Container(height: 10),
               Flexible(
                 flex: 5,
                 child: Container(

@@ -256,7 +256,7 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
                             child: CupertinoDatePicker(
                               initialDateTime: widget.date,
                               use24hFormat: true,
-                              mode: CupertinoDatePickerMode.time,
+                              mode: CupertinoDatePickerMode.dateAndTime,
                               onDateTimeChanged: (DateTime newTime) {
                                 setState(() {
                                   widget.date = newTime;
