@@ -5,11 +5,18 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 import '../Models/invoiceModel.dart';
 
-class pdfViewPage extends StatelessWidget {
+class pdfViewPage extends StatefulWidget {
   final path;
   Invoice invoice;
+  var isReady = false;
+  var page = 0;
   pdfViewPage({super.key, required this.path, required this.invoice});
 
+  @override
+  State<pdfViewPage> createState() => _pdfViewPageState();
+}
+
+class _pdfViewPageState extends State<pdfViewPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,11 +43,17 @@ class pdfViewPage extends StatelessWidget {
                   height: 500,
                   decoration: BoxDecoration(shape: BoxShape.circle),
                   child: PDFView(
-                    filePath: path,
+                    filePath: widget.path,
                     enableSwipe: true,
                     swipeHorizontal: true,
                     autoSpacing: false,
                     pageFling: false,
+                    onRender: (_pages) {
+                      setState(() {
+                        widget.page = _pages!;
+                        widget.isReady = true;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -50,8 +63,8 @@ class pdfViewPage extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: () {
                   Share.shareXFiles(
-                    [XFile(path, mimeType: "application/pdf")],
-                    text: "Invoice \n Many Thanks, \n ${invoice.company.name}",
+                    [XFile(widget.path, mimeType: "application/pdf")],
+                    text: "Invoice \n Many Thanks, \n ${widget.invoice.company.name}",
                   );
                 },
                 icon: Icon(Icons.send),

@@ -73,10 +73,10 @@ class _CalendarState extends State<Calendar> {
                       markerBuilder: (context, date, events) {
                         if (events.isNotEmpty) {
                           return Positioned(
-                            bottom: -1, // position slightly below the cell number
+                            bottom: 1.75,
                             child: Container(
-                              width: 5, // increase the size of the marker
-                              height: 5,
+                              width: 4.5, // increase the size of the marker
+                              height: 4.5,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.black, // color that contrasts with the cell color
@@ -90,7 +90,10 @@ class _CalendarState extends State<Calendar> {
                     startingDayOfWeek: StartingDayOfWeek.monday,
                     calendarStyle: CalendarStyle(
                       selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
-                      todayDecoration: BoxDecoration(color: Color(0x8831384c), shape: BoxShape.circle),
+                      todayDecoration: BoxDecoration(
+                        color: Color(0x8831384c),
+                        shape: BoxShape.circle,
+                      ),
                     ),
                     availableCalendarFormats: const {
                       CalendarFormat.month: 'Month',
@@ -105,7 +108,7 @@ class _CalendarState extends State<Calendar> {
                     shouldFillViewport: true,
                     availableGestures: AvailableGestures.all,
                     eventLoader: (day) {
-                      return jobProvider.jobs[DateTime(day.year, day.month, day.day)] ?? [];
+                      return jobProvider.jobs[DateTime(day.year, day.month, day.day)]?.values.toList() ?? [];
                     },
                     firstDay: DateTime.utc(1990, 1, 1),
                     lastDay: DateTime.utc(2040, 12, 31),
@@ -149,7 +152,6 @@ class _CalendarState extends State<Calendar> {
                   ),
                 ]),
               ),
-              Container(height: 10),
               Flexible(
                 flex: 5,
                 child: Container(
@@ -163,11 +165,12 @@ class _CalendarState extends State<Calendar> {
                       builder: (context, jobprovider, child) {
                         if (jobprovider.jobs[jobprovider.selectedDay] != null &&
                             jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
-                          jobProvider.jobs[jobprovider.selectedDay]!.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
+                          var joblist = jobProvider.jobs[jobprovider.selectedDay]!.values.toList();
+                          joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
                           return ListView.builder(
                             itemCount: jobprovider.jobs[jobprovider.selectedDay]?.length,
                             itemBuilder: (context, index) {
-                              final job = jobprovider.jobs[jobprovider.selectedDay]![index];
+                              final job = joblist[index];
 
                               return Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5),
@@ -185,7 +188,7 @@ class _CalendarState extends State<Calendar> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) => JobEditor(
-                                              jobId: job.id!,
+                                              jobId: job!.id!,
                                               day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
                                             ),
                                           ),
@@ -201,7 +204,7 @@ class _CalendarState extends State<Calendar> {
                                                 CupertinoActionSheetAction(
                                                   onPressed: () {
                                                     Navigator.pop(context);
-                                                    launchMaps("${job.postcode}");
+                                                    launchMaps("${job!.postcode}");
                                                   },
                                                   child: Text("✈️ Navigate"),
                                                 ),
@@ -213,7 +216,7 @@ class _CalendarState extends State<Calendar> {
                                                       context,
                                                       MaterialPageRoute(
                                                         builder: (context) => JobEditor(
-                                                          jobId: job.id!,
+                                                          jobId: job!.id!,
                                                           day: DateTime(job.earlyTime.year, job.earlyTime.month,
                                                               job.earlyTime.day),
                                                         ),
@@ -239,7 +242,7 @@ class _CalendarState extends State<Calendar> {
                                                             CupertinoDialogAction(
                                                               onPressed: () {
                                                                 Provider.of<JobProvider>(context, listen: false)
-                                                                    .deleteJob(job.id!);
+                                                                    .deleteJob(job!.id!);
                                                                 Navigator.pop(context);
                                                               },
                                                               child: Text("Delete "),
@@ -268,7 +271,7 @@ class _CalendarState extends State<Calendar> {
                                           Row(
                                             children: [
                                               Text(
-                                                '${formatProviderName(job.subCompany)}',
+                                                '${formatProviderName(job!.subCompany)}',
                                                 style: TextStyle(
                                                     color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                                               ),

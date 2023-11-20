@@ -18,7 +18,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   void listenToFirebase() async {
-    _firebaseSubscription = await FirebaseFirestore.instance
+    _firebaseSubscription = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
@@ -26,8 +26,26 @@ class UserProvider extends ChangeNotifier {
       _user = rsUser.fromdocument(event);
       notifyListeners();
     });
-    notifyListeners();
 
+    var val = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
+    if (val.exists == false) {
+      _user = rsUser(companyId: "1", firstname: "loh", lastname: "lohovich");
+    }
+
+    notifyListeners();
+  }
+
+  Future<void> addCompany(Company company) async {
+    try {
+      DocumentReference docRef = await FirebaseFirestore.instance.collection('companies').add(company.toMap());
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .set({"company": docRef.id});
+      notifyListeners();
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

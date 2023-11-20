@@ -54,6 +54,7 @@ class _JobEditTileState extends State<JobEditTile> {
                 Expanded(
                     child: TextFormField(
                   decoration: const InputDecoration(
+                      hintText: "Add",
                       contentPadding: EdgeInsets.all(2),
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
                       focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
@@ -129,6 +130,7 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
                           key: _TileKey,
                           child: TextFormField(
                             decoration: const InputDecoration(
+                                hintText: "Add",
                                 contentPadding: EdgeInsets.all(2),
                                 enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
                                 focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent))),
@@ -292,7 +294,7 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
                                   backgroundColor: Colors.white,
                                   initialDateTime: widget.date,
                                   use24hFormat: true,
-                                  mode: CupertinoDatePickerMode.time,
+                                  mode: CupertinoDatePickerMode.dateAndTime,
                                   onDateTimeChanged: (DateTime newTime) {
                                     setState(() {
                                       widget.date = newTime;

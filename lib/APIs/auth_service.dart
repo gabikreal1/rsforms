@@ -18,4 +18,13 @@ class AuthService {
       print(e.code);
     }
   }
+
+  signUserInWithEmail(String email, String password) async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: email.trim(), password: password.trim());
+    } on FirebaseAuthException catch (e) {
+      return e.code;
+    }
+    return "success";
+  }
 }

@@ -10,6 +10,7 @@ import 'package:rsforms/Models/jobModel.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/jobProvider.dart';
 import 'package:rsforms/Providers/userProvider.dart';
+import 'package:rsforms/Screens/auth.dart';
 import 'package:rsforms/Screens/calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Screens/company_adder.dart';
@@ -40,13 +41,10 @@ class MyApp extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          
           return ChangeNotifierProvider(create: (context) {
             return UserProvider();
-          }, 
-          
-          builder: (context, child) {
-            if (Provider.of<UserProvider>(context, listen: true).user.companyId == "0") {
+          }, builder: (context, child) {
+            if (Provider.of<UserProvider>(context, listen: true).user.companyId == "1") {
               return MaterialApp(
                 debugShowCheckedModeBanner: false,
                 title: 'RsForms',
@@ -55,6 +53,24 @@ class MyApp extends StatelessWidget {
                   useMaterial3: true,
                 ),
                 home: CompanyAdder(),
+              );
+            } else if (Provider.of<UserProvider>(context, listen: true).user.companyId == "0") {
+              return MaterialApp(
+                debugShowCheckedModeBanner: false,
+                title: 'RsForms',
+                theme: ThemeData(
+                  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                  useMaterial3: true,
+                ),
+                home: Scaffold(
+                  body: Center(
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  ),
+                ),
               );
             }
 
@@ -99,37 +115,7 @@ class MyApp extends StatelessWidget {
               useMaterial3: true,
             ),
             home: Builder(builder: (context) {
-              return Scaffold(
-                body: SafeArea(
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return Center(
-                                    child:
-                                        Container(height: 40, width: 40, child: CircularProgressIndicator.adaptive()));
-                              });
-                          AuthService().signInWithGoogle();
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.person_4,
-                            ),
-                            Spacer(),
-                            Text("LOGIN WITH GOOGLE")
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return const Login();
             }),
           );
         }

@@ -138,7 +138,6 @@ class _ServiceEditorState extends State<ServiceEditor> {
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
                     hintText: "Price"),
                 controller: _priceController,
-                keyboardType: TextInputType.number,
                 maxLines: null,
               ),
             ),

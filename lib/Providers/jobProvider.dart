@@ -1,17 +1,21 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:rsforms/Providers/companyProvider.dart';
 import '../Models/jobModel.dart';
+import 'dart:developer';
 
 class JobProvider with ChangeNotifier {
-  final Map<DateTime, List<Job>> _jobs = {};
+  Map<DateTime, Map<String, Job>> _jobs = {};
   StreamSubscription? _firebaseSubscription;
   DateTime _startOfMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _endOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
   DateTime _focusedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   DateTime _selectedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+  DateTime? _cacheTime;
 
   DateTime get startOfMonth => _startOfMonth;
   DateTime get endOfmonth => _endOfMonth;
@@ -19,7 +23,7 @@ class JobProvider with ChangeNotifier {
   DateTime get selectedDay => _selectedDay;
 
   Company get company => _company;
-  Map<DateTime, List<Job>> get jobs => _jobs;
+  Map<DateTime, Map<String, Job>> get jobs => _jobs;
 
   late Company _company;
   JobProvider(Company company) {
@@ -46,29 +50,60 @@ class JobProvider with ChangeNotifier {
   }
 
   void _listenToFirebase() async {
+    // Fetch the data from the cache and set last updated
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_company.id)
+        .collection('jobs')
+        .get(GetOptions(source: Source.cache))
+        .then((value) {
+      if (value.docs.isNotEmpty) {
+        _cacheTime = value.docs.last.data()["lastupdated"] ?? DateTime(2023);
+        print(value.docs.last.data()["lastupdated"]);
+        jobs.clear();
+        for (var document in value.docs) {
+          Job job = Job.fromdocument(document);
+          if (job.removed == false) {
+            _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => {})[job.id!] =
+                job;
+          }
+          notifyListeners();
+        }
+      }
+    });
+    log("token ${await FirebaseAuth.instance.currentUser!.getIdToken()}");
+
+    //fetch updated events and modify the _jobs map.
     _firebaseSubscription = FirebaseFirestore.instance
         .collection('companies')
         .doc(_company.id)
         .collection('jobs')
-
-        // .where('timestart',
-        //     isGreaterThanOrEqualTo: Timestamp.fromDate(_startOfMonth))
-        // .where('timefinish',
-        //     isLessThanOrEqualTo: Timestamp.fromDate(_endOfMonth))
+        .where('lastupdated', isGreaterThanOrEqualTo: _cacheTime)
         .snapshots()
         .listen((event) {
-      _jobs.clear();
-
       for (var document in event.docs) {
         Job job = Job.fromdocument(document);
-        _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => []).add(job);
+        if (document.data()["removed"] != null &&
+            document.data()["removed"] == true &&
+            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)] != null &&
+            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.containsKey(document.id)) {
+          _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.remove(document.id);
+        }
+
+        if (document.data()["removed"] != null && document.data()["removed"] == true ||
+            document.data()["removed"] == null) {
+          _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => {})[job.id!] =
+              job;
+        }
       }
+
       notifyListeners();
     });
   }
 
   Future<void> addJob(Job job) async {
     try {
+      job.lastUpdated = DateTime.now();
       DocumentReference docRef =
           await FirebaseFirestore.instance.collection('companies').doc(_company.id).collection('jobs').add(job.toMap());
 
@@ -79,17 +114,32 @@ class JobProvider with ChangeNotifier {
     }
   }
 
-  Future<void> updateJob(String JobId, String attribute, dynamic value) async {
+  Future<void> updateJobParameter(String JobId, String attribute, dynamic value) async {
     await FirebaseFirestore.instance
         .collection('companies')
         .doc(_company.id)
         .collection('jobs')
         .doc(JobId)
-        .update(<String, dynamic>{attribute: value});
+        .update(<String, dynamic>{attribute: value, "lastupdated": DateTime.now()});
+  }
+
+  Future<void> updateJob(Job job) async {
+    job.lastUpdated = DateTime.now();
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_company.id)
+        .collection('jobs')
+        .doc(job.id)
+        .update(job.toMap());
   }
 
   void deleteJob(String JobId) async {
-    FirebaseFirestore.instance.collection('companies').doc(_company.id).collection('jobs').doc(JobId).delete();
+    FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_company.id)
+        .collection('jobs')
+        .doc(JobId)
+        .update(<String, dynamic>{"removed": true, "lastupdated": DateTime.now()});
   }
 
   Future<void> addService(String JobId, Services service) async {
@@ -118,8 +168,6 @@ class JobProvider with ChangeNotifier {
     }
     return res;
   }
-
-  //relocate it to companyProvider
 
   @override
   void dispose() {

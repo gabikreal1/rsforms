@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class Job {
   String? id;
@@ -8,6 +6,8 @@ class Job {
   DateTime earlyTime;
   DateTime lateTime;
   DateTime? invoiceTime;
+  DateTime? lastUpdated;
+  bool? removed;
 
   String contactNumber;
   List<String>? pictures;
@@ -18,7 +18,6 @@ class Job {
   String invoiceNumber;
   String description;
   String YHS;
-
   String address;
 
   String postcode;
@@ -39,7 +38,9 @@ class Job {
       required this.address,
       required this.postcode,
       required this.subContractor,
-      required this.YHS});
+      required this.YHS,
+      this.lastUpdated,
+      this.removed});
 
   Map<String, dynamic> toMap() {
     return {
@@ -55,6 +56,8 @@ class Job {
       'completed': completed,
       'subcontractor': subContractor,
       'YHS': YHS,
+      'lastupdated': lastUpdated ?? DateTime.now(),
+      'removed': removed ?? false
     };
   }
 
@@ -63,6 +66,8 @@ class Job {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Job(
       id: doc.id,
+      removed: data['removed'] ?? false,
+      lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : DateTime.now(),
       contactNumber: data['contactnumber'] ?? "0",
       subCompany: data['subcompany'] ?? "None",
       jobNo: data['jobno'] ?? "None",
@@ -89,12 +94,12 @@ class Company {
   String bankName;
   String accountNumber;
   String sortCode;
-  String id;
+  String? id;
   int InvoiceCounter;
 
   Company(
       {required this.InvoiceCounter,
-      required this.id,
+      this.id,
       required this.name,
       required this.address,
       required this.city,
@@ -103,6 +108,21 @@ class Company {
       required this.bankName,
       required this.accountNumber,
       required this.sortCode});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'account_number': accountNumber,
+      'address': address,
+      'bank_name': bankName,
+      'invoice_counter': InvoiceCounter,
+      'name': name,
+      'phone': phoneNumber,
+      'post_code': postcode,
+      'sort_code': sortCode,
+      'town': city,
+    };
+  }
+
   factory Company.fromDocument(dynamic data, String id) {
     return Company(
         id: id,
@@ -157,7 +177,11 @@ class rsUser {
   rsUser({required this.companyId, required this.firstname, required this.lastname});
 
   factory rsUser.fromdocument(DocumentSnapshot doc) {
+    if (doc.data() == null) {
+      return rsUser(companyId: "0", firstname: "loh", lastname: "lohovich");
+    }
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
     return rsUser(
         companyId: data['company'] ?? "none",
         firstname: data['first_name'] ?? "Guest",
