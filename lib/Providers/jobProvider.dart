@@ -3,10 +3,8 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Models/jobModel.dart';
-import 'dart:developer';
 
 class JobProvider with ChangeNotifier {
   Map<DateTime, Map<String, Job>> _jobs = {};
@@ -58,7 +56,7 @@ class JobProvider with ChangeNotifier {
         .get(GetOptions(source: Source.cache))
         .then((value) {
       if (value.docs.isNotEmpty) {
-        _cacheTime = value.docs.last.data()["lastupdated"] ?? DateTime(2023);
+        _cacheTime = value.docs.last.data()["lastupdated"];
         print(value.docs.last.data()["lastupdated"]);
         jobs.clear();
         for (var document in value.docs) {
@@ -71,7 +69,6 @@ class JobProvider with ChangeNotifier {
         }
       }
     });
-    log("token ${await FirebaseAuth.instance.currentUser!.getIdToken()}");
 
     //fetch updated events and modify the _jobs map.
     _firebaseSubscription = FirebaseFirestore.instance
@@ -83,15 +80,11 @@ class JobProvider with ChangeNotifier {
         .listen((event) {
       for (var document in event.docs) {
         Job job = Job.fromdocument(document);
-        if (document.data()["removed"] != null &&
-            document.data()["removed"] == true &&
-            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)] != null &&
-            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.containsKey(document.id)) {
+        if (_jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)] != null &&
+            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.containsKey(job.id)) {
           _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.remove(document.id);
         }
-
-        if (document.data()["removed"] != null && document.data()["removed"] == true ||
-            document.data()["removed"] == null) {
+        if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
           _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => {})[job.id!] =
               job;
         }
