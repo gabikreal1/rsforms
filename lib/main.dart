@@ -15,6 +15,7 @@ import 'package:rsforms/Screens/calendar.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Screens/company_adder.dart';
 import 'package:rsforms/firebase_options.dart';
+import 'package:rsforms/pageview_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,7 +102,7 @@ class MyApp extends StatelessWidget {
                     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
                     useMaterial3: true,
                   ),
-                  home: Calendar(),
+                  home: const PageviewControll(),
                 ),
               ),
             );

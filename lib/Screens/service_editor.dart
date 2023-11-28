@@ -156,13 +156,10 @@ class _ServiceEditorState extends State<ServiceEditor> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.arrow_back),
-                      color: Colors.black,
-                    ),
-                    Spacer(),
-                    IconButton(
-                      onPressed: () => {},
-                      icon: Icon(Icons.settings),
+                      icon: Icon(
+                        Icons.arrow_back_ios_new,
+                        size: 18,
+                      ),
                       color: Colors.black,
                     ),
                   ],

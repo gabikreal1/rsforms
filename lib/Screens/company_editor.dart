@@ -19,7 +19,6 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
     var companyProvider = Provider.of<CompanyProvider>(context, listen: false);
 
     return Scaffold(
-      drawer: NavDrawer(),
       key: _key,
       backgroundColor: Color(0xff31384d),
       body: SafeArea(
@@ -27,7 +26,6 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
           child: Consumer<CompanyProvider>(
             builder: (context, value, child) {
               var company = value.company;
-
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10.0, right: 10, left: 10),
                 child: Column(children: [
@@ -36,20 +34,14 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     children: [
                       IconButton(
                         onPressed: () {
-                          _key.currentState!.openDrawer();
+                          Navigator.pop(context);
                         },
-                        icon: const Icon(
-                          Icons.menu,
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
                           color: Colors.white,
+                          size: 16,
                         ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.settings,
-                            color: Colors.white,
-                          ))
+                      )
                     ],
                   ),
                   const SizedBox(

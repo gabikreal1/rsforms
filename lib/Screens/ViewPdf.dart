@@ -29,19 +29,19 @@ class _pdfViewPageState extends State<pdfViewPage> {
                 children: [
                   IconButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                     color: Colors.white,
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               Padding(
                 padding: EdgeInsets.all(15),
                 child: Container(
                   height: 500,
-                  decoration: BoxDecoration(shape: BoxShape.circle),
+                  decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
                   child: PDFView(
                     filePath: widget.path,
                     enableSwipe: true,
@@ -57,7 +57,7 @@ class _pdfViewPageState extends State<pdfViewPage> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               ElevatedButton.icon(

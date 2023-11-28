@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:rsforms/Components/JobList.dart';
 import 'package:rsforms/Components/NavDrawer.dart';
 import 'package:rsforms/Providers/jobProvider.dart';
 import 'package:rsforms/Screens/job_adder.dart';
@@ -58,7 +59,6 @@ class _CalendarState extends State<Calendar> {
       // move it into different file.
       backgroundColor: Color(0xff31384d),
       key: _key,
-      drawer: NavDrawer(),
       body: Container(
         color: Colors.white,
         child: SafeArea(
@@ -132,7 +132,6 @@ class _CalendarState extends State<Calendar> {
                         SizedBox(
                           width: 10,
                         ),
-                        IconButton(onPressed: () => {_key.currentState!.openDrawer()}, icon: Icon(Icons.menu)),
                         Spacer(),
                         IconButton(
                             onPressed: () async {
@@ -167,166 +166,9 @@ class _CalendarState extends State<Calendar> {
                             jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
                           var joblist = jobProvider.jobs[jobprovider.selectedDay]!.values.toList();
                           joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
-                          return ListView.builder(
-                            itemCount: jobprovider.jobs[jobprovider.selectedDay]?.length,
-                            itemBuilder: (context, index) {
-                              final job = joblist[index];
-
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                    color: Colors.white,
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 6.0),
-                                    child: ListTile(
-                                      onTap: () async {
-                                        //todo:rerouting
-                                        await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => JobEditor(
-                                              jobId: job!.id!,
-                                              day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      onLongPress: () {
-                                        showCupertinoModalPopup(
-                                          context: context,
-                                          builder: (context) {
-                                            return CupertinoActionSheet(
-                                              title: Text("What actions do you want to take?"),
-                                              actions: [
-                                                CupertinoActionSheetAction(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    launchMaps("${job!.postcode}");
-                                                  },
-                                                  child: Text("✈️ Navigate"),
-                                                ),
-                                                CupertinoActionSheetAction(
-                                                  child: Text("Edit"),
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                    await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) => JobEditor(
-                                                          jobId: job!.id!,
-                                                          day: DateTime(job.earlyTime.year, job.earlyTime.month,
-                                                              job.earlyTime.day),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                ),
-                                                CupertinoActionSheetAction(
-                                                  child: Text("Delete"),
-                                                  onPressed: () async {
-                                                    Navigator.pop(context);
-                                                    showCupertinoDialog(
-                                                      context: context,
-                                                      builder: (context) {
-                                                        return CupertinoAlertDialog(
-                                                          title: Text(
-                                                            "Confirm Deletion",
-                                                          ),
-                                                          actions: [
-                                                            CupertinoDialogAction(
-                                                                onPressed: () => Navigator.pop(context),
-                                                                child: Text("Cancel")),
-                                                            CupertinoDialogAction(
-                                                              onPressed: () {
-                                                                Provider.of<JobProvider>(context, listen: false)
-                                                                    .deleteJob(job!.id!);
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: Text("Delete "),
-                                                              isDestructiveAction: true,
-                                                            ),
-                                                          ],
-                                                        );
-                                                      },
-                                                    );
-                                                  },
-                                                  isDestructiveAction: true,
-                                                ),
-                                              ],
-                                              cancelButton: CupertinoActionSheetAction(
-                                                child: Text("Cancel"),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      title: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Text(
-                                                '${formatProviderName(job!.subCompany)}',
-                                                style: TextStyle(
-                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
-                                              ),
-                                              SizedBox(
-                                                width: 4,
-                                              ),
-                                              Container(
-                                                width: 6,
-                                                height: 6,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: job.completed
-                                                      ? Colors.green
-                                                      : Colors.yellow, // color that contrasts with the cell color
-                                                ),
-                                              ),
-                                              Spacer(),
-                                              Text(
-                                                '${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
-                                                style: TextStyle(
-                                                    color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          SizedBox(
-                                            height: 2,
-                                          ),
-                                          Align(
-                                            alignment: Alignment.centerLeft,
-                                            child: Text(
-                                              '${job.address}',
-                                              style: TextStyle(color: Colors.black, fontSize: 12),
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text(
-                                                '${job.postcode} ',
-                                                style: TextStyle(color: Colors.black, fontSize: 12),
-                                              ),
-                                              Spacer(),
-                                              Text(
-                                                '${job.subContractor.toUpperCase()} ',
-                                                style: TextStyle(
-                                                    color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
+                          return JobList(
+                            joblist: joblist,
+                            scrollable: true,
                           );
                         } else {
                           return Column(

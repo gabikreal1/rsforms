@@ -7,21 +7,26 @@ import 'package:flutter/material.dart';
 import '../Models/jobModel.dart';
 
 class JobProvider with ChangeNotifier {
-  Map<DateTime, Map<String, Job>> _jobs = {};
   StreamSubscription? _firebaseSubscription;
+
+  //  Different maps of jobs for special UI uses
+  Map<DateTime, Map<String, Job>> _jobs = {};
+  Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
+
+  DateTime? _cacheTime;
   DateTime _startOfMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _endOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
   DateTime _focusedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   DateTime _selectedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-  DateTime? _cacheTime;
 
+  // getter methods
   DateTime get startOfMonth => _startOfMonth;
   DateTime get endOfmonth => _endOfMonth;
   DateTime get focusedDay => _focusedDay;
   DateTime get selectedDay => _selectedDay;
-
   Company get company => _company;
   Map<DateTime, Map<String, Job>> get jobs => _jobs;
+  Map<DateTime, Map<String, Job>> get uncompletedJobs => _uncompletedJobs;
 
   late Company _company;
   JobProvider(Company company) {
@@ -47,6 +52,7 @@ class JobProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //fetches the jobs from the firebase and fills the maps
   void _listenToFirebase() async {
     // Fetch the data from the cache and set last updated
     await FirebaseFirestore.instance
@@ -57,13 +63,17 @@ class JobProvider with ChangeNotifier {
         .then((value) {
       if (value.docs.isNotEmpty) {
         _cacheTime = value.docs.last.data()["lastupdated"];
-        print(value.docs.last.data()["lastupdated"]);
         jobs.clear();
+
         for (var document in value.docs) {
           Job job = Job.fromdocument(document);
+          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+
           if (job.removed == false) {
-            _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => {})[job.id!] =
-                job;
+            _jobs.putIfAbsent(key, () => {})[job.id!] = job;
+            if (job.completed == false) {
+              _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
+            }
           }
           notifyListeners();
         }
@@ -80,16 +90,21 @@ class JobProvider with ChangeNotifier {
         .listen((event) {
       for (var document in event.docs) {
         Job job = Job.fromdocument(document);
-        if (_jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)] != null &&
-            _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.containsKey(job.id)) {
-          _jobs[DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day)]!.remove(document.id);
+        DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+
+        if (_jobs[key] != null && _jobs[key]!.containsKey(job.id)) {
+          _jobs[key]!.remove(document.id);
+          if (_uncompletedJobs[key] != null && _uncompletedJobs[key]!.containsKey(job.id)) {
+            _uncompletedJobs[key]!.remove(document.id);
+          }
         }
         if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
-          _jobs.putIfAbsent(DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day), () => {})[job.id!] =
-              job;
+          _jobs.putIfAbsent(key, () => {})[job.id!] = job;
+          if (job.completed == false) {
+            _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
+          }
         }
       }
-
       notifyListeners();
     });
   }

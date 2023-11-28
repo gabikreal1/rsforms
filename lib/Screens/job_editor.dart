@@ -77,13 +77,10 @@ class JobEditor extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
-                        ),
-                        Spacer(),
-                        IconButton(
-                          onPressed: () => {},
-                          icon: Icon(Icons.settings),
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 18,
+                          ),
                           color: Colors.white,
                         ),
                       ],
@@ -108,13 +105,10 @@ class JobEditor extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(Icons.arrow_back),
-                          color: Colors.white,
-                        ),
-                        Spacer(),
-                        IconButton(
-                          onPressed: () => {},
-                          icon: Icon(Icons.settings),
+                          icon: Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 18,
+                          ),
                           color: Colors.white,
                         ),
                       ],
@@ -489,17 +483,15 @@ class JobEditor extends StatelessWidget {
                                                             ElevatedButton.icon(
                                                               onPressed: () async {
                                                                 if (job.invoiceTime == null) {
-                                                                  jobProvider.updateJobParameter(job.id!, "invoicetime",
-                                                                      DateTime.now().millisecondsSinceEpoch);
-
+                                                                  //
                                                                   await companyProvider.incrementInvoiceCounter();
-                                                                  await jobProvider.updateJobParameter(
-                                                                      job.id!,
-                                                                      "invoicenumber",
-                                                                      companyProvider.company.InvoiceCounter
-                                                                          .toString());
+                                                                  job.invoiceTime = DateTime.now();
+                                                                  job.invoiceNumber =
+                                                                      companyProvider.company.InvoiceCounter.toString();
+                                                                  job.price = value.totalPrice;
+                                                                  await jobProvider.updateJob(job);
                                                                 }
-                                                                //2082
+
                                                                 var invoice = Invoice(
                                                                     company: companyProvider.company,
                                                                     job: job,
@@ -516,11 +508,6 @@ class JobEditor extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 );
-                                                                // Share.shareXFiles(
-                                                                //   [XFile(pdfInvoice.path, mimeType: "application/pdf")],
-                                                                //   text:
-                                                                //       "Invoice \n Many Thanks, \n ${invoice.company.name}",
-                                                                // );
                                                               },
                                                               label: Text("Generate Invoice"),
                                                               icon: Icon(Icons.document_scanner_rounded),

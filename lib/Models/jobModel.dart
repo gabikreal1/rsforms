@@ -8,6 +8,7 @@ class Job {
   DateTime? invoiceTime;
   DateTime? lastUpdated;
   bool? removed;
+  double? price;
 
   String contactNumber;
   List<String>? pictures;
@@ -25,6 +26,7 @@ class Job {
 
   Job(
       {this.invoiceTime,
+      this.price,
       this.id,
       required this.lateTime,
       required this.completed,
@@ -57,7 +59,8 @@ class Job {
       'subcontractor': subContractor,
       'YHS': YHS,
       'lastupdated': lastUpdated ?? DateTime.now(),
-      'removed': removed ?? false
+      'removed': removed ?? false,
+      'price': price ?? 0.0,
     };
   }
 
@@ -65,23 +68,23 @@ class Job {
   factory Job.fromdocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Job(
-      id: doc.id,
-      removed: data['removed'] ?? false,
-      lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : DateTime.now(),
-      contactNumber: data['contactnumber'] ?? "0",
-      subCompany: data['subcompany'] ?? "None",
-      jobNo: data['jobno'] ?? "None",
-      invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
-      description: data["description"] ?? "None",
-      earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
-      lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
-      address: data["address"] ?? "None",
-      YHS: data["YHS"] ?? "None",
-      postcode: data["postcode"] ?? "None",
-      completed: data['completed'] ?? false,
-      subContractor: data["subcontractor"] ?? "You",
-      invoiceTime: data["invoicetime"] != null ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"]) : null,
-    );
+        id: doc.id,
+        removed: data['removed'] ?? false,
+        lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : DateTime.now(),
+        contactNumber: data['contactnumber'] ?? "0",
+        subCompany: data['subcompany'] ?? "None",
+        jobNo: data['jobno'] ?? "None",
+        invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
+        description: data["description"] ?? "None",
+        earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
+        lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
+        address: data["address"] ?? "None",
+        YHS: data["YHS"] ?? "None",
+        postcode: data["postcode"] ?? "None",
+        completed: data['completed'] ?? false,
+        subContractor: data["subcontractor"] ?? "You",
+        invoiceTime: data["invoicetime"] != null ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"]) : null,
+        price: data['price'] ?? 0.0);
   }
 }
 
