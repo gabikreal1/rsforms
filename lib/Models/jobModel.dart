@@ -69,7 +69,7 @@ class Job {
     return Job(
         id: doc.id,
         removed: data['removed'] ?? false,
-        lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : DateTime.now(),
+        lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : null,
         contactNumber: data['contactnumber'] ?? "0",
         subCompany: data['subcompany'] ?? "None",
         jobNo: data['jobno'] ?? "None",
