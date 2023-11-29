@@ -36,6 +36,7 @@ class _uncompletedJobsState extends State<uncompletedJobs> {
   @override
   Widget build(BuildContext context) {
     final jobProvider = context.watch<JobProvider>();
+    final today = DateTime.now();
     return Scaffold(
       backgroundColor: Color(0xff31384d),
       body: SafeArea(
@@ -66,7 +67,7 @@ class _uncompletedJobsState extends State<uncompletedJobs> {
                 itemBuilder: (context, index) {
                   var day = days[index];
                   var joblist = jobProvider.uncompletedJobs[day]!.values.toList();
-
+                  joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
                   return Column(
                     children: [
                       Row(
@@ -79,12 +80,17 @@ class _uncompletedJobsState extends State<uncompletedJobs> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text(
-                              "${getMonth(day.month)}. ${day.day}/${day.year}",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child:
+                                  DateTime(day.year, day.month, day.day) != DateTime(today.year, today.month, today.day)
+                                      ? Text(
+                                          "${getMonth(day.month)}. ${day.day}/${day.year}",
+                                          style: TextStyle(color: Colors.white),
+                                        )
+                                      : Text(
+                                          "Today",
+                                          style: TextStyle(color: Colors.white),
+                                        )),
                           const Expanded(
                             child: Divider(
                               color: Colors.grey,

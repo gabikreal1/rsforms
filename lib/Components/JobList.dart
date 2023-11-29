@@ -49,7 +49,7 @@ class _JobListState extends State<JobList> {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      physics: widget!.scrollable ? NeverScrollableScrollPhysics() : ScrollPhysics(),
+      physics: widget.scrollable ? ScrollPhysics() : NeverScrollableScrollPhysics(),
       itemCount: widget.joblist.length,
       itemBuilder: (context, index) {
         final job = widget.joblist[index];

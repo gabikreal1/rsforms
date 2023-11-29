@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rsforms/Components/my_button.dart';
 import 'package:rsforms/Components/settings_button.dart';
@@ -18,7 +20,42 @@ class _SettingsState extends State<Settings> {
   }
 
   void logout() {
-    FirebaseAuth.instance.signOut();
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) {
+        return CupertinoActionSheet(
+          title: Text("Are you sure you want to logout?"),
+          actions: [
+            CupertinoActionSheetAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Stay"),
+            ),
+            CupertinoActionSheetAction(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.logout,
+                    color: Colors.red,
+                  ),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text("Logout"),
+                ],
+              ),
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+                FirebaseAuth.instance.signOut();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

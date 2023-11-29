@@ -14,7 +14,7 @@ class JobProvider with ChangeNotifier {
   Map<DateTime, Map<String, Job>> _jobs = {};
   Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
 
-  DateTime? _cacheTime ;
+  DateTime? _cacheTime;
   DateTime _startOfMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _endOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
   DateTime _focusedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -71,8 +71,8 @@ class JobProvider with ChangeNotifier {
           Job job = Job.fromdocument(document);
           DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
 
-          if (job.lastUpdated != null){
-            if(maxTime.compareTo(job.lastUpdated!) < 0){
+          if (job.lastUpdated != null) {
+            if (maxTime.compareTo(job.lastUpdated!) < 0) {
               maxTime = job.lastUpdated!;
             }
           }
@@ -83,13 +83,11 @@ class JobProvider with ChangeNotifier {
             }
           }
         }
-        if(maxTime.compareTo(DateTime(2020)) > 0 ){
+        if (maxTime.compareTo(DateTime(2020)) > 0) {
           _cacheTime = maxTime;
-        } 
-    notifyListeners();
-
+        }
+        notifyListeners();
       }
-      
     });
 
     //fetch updated events and modify the _jobs map.
@@ -112,7 +110,6 @@ class JobProvider with ChangeNotifier {
               _uncompletedJobs.remove(key);
             }
           }
-          
         }
         if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
           _jobs.putIfAbsent(key, () => {})[job.id!] = job;

@@ -64,7 +64,6 @@ class Job {
     };
   }
 
-  // complete desirialisation
   factory Job.fromdocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Job(
