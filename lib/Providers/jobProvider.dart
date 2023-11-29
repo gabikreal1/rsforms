@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class JobProvider with ChangeNotifier {
   Map<DateTime, Map<String, Job>> _jobs = {};
   Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
 
-  DateTime? _cacheTime;
+  DateTime? _cacheTime ;
   DateTime _startOfMonth = DateTime(DateTime.now().year, DateTime.now().month);
   DateTime _endOfMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
   DateTime _focusedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -55,6 +56,7 @@ class JobProvider with ChangeNotifier {
   //fetches the jobs from the firebase and fills the maps
   void _listenToFirebase() async {
     // Fetch the data from the cache and set last updated
+    _cacheTime = null;
     await FirebaseFirestore.instance
         .collection('companies')
         .doc(_company.id)
@@ -64,20 +66,30 @@ class JobProvider with ChangeNotifier {
       if (value.docs.isNotEmpty) {
         _cacheTime = value.docs.last.data()["lastupdated"];
         jobs.clear();
-
+        DateTime maxTime = DateTime(2020);
         for (var document in value.docs) {
           Job job = Job.fromdocument(document);
           DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
 
+          if (job.lastUpdated != null){
+            if(maxTime.compareTo(job.lastUpdated!) < 0){
+              maxTime = job.lastUpdated!;
+            }
+          }
           if (job.removed == false) {
             _jobs.putIfAbsent(key, () => {})[job.id!] = job;
             if (job.completed == false) {
               _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
             }
           }
-          notifyListeners();
         }
+        if(maxTime.compareTo(DateTime(2020)) > 0 ){
+          _cacheTime = maxTime;
+        } 
+    notifyListeners();
+
       }
+      
     });
 
     //fetch updated events and modify the _jobs map.
@@ -96,7 +108,11 @@ class JobProvider with ChangeNotifier {
           _jobs[key]!.remove(document.id);
           if (_uncompletedJobs[key] != null && _uncompletedJobs[key]!.containsKey(job.id)) {
             _uncompletedJobs[key]!.remove(document.id);
+            if (_uncompletedJobs[key]!.length == 0) {
+              _uncompletedJobs.remove(key);
+            }
           }
+          
         }
         if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
           _jobs.putIfAbsent(key, () => {})[job.id!] = job;
