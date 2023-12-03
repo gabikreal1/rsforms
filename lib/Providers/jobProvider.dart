@@ -100,45 +100,86 @@ class JobProvider with ChangeNotifier {
     notifyListeners();
 
     //fetch updated events and modify the _jobs map.
-    _firebaseSubscription = FirebaseFirestore.instance
-        .collection('companies')
-        .doc(_company.id)
-        .collection('jobs')
-        .where('lastupdated', isGreaterThanOrEqualTo: _cacheTime)
-        .snapshots()
-        .listen((event) {
-      for (var document in event.docs) {
-        Job job = Job.fromdocument(document);
+    if (_cacheTime == null) {
+      _firebaseSubscription = FirebaseFirestore.instance
+          .collection('companies')
+          .doc(_company.id)
+          .collection('jobs')
+          .snapshots()
+          .listen((event) {
+        for (var document in event.docs) {
+          Job job = Job.fromdocument(document);
 
-        if (_jobs.containsKey(job.id)) {
-          //remove prev duplicate from the calendar map
-          Job prevJob = _jobs[job.id]!;
-          DateTime prevKey = DateTime(prevJob.earlyTime.year, prevJob.earlyTime.month, prevJob.earlyTime.day);
-          _jobsCalendar[prevKey]?.remove(prevJob.id);
-          if (_jobsCalendar[prevKey] != null && _jobsCalendar[prevKey]!.values.isEmpty) {
-            _jobsCalendar.remove(prevKey);
+          if (_jobs.containsKey(job.id)) {
+            //remove prev duplicate from the calendar map
+            Job prevJob = _jobs[job.id]!;
+            DateTime prevKey = DateTime(prevJob.earlyTime.year, prevJob.earlyTime.month, prevJob.earlyTime.day);
+            _jobsCalendar[prevKey]?.remove(prevJob.id);
+            if (_jobsCalendar[prevKey] != null && _jobsCalendar[prevKey]!.values.isEmpty) {
+              _jobsCalendar.remove(prevKey);
+            }
+
+            if (prevJob.completed == false) {
+              _uncompletedJobs[prevKey]?.remove(prevJob.id);
+              if (_uncompletedJobs[prevKey] != null && _uncompletedJobs[prevKey]!.values.isEmpty) {
+                _uncompletedJobs.remove(prevKey);
+              }
+            }
           }
+          _jobs[job.id!] = job;
 
-          if (prevJob.completed == false) {
-            _uncompletedJobs[prevKey]?.remove(prevJob.id);
-            if (_uncompletedJobs[prevKey] != null && _uncompletedJobs[prevKey]!.values.isEmpty) {
-              _uncompletedJobs.remove(prevKey);
+          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+
+          if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
+            _jobsCalendar.putIfAbsent(key, () => {})[job.id!] = job;
+            if (job.completed == false) {
+              _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
             }
           }
         }
-        _jobs[job.id!] = job;
+        notifyListeners();
+      });
+    } else {
+      _firebaseSubscription = FirebaseFirestore.instance
+          .collection('companies')
+          .doc(_company.id)
+          .collection('jobs')
+          .where('lastupdated', isGreaterThanOrEqualTo: _cacheTime)
+          .snapshots()
+          .listen((event) {
+        for (var document in event.docs) {
+          Job job = Job.fromdocument(document);
 
-        DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+          if (_jobs.containsKey(job.id)) {
+            //remove prev duplicate from the calendar map
+            Job prevJob = _jobs[job.id]!;
+            DateTime prevKey = DateTime(prevJob.earlyTime.year, prevJob.earlyTime.month, prevJob.earlyTime.day);
+            _jobsCalendar[prevKey]?.remove(prevJob.id);
+            if (_jobsCalendar[prevKey] != null && _jobsCalendar[prevKey]!.values.isEmpty) {
+              _jobsCalendar.remove(prevKey);
+            }
 
-        if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
-          _jobsCalendar.putIfAbsent(key, () => {})[job.id!] = job;
-          if (job.completed == false) {
-            _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
+            if (prevJob.completed == false) {
+              _uncompletedJobs[prevKey]?.remove(prevJob.id);
+              if (_uncompletedJobs[prevKey] != null && _uncompletedJobs[prevKey]!.values.isEmpty) {
+                _uncompletedJobs.remove(prevKey);
+              }
+            }
+          }
+          _jobs[job.id!] = job;
+
+          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+
+          if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
+            _jobsCalendar.putIfAbsent(key, () => {})[job.id!] = job;
+            if (job.completed == false) {
+              _uncompletedJobs.putIfAbsent(key, () => {})[job.id!] = job;
+            }
           }
         }
-      }
-      notifyListeners();
-    });
+        notifyListeners();
+      });
+    }
   }
 
   Future<void> addJob(Job job) async {
