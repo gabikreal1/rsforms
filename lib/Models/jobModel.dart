@@ -49,6 +49,7 @@ class Job {
       'contactnumber': contactNumber,
       'subcompany': subCompany,
       'jobno': jobNo,
+      'invoicetime': invoiceTime?.millisecondsSinceEpoch,
       'invoicenumber': invoiceNumber,
       'description': description,
       'timestart': earlyTime.millisecondsSinceEpoch,
@@ -82,7 +83,9 @@ class Job {
         postcode: data["postcode"] ?? "None",
         completed: data['completed'] ?? false,
         subContractor: data["subcontractor"] ?? "You",
-        invoiceTime: data["invoicetime"] != null ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"]) : null,
+        invoiceTime: data["invoicetime"] != null && data["invoicetime"].runtimeType == int
+            ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"])
+            : null,
         price: data['price'] ?? 0.0);
   }
 }

@@ -70,7 +70,7 @@ class JobEditor extends StatelessWidget {
         child: SingleChildScrollView(
           child: Consumer<JobProvider>(
             builder: (context, provider, child) {
-              if (provider.jobs[day] == null || provider.jobs[day]!.containsKey(jobId) == false) {
+              if (provider.jobsCalendar[day] == null || provider.jobsCalendar[day]!.containsKey(jobId) == false) {
                 return Column(
                   children: [
                     Row(
@@ -93,7 +93,7 @@ class JobEditor extends StatelessWidget {
                 );
               }
 
-              Job job = provider.jobs[day]![jobId]!;
+              Job job = provider.jobsCalendar[day]![jobId]!;
 
               List<bool> _selectedCompletion = <bool>[job.completed, !job.completed];
               return Padding(
@@ -336,7 +336,7 @@ class JobEditor extends StatelessWidget {
                                                                                       MaterialPageRoute(
                                                                                         builder: (context) =>
                                                                                             ServiceEditor(
-                                                                                          Edit: (typeofCharge,
+                                                                                          edit: (typeofCharge,
                                                                                               description,
                                                                                               quantity,
                                                                                               price) {
@@ -476,6 +476,17 @@ class JobEditor extends StatelessWidget {
                                                           children: [
                                                             ElevatedButton.icon(
                                                               onPressed: () async {
+                                                                showDialog(
+                                                                    context: context,
+                                                                    builder: ((context) {
+                                                                      return Center(
+                                                                        child: Container(
+                                                                            height: 40,
+                                                                            width: 40,
+                                                                            child:
+                                                                                CircularProgressIndicator.adaptive()),
+                                                                      );
+                                                                    }));
                                                                 if (job.invoiceTime == null) {
                                                                   //
                                                                   await companyProvider.incrementInvoiceCounter();
@@ -491,6 +502,7 @@ class JobEditor extends StatelessWidget {
                                                                     job: job,
                                                                     services: value.services);
                                                                 final pdfInvoice = await InvoiceApi.generate(invoice);
+                                                                Navigator.pop(context);
 
                                                                 // ignore: use_build_context_synchronously
                                                                 await Navigator.push(

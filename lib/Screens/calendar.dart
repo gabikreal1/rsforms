@@ -108,7 +108,7 @@ class _CalendarState extends State<Calendar> {
                     shouldFillViewport: true,
                     availableGestures: AvailableGestures.all,
                     eventLoader: (day) {
-                      return jobProvider.jobs[DateTime(day.year, day.month, day.day)]?.values.toList() ?? [];
+                      return jobProvider.jobsCalendar[DateTime(day.year, day.month, day.day)]?.values.toList() ?? [];
                     },
                     firstDay: DateTime.utc(1990, 1, 1),
                     lastDay: DateTime.utc(2040, 12, 31),
@@ -162,9 +162,9 @@ class _CalendarState extends State<Calendar> {
                     width: double.infinity,
                     child: Consumer<JobProvider>(
                       builder: (context, jobprovider, child) {
-                        if (jobprovider.jobs[jobprovider.selectedDay] != null &&
-                            jobProvider.jobs[jobprovider.selectedDay]!.isNotEmpty) {
-                          var joblist = jobProvider.jobs[jobprovider.selectedDay]!.values.toList();
+                        if (jobprovider.jobsCalendar[jobprovider.selectedDay] != null &&
+                            jobProvider.jobsCalendar[jobprovider.selectedDay]!.isNotEmpty) {
+                          var joblist = jobProvider.jobsCalendar[jobprovider.selectedDay]!.values.toList();
                           joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
                           return JobList(
                             joblist: joblist,

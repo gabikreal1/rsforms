@@ -10,7 +10,8 @@ import '../Screens/job_editor.dart';
 class JobList extends StatefulWidget {
   final List<Job> joblist;
   final bool scrollable;
-  const JobList({super.key, required this.joblist, required this.scrollable});
+  final bool? showPrice;
+  const JobList({super.key, required this.joblist, required this.scrollable, this.showPrice});
 
   @override
   State<JobList> createState() => _JobListState();
@@ -166,10 +167,13 @@ class _JobListState extends State<JobList> {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          '${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
-                          style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
-                        ),
+                        widget.showPrice ?? false == true
+                            ? Text(
+                                '£${job.price?.toStringAsFixed(2) ?? 0}',
+                                style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+                              )
+                            : Text('${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
+                                style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold)),
                       ],
                     ),
                     SizedBox(

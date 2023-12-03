@@ -29,7 +29,7 @@ class JobProvider with ChangeNotifier {
   DateTime get focusedDay => _focusedDay;
   DateTime get selectedDay => _selectedDay;
   Company get company => _company;
-  Map<DateTime, Map<String, Job>> get jobs => _jobsCalendar;
+  Map<DateTime, Map<String, Job>> get jobsCalendar => _jobsCalendar;
   Map<DateTime, Map<String, Job>> get uncompletedJobs => _uncompletedJobs;
 
   late Company _company;

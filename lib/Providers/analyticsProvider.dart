@@ -1,22 +1,48 @@
 import 'package:flutter/material.dart';
 import '../Models/jobModel.dart';
 
+class CompanyAnalytics {
+  String _companyName = "";
+  double _totalEarnings = 0;
+  List<Job> _jobs = [];
+  double get totalEarnings => _totalEarnings;
+  List<Job> get jobs => _jobs;
+  String get companyName => _companyName;
+
+  CompanyAnalytics(this._jobs, this._companyName) {
+    for (var job in _jobs) {
+      _totalEarnings += job.price ?? 0;
+    }
+  }
+
+  void addJob(Job job) {
+    _totalEarnings += job.price ?? 0;
+    _jobs.add(job);
+  }
+
+  void clear() {
+    _totalEarnings = 0;
+    _jobs.clear();
+  }
+}
+
 class AnalyticsProvider with ChangeNotifier {
   // {Date:{JobId:Job}}
   Map<DateTime, Map<String, Job>> _jobsCalendar = {};
-  Map<DateTime, Map<String, Job>> _currentMonthJobs = {};
+
+  //{Provider: {JobId:Job}}
+  Map<String, CompanyAnalytics> _subCompanyToJobMap = {};
+  CompanyAnalytics _totalMonthly = CompanyAnalytics([], "");
 
   late DateTime _currentMonth;
-  double _earningsForMonth = 0;
 
-  Map<DateTime, Map<String, Job>> get jobsCalendar => _jobsCalendar;
+  Map<String, CompanyAnalytics> get subCompanyToJobMap => _subCompanyToJobMap;
   DateTime get currentMonth => _currentMonth;
-  double get earningsForMonth => _earningsForMonth;
+  double get earningsForMonth => _totalMonthly.totalEarnings;
 
   void setCurrentMonth(DateTime newMonth) {
     _currentMonth = MonthAndYear(newMonth);
     populateCurrentMonthJobs();
-    calculateTotal();
   }
 
   DateTime MonthAndYear(DateTime time) {
@@ -28,23 +54,15 @@ class AnalyticsProvider with ChangeNotifier {
     setCurrentMonth(currentmonth ?? MonthAndYear(DateTime.now()));
   }
   void populateCurrentMonthJobs() {
-    _currentMonthJobs.clear();
+    _subCompanyToJobMap.clear();
+    _totalMonthly.clear();
     var jobDays = _jobsCalendar.keys;
     for (var day in jobDays) {
       if (day.month == _currentMonth.month) {
-        _currentMonthJobs[day] = {};
-        for (var i in _jobsCalendar[day]!.values) {
-          _currentMonthJobs[day]![i.id!] = i;
+        for (var job in _jobsCalendar[day]!.values) {
+          _subCompanyToJobMap.putIfAbsent(job.subCompany, () => CompanyAnalytics([], job.subCompany)).addJob(job);
+          _totalMonthly.addJob(job);
         }
-      }
-    }
-  }
-
-  void calculateTotal() {
-    _earningsForMonth = 0;
-    for (var key in _currentMonthJobs.keys) {
-      for (var job in _currentMonthJobs[key]!.values) {
-        _earningsForMonth += job.price ?? 0;
       }
     }
   }

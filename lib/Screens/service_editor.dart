@@ -46,10 +46,10 @@ class ServiceEditor extends StatefulWidget {
     String description,
     int quantity,
     double price,
-  ) Edit;
+  ) edit;
   ServiceEditor(
       {super.key,
-      required this.Edit,
+      required this.edit,
       required this.type,
       required this.description,
       required this.quantity,
@@ -175,7 +175,7 @@ class _ServiceEditorState extends State<ServiceEditor> {
                     } else {
                       var typeofcharge = widget._selectedCompletion[0] ? "Labour" : "Parts";
 
-                      widget.Edit(
+                      widget.edit(
                         typeofcharge,
                         _descriptionController.text,
                         int.parse(_quantityController.text.trim()),
