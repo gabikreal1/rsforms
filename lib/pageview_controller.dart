@@ -93,7 +93,7 @@ class _PageviewControllState extends State<PageviewControll> {
           Calendar(),
           const uncompletedJobs(),
           const Analytics(),
-          Settings(),
+          const Settings(),
         ],
       ),
     );

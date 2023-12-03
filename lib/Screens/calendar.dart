@@ -138,7 +138,7 @@ class _CalendarState extends State<Calendar> {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => JobAdder(date: jobProvider.focusedDay),
+                                  builder: (context) => JobAdder(date: jobProvider.focusedDay.add(Duration(hours: 12))),
                                 ),
                               );
                             },

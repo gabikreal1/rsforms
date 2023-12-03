@@ -208,13 +208,7 @@ class JobEditor extends StatelessWidget {
                       date: job.earlyTime,
                       TileName: "Early Time",
                       Update: (value) {
-                        if (job.earlyTime.day != DateTime.fromMicrosecondsSinceEpoch(value).day) {
-                          job.earlyTime = DateTime.fromMicrosecondsSinceEpoch(value);
-                          job.lateTime.add(Duration(days: 1));
-                          jobProvider.updateJob(job);
-                        } else {
-                          jobProvider.updateJobParameter(jobId, "timestart", value);
-                        }
+                        jobProvider.updateJobParameter(jobId, "timestart", value);
                       },
                     ),
                     SizedBox(

@@ -241,85 +241,48 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
             ),
             Row(
               children: [
-                GestureDetector(
-                  child: Text(
-                    "${formatTime(widget.date)}",
-                    style: TextStyle(
-                      fontSize: 20,
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: GestureDetector(
+                    child: Text(
+                      "${formatTime(widget.date)}",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                    onTap: () => showCupertinoModalPopup(
+                      context: context,
+                      builder: (context) {
+                        return CupertinoActionSheet(
+                          actions: [
+                            SizedBox(
+                              height: 180,
+                              child: CupertinoDatePicker(
+                                initialDateTime: widget.date,
+                                use24hFormat: true,
+                                mode: CupertinoDatePickerMode.dateAndTime,
+                                onDateTimeChanged: (DateTime newTime) {
+                                  setState(() {
+                                    widget.date = newTime;
+                                  });
+                                },
+                              ),
+                            ),
+                          ],
+                          cancelButton: CupertinoActionSheetAction(
+                            child: Text(
+                              "Done",
+                            ),
+                            onPressed: () {
+                              widget.Update(widget.date.millisecondsSinceEpoch);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  onTap: () => showCupertinoModalPopup(
-                    context: context,
-                    builder: (context) {
-                      return CupertinoActionSheet(
-                        actions: [
-                          SizedBox(
-                            height: 180,
-                            child: CupertinoDatePicker(
-                              initialDateTime: widget.date,
-                              use24hFormat: true,
-                              mode: CupertinoDatePickerMode.dateAndTime,
-                              onDateTimeChanged: (DateTime newTime) {
-                                setState(() {
-                                  widget.date = newTime;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                        cancelButton: CupertinoActionSheetAction(
-                          child: Text(
-                            "Done",
-                          ),
-                          onPressed: () {
-                            widget.Update(widget.date.millisecondsSinceEpoch);
-                            Navigator.pop(context);
-                          },
-                        ),
-                      );
-                    },
-                  ),
                 ),
-                Spacer(),
-                IconButton(
-                    onPressed: () {
-                      showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) {
-                          return CupertinoActionSheet(
-                            actions: [
-                              SizedBox(
-                                height: 180,
-                                child: CupertinoDatePicker(
-                                  backgroundColor: Colors.white,
-                                  initialDateTime: widget.date,
-                                  use24hFormat: true,
-                                  mode: CupertinoDatePickerMode.dateAndTime,
-                                  onDateTimeChanged: (DateTime newTime) {
-                                    setState(() {
-                                      widget.date = newTime;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ],
-                            cancelButton: CupertinoActionSheetAction(
-                              child: Text(
-                                "Done",
-                                style: TextStyle(
-                                  color: Color(0xff31384d),
-                                ),
-                              ),
-                              onPressed: () {
-                                widget.Update(widget.date.millisecondsSinceEpoch);
-                                Navigator.pop(context);
-                              },
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    icon: Icon(Icons.edit))
               ],
             ),
           ],

@@ -200,9 +200,7 @@ class _JobAdderState extends State<JobAdder> {
                   mode: CupertinoDatePickerMode.dateAndTime,
                   onDateTimeChanged: (DateTime newTime) {
                     earlyTime = newTime;
-                    setState(() {
-                      lateTime = newTime;
-                    });
+                    lateTime = newTime;
                   },
                 ),
               ),
