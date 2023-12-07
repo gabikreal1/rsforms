@@ -44,7 +44,7 @@ class PictureProvider with ChangeNotifier {
   Future<String> addImage() async {
     String imageId = "error";
     await FirebaseFirestore.instance
-        .collection('comapnies')
+        .collection('companies')
         .doc(_companyId)
         .collection('jobs')
         .doc(_jobId)
@@ -58,7 +58,7 @@ class PictureProvider with ChangeNotifier {
   Future<void> getImageLinkList() async {
     List<String> imageIds = [];
     _firebaseSubscription = await FirebaseFirestore.instance
-        .collection('comapnies')
+        .collection('companies')
         .doc(_companyId)
         .collection('jobs')
         .doc(_jobId)
