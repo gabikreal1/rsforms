@@ -64,7 +64,11 @@ class JobProvider with ChangeNotifier {
         .get(GetOptions(source: Source.cache))
         .then((value) {
       if (value.docs.isNotEmpty) {
-        _cacheTime = value.docs.last.data()["lastupdated"];
+        if (value.docs.last.data()["lastupdated"].runtimeType == Timestamp) {
+          _cacheTime = (value.docs.last.data()["lastupdated"] as Timestamp).toDate();
+        } else {
+          _cacheTime = value.docs.last.data()["lastupdated"];
+        }
         _jobsCalendar.clear();
         _jobs.clear();
         DateTime maxTime = DateTime(2020);
