@@ -60,8 +60,10 @@ class AnalyticsProvider with ChangeNotifier {
     for (var day in jobDays) {
       if (day.month == _currentMonth.month) {
         for (var job in _jobsCalendar[day]!.values) {
-          _subCompanyToJobMap.putIfAbsent(job.subCompany, () => CompanyAnalytics([], job.subCompany)).addJob(job);
-          _totalMonthly.addJob(job);
+          if (job.price != 0) {
+            _subCompanyToJobMap.putIfAbsent(job.subCompany, () => CompanyAnalytics([], job.subCompany)).addJob(job);
+            _totalMonthly.addJob(job);
+          }
         }
       }
     }

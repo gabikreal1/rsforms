@@ -7,9 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:rsforms/APIs/InvoiceApi.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
 import 'package:rsforms/Models/invoiceModel.dart';
+import 'package:rsforms/Providers/PictureProvider.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/serviceProvider.dart';
 import 'package:rsforms/Screens/ViewPdf.dart';
+import 'package:rsforms/Screens/job_pictures.dart';
 import 'package:rsforms/Screens/service_adder.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -63,6 +65,7 @@ class JobEditor extends StatelessWidget {
   Widget build(BuildContext context) {
     final companyProvider = Provider.of<CompanyProvider>(context, listen: false);
     final jobProvider = Provider.of<JobProvider>(context, listen: false);
+    final pictureProvider = Provider.of<PictureProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Color(0xff31384d),
@@ -92,10 +95,9 @@ class JobEditor extends StatelessWidget {
                   ],
                 );
               }
-
               Job job = provider.jobsCalendar[day]![jobId]!;
-
               List<bool> _selectedCompletion = <bool>[job.completed, !job.completed];
+
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
                 child: Column(
@@ -110,6 +112,25 @@ class JobEditor extends StatelessWidget {
                             size: 18,
                           ),
                           color: Colors.white,
+                        ),
+                        Spacer(),
+                        IconButton(
+                          onPressed: () async {
+                            pictureProvider.jobId = jobId;
+                            pictureProvider.companyId = companyProvider.company.id!;
+                            await pictureProvider.getImageLinkList();
+
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PicturePage(),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.camera_alt,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
@@ -448,7 +469,7 @@ class JobEditor extends StatelessWidget {
                                                                               price: price,
                                                                               quantity: quantity,
                                                                               typeofCharge: typeofCharge);
-                                                                          jobProvider.addService(job.id!, service);
+                                                                          value.addService(service);
                                                                         },
                                                                       ),
                                                                     ),
@@ -546,7 +567,7 @@ class JobEditor extends StatelessWidget {
                                                                           price: price,
                                                                           quantity: quantity,
                                                                           typeofCharge: typeofCharge);
-                                                                      jobProvider.addService(job.id!, service);
+                                                                      value.addService(service);
                                                                     },
                                                                   ),
                                                                 ),

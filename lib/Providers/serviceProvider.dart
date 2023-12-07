@@ -61,6 +61,16 @@ class ServiceProvider with ChangeNotifier {
         .update(<String, dynamic>{'description': description, 'price': price, 'quantity': quantity, 'type': type});
   }
 
+  Future<void> addService(Services service) async {
+    await FirebaseFirestore.instance
+        .collection('companies')
+        .doc(_companyId)
+        .collection('jobs')
+        .doc(_jobId)
+        .collection("services")
+        .add(service.toMap());
+  }
+
   @override
   void dispose() {
     _firebaseSubscription?.cancel();

@@ -17,6 +17,8 @@ import 'package:rsforms/Screens/company_adder.dart';
 import 'package:rsforms/firebase_options.dart';
 import 'package:rsforms/pageview_controller.dart';
 
+import 'Providers/PictureProvider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -92,6 +94,11 @@ class MyApp extends StatelessWidget {
                     update: (context, company, _) {
                       _!.setCompany(company.company);
                       return _;
+                    },
+                  ),
+                  ChangeNotifierProvider<PictureProvider>(
+                    create: (context) {
+                      return PictureProvider();
                     },
                   )
                 ],

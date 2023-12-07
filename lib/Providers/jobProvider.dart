@@ -223,33 +223,6 @@ class JobProvider with ChangeNotifier {
         .update(<String, dynamic>{"removed": true, "lastupdated": DateTime.now()});
   }
 
-  Future<void> addService(String JobId, Services service) async {
-    await FirebaseFirestore.instance
-        .collection('companies')
-        .doc(_company.id)
-        .collection('jobs')
-        .doc(JobId)
-        .collection("services")
-        .add(service.toMap());
-    notifyListeners();
-  }
-
-  Future<List<Services>> getServices(String jobId) async {
-    var resp = await FirebaseFirestore.instance
-        .collection('companies')
-        .doc(_company.id)
-        .collection('jobs')
-        .doc(jobId)
-        .collection('services')
-        .get();
-
-    var res = List<Services>.empty(growable: true);
-    for (var doc in resp.docs) {
-      res.add(Services.fromdocument(doc));
-    }
-    return res;
-  }
-
   @override
   void dispose() {
     _firebaseSubscription?.cancel();
