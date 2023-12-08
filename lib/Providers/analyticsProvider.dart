@@ -6,6 +6,7 @@ class CompanyAnalytics {
   double _totalEarnings = 0;
   List<Job> _jobs = [];
   double get totalEarnings => _totalEarnings;
+
   List<Job> get jobs => _jobs;
   String get companyName => _companyName;
 
@@ -29,17 +30,13 @@ class CompanyAnalytics {
 class AnalyticsProvider with ChangeNotifier {
   // {Date:{JobId:Job}}
   Map<DateTime, Map<String, Job>> _jobsCalendar = {};
-
-  //{Provider: {JobId:Job}}
   Map<String, CompanyAnalytics> _subCompanyToJobMap = {};
   CompanyAnalytics _totalMonthly = CompanyAnalytics([], "");
-
   late DateTime _currentMonth;
 
   Map<String, CompanyAnalytics> get subCompanyToJobMap => _subCompanyToJobMap;
   DateTime get currentMonth => _currentMonth;
   double get earningsForMonth => _totalMonthly.totalEarnings;
-
   void setCurrentMonth(DateTime newMonth) {
     _currentMonth = MonthAndYear(newMonth);
     populateCurrentMonthJobs();

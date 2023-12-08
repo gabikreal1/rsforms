@@ -17,61 +17,77 @@ class pdfViewPage extends StatefulWidget {
 }
 
 class _pdfViewPageState extends State<pdfViewPage> {
+  var currentpage = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: Container(
+        color: Color(0xff31384d),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Spacer(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: Text(
+                "${currentpage}/${widget.page}",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+            ),
+            Spacer(),
+          ],
+        ),
+      ),
+      appBar: AppBar(
+        elevation: 30,
+        backgroundColor: Color(0xff31384d),
+        title: Text(
+          "${widget.invoice.job.invoiceNumber} Preview",
+          style: TextStyle(color: Colors.white, fontSize: 16),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Share.shareXFiles(
+                [XFile(widget.path, mimeType: "application/pdf")],
+                text: "Many Thanks, \n ${widget.invoice.company.name}",
+                subject: "Invoice",
+              );
+            },
+            icon: const Icon(
+              Icons.file_upload_outlined,
+              color: Colors.white,
+            ),
+            iconSize: 20,
+          ),
+        ],
+        leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new),
+          iconSize: 16,
+          color: Colors.white,
+        ),
+      ),
       backgroundColor: Color(0xff31384d),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.arrow_back),
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              Padding(
-                padding: EdgeInsets.all(15),
-                child: Container(
-                  height: 500,
-                  decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: PDFView(
-                    filePath: widget.path,
-                    enableSwipe: true,
-                    swipeHorizontal: true,
-                    autoSpacing: false,
-                    pageFling: false,
-                    onRender: (_pages) {
-                      setState(() {
-                        widget.page = _pages!;
-                        widget.isReady = true;
-                      });
-                    },
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 25,
-              ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Share.shareXFiles(
-                    [XFile(widget.path, mimeType: "application/pdf")],
-                    text: "Invoice \n Many Thanks, \n ${widget.invoice.company.name}",
-                  );
-                },
-                icon: Icon(Icons.send),
-                label: Text("Share"),
-              ),
-            ],
-          ),
+        child: PDFView(
+          filePath: widget.path,
+          enableSwipe: true,
+          onPageChanged: (page, total) {
+            setState(() {
+              currentpage = (page ?? 0) + 1;
+            });
+          },
+          swipeHorizontal: true,
+          autoSpacing: false,
+          pageFling: false,
+          pageSnap: false,
+          onRender: (_pages) {
+            setState(() {
+              widget.page = _pages!;
+              widget.isReady = true;
+            });
+          },
         ),
       ),
     );

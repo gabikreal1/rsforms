@@ -46,6 +46,7 @@ class _PicturePageState extends State<PicturePage> {
         _selectedImages.add(imagelink);
       });
     }
+    HapticFeedback.mediumImpact();
   }
 
   void sendImages() async {
@@ -70,32 +71,35 @@ class _PicturePageState extends State<PicturePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xff31384d),
-      bottomNavigationBar: Row(
-        children: [
-          if (_imageSelectedState == true) ...[
-            IconButton(
-              onPressed: () {
-                sendImages();
-              },
-              icon: Icon(Icons.file_upload_outlined, color: Colors.white),
-            ),
-            Spacer(),
-            Text(
-              "Selected: ${_selectedImages.length}",
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Spacer(),
-            IconButton(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Row(
+          children: [
+            if (_imageSelectedState == true) ...[
+              IconButton(
                 onPressed: () {
-                  deleteImages();
+                  sendImages();
                 },
-                icon: Icon(Icons.delete, color: Colors.white))
-          ]
-        ],
+                icon: Icon(Icons.file_upload_outlined, color: Colors.white),
+              ),
+              Spacer(),
+              Text(
+                "Selected ${_selectedImages.length}",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              Spacer(),
+              IconButton(
+                  onPressed: () {
+                    deleteImages();
+                  },
+                  icon: Icon(Icons.delete, color: Colors.white))
+            ]
+          ],
+        ),
       ),
       body: SafeArea(
         child: Consumer<PictureProvider>(
@@ -133,64 +137,68 @@ class _PicturePageState extends State<PicturePage> {
                 ),
                 if (imageLinks.length != 0)
                   Expanded(
-                    child: GridView.builder(
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 20,
-                      ),
-                      itemCount: imageLinks.length,
-                      itemBuilder: (context, index) {
-                        String imageLink = imageLinks[index];
-                        return GestureDetector(
-                          onLongPress: () {
-                            selectFirstImage(imageLink);
-                            HapticFeedback.heavyImpact();
-                          },
-                          onTap: () {
-                            selectImage(imageLink);
-                            HapticFeedback.mediumImpact();
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: CachedNetworkImageProvider(imageLink),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 15,
+                          mainAxisSpacing: 20,
+                        ),
+                        itemCount: imageLinks.length,
+                        itemBuilder: (context, index) {
+                          String imageLink = imageLinks[index];
+                          return GestureDetector(
+                            onLongPress: () {
+                              selectFirstImage(imageLink);
+                              HapticFeedback.heavyImpact();
+                            },
+                            onTap: () {
+                              selectImage(imageLink);
+                            },
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: CachedNetworkImageProvider(imageLink),
+                                  ),
                                 ),
-                              ),
-                              child: (_selectedImages.contains(imageLink))
-                                  ? Container(
-                                      color: Colors.blue.withOpacity(0.25),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(4.0),
-                                        child: Align(
-                                          alignment: Alignment.bottomRight,
-                                          child: Icon(
-                                            Icons.check_circle_outline_outlined,
-                                            color: Colors.white,
-                                            size: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : (_imageSelectedState)
-                                      ? Container(
-                                          child: const Padding(
-                                            padding: EdgeInsets.all(4.0),
-                                            child: Align(
-                                              alignment: Alignment.bottomRight,
-                                              child: Icon(
-                                                Icons.circle_outlined,
-                                                color: Colors.white,
-                                                size: 20,
-                                              ),
+                                child: (_selectedImages.contains(imageLink))
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.blue.withOpacity(0.25),
+                                            borderRadius: BorderRadius.circular(10)),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(4.0),
+                                          child: Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Icon(
+                                              Icons.check_circle_outline_outlined,
+                                              color: Colors.white,
+                                              size: 20,
                                             ),
                                           ),
-                                        )
-                                      : Container()),
-                        );
-                      },
+                                        ),
+                                      )
+                                    : (_imageSelectedState)
+                                        ? Container(
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(4.0),
+                                              child: Align(
+                                                alignment: Alignment.bottomRight,
+                                                child: Icon(
+                                                  Icons.circle_outlined,
+                                                  color: Colors.white,
+                                                  size: 20,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        : Container()),
+                          );
+                        },
+                      ),
                     ),
                   )
                 else
