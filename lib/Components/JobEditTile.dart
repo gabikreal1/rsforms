@@ -16,7 +16,6 @@ class JobEditTile extends StatefulWidget {
 class _JobEditTileState extends State<JobEditTile> {
   bool change = false;
   late final TextEditingController _controller;
-  final _TileKey = GlobalKey<FormState>();
   @override
   void initState() {
     // TODO: implement initState
@@ -45,8 +44,8 @@ class _JobEditTileState extends State<JobEditTile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
               child: Text(
-                "${widget.TileName}",
-                style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                widget.TileName,
+                style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
             Row(
@@ -118,8 +117,8 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
               child: Text(
-                "${widget.TileName}",
-                style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                widget.TileName,
+                style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
             Row(
@@ -139,7 +138,7 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
                             onFieldSubmitted: (value) {
                               if (_TileKey.currentState != null) {
                                 if (_TileKey.currentState!.validate() && change) {
-                                  widget.Update!(value);
+                                  widget.Update(value);
                                 }
                                 if (_TileKey.currentState!.validate()) {
                                   setState(() {
@@ -159,13 +158,13 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
                           child: (widget.Callback == null)
                               ? SelectableText(
                                   widget.TileDescription,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                   ),
                                 )
                               : Text(
                                   widget.TileDescription,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                   ),
                                 )),
@@ -174,7 +173,7 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
                   onPressed: () {
                     if (_TileKey.currentState != null) {
                       if (_TileKey.currentState!.validate() && change) {
-                        widget.Update!(_controller.text.trim());
+                        widget.Update(_controller.text.trim());
                       }
                       if (_TileKey.currentState!.validate()) {
                         setState(() {
@@ -187,7 +186,7 @@ class _MultiLineJobEditTileState extends State<MultiLineJobEditTile> {
                       });
                     }
                   },
-                  icon: Icon(Icons.edit),
+                  icon: const Icon(Icons.edit),
                 ),
               ],
             ),
@@ -235,8 +234,8 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
               child: Text(
-                "${widget.TileName}",
-                style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
+                widget.TileName,
+                style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
               ),
             ),
             Row(
@@ -245,8 +244,8 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: GestureDetector(
                     child: Text(
-                      "${formatTime(widget.date)}",
-                      style: TextStyle(
+                      formatTime(widget.date),
+                      style: const TextStyle(
                         fontSize: 20,
                       ),
                     ),
@@ -270,7 +269,7 @@ class _JobTimeEditTileState extends State<JobTimeEditTile> {
                             ),
                           ],
                           cancelButton: CupertinoActionSheetAction(
-                            child: Text(
+                            child: const Text(
                               "Done",
                             ),
                             onPressed: () {

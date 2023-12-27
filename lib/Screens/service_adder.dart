@@ -36,7 +36,7 @@ const List<Widget> icons = <Widget>[
 ];
 
 class ServiceAdder extends StatefulWidget {
-  List<bool> _selectedCompletion = <bool>[true, false];
+  final List<bool> _selectedCompletion = <bool>[true, false];
   Function(
     String type,
     String description,
@@ -53,9 +53,9 @@ class ServiceAdder extends StatefulWidget {
 // not null checker.
 //make custom onContinue() and onCancel() buttons.
 class _ServiceAdderState extends State<ServiceAdder> {
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _quantityController = TextEditingController();
-  TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _quantityController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
   int currentStep = 0;
 
   StepState checkStepState(index) {
@@ -73,10 +73,10 @@ class _ServiceAdderState extends State<ServiceAdder> {
           Step(
             isActive: currentStep >= 0,
             state: checkStepState(0),
-            title: widget._selectedCompletion[0] ? Text("Labour") : Text("Parts"),
+            title: widget._selectedCompletion[0] ? const Text("Labour") : const Text("Parts"),
             content: Center(
               child: ToggleButtons(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
                 children: icons,
                 isSelected: widget._selectedCompletion,
                 onPressed: (index) {
@@ -91,7 +91,7 @@ class _ServiceAdderState extends State<ServiceAdder> {
           Step(
             isActive: currentStep >= 1,
             state: checkStepState(1),
-            title: Text("Description"),
+            title: const Text("Description"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -108,7 +108,7 @@ class _ServiceAdderState extends State<ServiceAdder> {
           Step(
             isActive: currentStep >= 2,
             state: checkStepState(2),
-            title: Text("Quantity"),
+            title: const Text("Quantity"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -125,7 +125,7 @@ class _ServiceAdderState extends State<ServiceAdder> {
           Step(
             isActive: currentStep >= 3,
             state: checkStepState(3),
-            title: Text("Price"),
+            title: const Text("Price"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -152,13 +152,13 @@ class _ServiceAdderState extends State<ServiceAdder> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back),
                       color: Colors.black,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       onPressed: () => {},
-                      icon: Icon(Icons.settings),
+                      icon: const Icon(Icons.settings),
                       color: Colors.black,
                     ),
                   ],

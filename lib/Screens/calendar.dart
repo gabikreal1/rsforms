@@ -1,15 +1,10 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Components/JobList.dart';
-import 'package:rsforms/Components/NavDrawer.dart';
 import 'package:rsforms/Providers/jobProvider.dart';
 import 'package:rsforms/Screens/job_adder.dart';
-import 'package:rsforms/Screens/job_editor.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:rsforms/Models/jobModel.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -57,7 +52,7 @@ class _CalendarState extends State<Calendar> {
 
     return Scaffold(
       // move it into different file.
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       key: _key,
       body: Container(
         color: Colors.white,
@@ -77,7 +72,7 @@ class _CalendarState extends State<Calendar> {
                             child: Container(
                               width: 4.5, // increase the size of the marker
                               height: 4.5,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.black, // color that contrasts with the cell color
                               ),
@@ -88,7 +83,7 @@ class _CalendarState extends State<Calendar> {
                       },
                     ),
                     startingDayOfWeek: StartingDayOfWeek.monday,
-                    calendarStyle: CalendarStyle(
+                    calendarStyle: const CalendarStyle(
                       selectedDecoration: BoxDecoration(color: Color(0xff31384c), shape: BoxShape.circle),
                       todayDecoration: BoxDecoration(
                         color: Color(0x8831384c),
@@ -98,7 +93,7 @@ class _CalendarState extends State<Calendar> {
                     availableCalendarFormats: const {
                       CalendarFormat.month: 'Month',
                     },
-                    headerStyle: HeaderStyle(
+                    headerStyle: const HeaderStyle(
                         formatButtonVisible: false,
                         titleCentered: true,
                         formatButtonDecoration: BoxDecoration(color: Colors.transparent),
@@ -129,21 +124,22 @@ class _CalendarState extends State<Calendar> {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 10,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                             onPressed: () async {
                               await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => JobAdder(date: jobProvider.focusedDay.add(Duration(hours: 12))),
+                                  builder: (context) =>
+                                      JobAdder(date: jobProvider.focusedDay.add(const Duration(hours: 12))),
                                 ),
                               );
                             },
-                            icon: Icon(Icons.add)),
-                        SizedBox(
+                            icon: const Icon(Icons.add)),
+                        const SizedBox(
                           width: 10,
                         )
                       ],
@@ -154,8 +150,8 @@ class _CalendarState extends State<Calendar> {
               Flexible(
                 flex: 5,
                 child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    decoration: BoxDecoration(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    decoration: const BoxDecoration(
                         color: Color(0xff31384d),
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))),
                     height: double.infinity,
@@ -171,8 +167,8 @@ class _CalendarState extends State<Calendar> {
                             scrollable: true,
                           );
                         } else {
-                          return Column(
-                            children: const [
+                          return const Column(
+                            children: [
                               SizedBox(
                                 height: 20,
                               ),

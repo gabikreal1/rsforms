@@ -24,16 +24,21 @@ class _SettingsState extends State<Settings> {
       context: context,
       builder: (context) {
         return CupertinoActionSheet(
-          title: Text("Are you sure you want to logout?"),
+          title: const Text("Are you sure you want to logout?"),
           actions: [
             CupertinoActionSheetAction(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Stay"),
+              child: const Text("Stay"),
             ),
             CupertinoActionSheetAction(
-              child: Row(
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context);
+                FirebaseAuth.instance.signOut();
+              },
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
@@ -46,11 +51,6 @@ class _SettingsState extends State<Settings> {
                   Text("Logout"),
                 ],
               ),
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(context);
-                FirebaseAuth.instance.signOut();
-              },
             ),
           ],
         );
@@ -61,7 +61,7 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       body: SafeArea(
           child: Padding(
         padding: const EdgeInsets.all(25.0),
@@ -79,7 +79,7 @@ class _SettingsState extends State<Settings> {
             ),
             Material(
               elevation: 20,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: Container(
                 height: 115,
                 width: double.infinity,

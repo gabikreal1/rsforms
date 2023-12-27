@@ -15,6 +15,7 @@ class SettingsButton extends StatelessWidget {
     return TextButton.icon(
       style: TextButton.styleFrom(
         enableFeedback: false,
+        splashFactory: NoSplash.splashFactory,
       ),
       onPressed: onTap,
       label: Row(

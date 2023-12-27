@@ -40,6 +40,7 @@ class AnalyticsProvider with ChangeNotifier {
   void setCurrentMonth(DateTime newMonth) {
     _currentMonth = MonthAndYear(newMonth);
     populateCurrentMonthJobs();
+    notifyListeners();
   }
 
   DateTime MonthAndYear(DateTime time) {

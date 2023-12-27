@@ -20,7 +20,7 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
 
     return Scaffold(
       key: _key,
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Consumer<CompanyProvider>(
@@ -36,7 +36,7 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_back_ios_new,
                           color: Colors.white,
                           size: 16,

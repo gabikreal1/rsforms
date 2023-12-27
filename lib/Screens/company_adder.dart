@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rsforms/Models/invoiceModel.dart';
 import 'package:rsforms/Providers/userProvider.dart';
 
 import '../Models/jobModel.dart';
@@ -16,15 +15,15 @@ class _CompanyAdderState extends State<CompanyAdder> {
   int curstep = 0;
   int maxStep = 0;
 
-  TextEditingController _companyName = new TextEditingController();
-  TextEditingController _companyAddress = new TextEditingController();
-  TextEditingController _companyTown = new TextEditingController();
-  TextEditingController _companyPostcode = new TextEditingController();
-  TextEditingController _companyPhone = new TextEditingController();
-  TextEditingController _companyBankName = new TextEditingController();
-  TextEditingController _companyAccountNumber = new TextEditingController();
-  TextEditingController _companySortCode = new TextEditingController();
-  TextEditingController _companyInvoiceCounter = new TextEditingController();
+  final TextEditingController _companyName = TextEditingController();
+  final TextEditingController _companyAddress = TextEditingController();
+  final TextEditingController _companyTown = TextEditingController();
+  final TextEditingController _companyPostcode = TextEditingController();
+  final TextEditingController _companyPhone = TextEditingController();
+  final TextEditingController _companyBankName = TextEditingController();
+  final TextEditingController _companyAccountNumber = TextEditingController();
+  final TextEditingController _companySortCode = TextEditingController();
+  final TextEditingController _companyInvoiceCounter = TextEditingController();
   StepState checkStepState(index) {
     if (index == curstep) {
       return StepState.editing;
@@ -38,11 +37,11 @@ class _CompanyAdderState extends State<CompanyAdder> {
   Widget build(BuildContext context) {
     List<Step> getSteps() => <Step>[
           Step(
-              title: Text("Company Name"),
+              title: const Text("Company Name"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("It will be displayed on the Invoice"),
+                    const Text("It will be displayed on the Invoice"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -59,7 +58,7 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 0,
               state: checkStepState(0)),
           Step(
-              title: Text("Company Address"),
+              title: const Text("Company Address"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -75,7 +74,7 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 1,
               state: checkStepState(1)),
           Step(
-              title: Text("Company City/Town"),
+              title: const Text("Company City/Town"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -92,7 +91,7 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 2,
               state: checkStepState(2)),
           Step(
-              title: Text("Company Postcode"),
+              title: const Text("Company Postcode"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -108,7 +107,7 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 3,
               state: checkStepState(3)),
           Step(
-              title: Text("Company Main Phone Number"),
+              title: const Text("Company Main Phone Number"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -124,7 +123,7 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 4,
               state: checkStepState(4)),
           Step(
-              title: Text("Comapny Main Bank Name"),
+              title: const Text("Comapny Main Bank Name"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -140,11 +139,11 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 5,
               state: checkStepState(5)),
           Step(
-              title: Text("Comapny Bank Account Number"),
+              title: const Text("Comapny Bank Account Number"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("Account Number"),
+                    const Text("Account Number"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -161,11 +160,11 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 6,
               state: checkStepState(6)),
           Step(
-              title: Text("Company Bank Sort Code"),
+              title: const Text("Company Bank Sort Code"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("Sort Code"),
+                    const Text("Sort Code"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -182,11 +181,11 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 7,
               state: checkStepState(7)),
           Step(
-              title: Text("Initial Invoice Counter"),
+              title: const Text("Initial Invoice Counter"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("Invoice Counter"),
+                    const Text("Invoice Counter"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -207,25 +206,25 @@ class _CompanyAdderState extends State<CompanyAdder> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 15,
                 ),
-                Align(
+                const Align(
                   alignment: Alignment.center,
                   child: Text(
                     "Add  Your Company",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5,
                 ),
                 Stepper(
                   type: StepperType.vertical,
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   steps: getSteps(),
                   currentStep: curstep,
                   onStepTapped: (value) {

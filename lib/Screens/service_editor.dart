@@ -83,11 +83,10 @@ class _ServiceEditorState extends State<ServiceEditor> {
   Widget build(BuildContext context) {
     List<Step> getSteps() => [
           Step(
-            title: widget._selectedCompletion[0] ? Text("Labour") : Text("Parts"),
+            title: widget._selectedCompletion[0] ? const Text("Labour") : const Text("Parts"),
             content: Center(
               child: ToggleButtons(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                children: icons,
+                borderRadius: const BorderRadius.all(Radius.circular(12)),
                 isSelected: widget._selectedCompletion,
                 onPressed: (index) {
                   setState(() {
@@ -95,11 +94,12 @@ class _ServiceEditorState extends State<ServiceEditor> {
                     widget._selectedCompletion[1] = !widget._selectedCompletion[1];
                   });
                 },
+                children: icons,
               ),
             ),
           ),
           Step(
-            title: Text("Description"),
+            title: const Text("Description"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -114,7 +114,7 @@ class _ServiceEditorState extends State<ServiceEditor> {
             ),
           ),
           Step(
-            title: Text("Quantity"),
+            title: const Text("Quantity"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -129,7 +129,7 @@ class _ServiceEditorState extends State<ServiceEditor> {
             ),
           ),
           Step(
-            title: Text("Price"),
+            title: const Text("Price"),
             content: Center(
               child: TextFormField(
                 decoration: const InputDecoration(
@@ -156,7 +156,7 @@ class _ServiceEditorState extends State<ServiceEditor> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios_new,
                         size: 18,
                       ),

@@ -4,28 +4,28 @@ import 'package:provider/provider.dart';
 import '../Components/JobList.dart';
 import '../Providers/jobProvider.dart';
 
-class uncompletedJobs extends StatefulWidget {
-  const uncompletedJobs({super.key});
+class UncompletedJobs extends StatefulWidget {
+  const UncompletedJobs({super.key});
 
   @override
-  State<uncompletedJobs> createState() => _uncompletedJobsState();
+  State<UncompletedJobs> createState() => _UncompletedJobsState();
 }
 
-class _uncompletedJobsState extends State<uncompletedJobs> {
+class _UncompletedJobsState extends State<UncompletedJobs> {
   String getMonth(int month) {
     Map<int, String> months = {
-      1: "Jan",
-      2: "Feb",
-      3: "Mar",
-      4: "Apr",
+      1: "January",
+      2: "February",
+      3: "March",
+      4: "April",
       5: "May",
       6: "Jun",
-      7: "Jul",
-      8: "Aug",
-      9: "Sep",
-      10: "Oct",
-      11: "Nov",
-      12: "Dec",
+      7: "July",
+      8: "August",
+      9: "September",
+      10: "October",
+      11: "November",
+      12: "December",
     };
     if (months.containsKey(month)) {
       return months[month]!;
@@ -38,7 +38,7 @@ class _uncompletedJobsState extends State<uncompletedJobs> {
     final jobProvider = context.watch<JobProvider>();
     final today = DateTime.now();
     return Scaffold(
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.all(15),
@@ -80,17 +80,18 @@ class _uncompletedJobsState extends State<uncompletedJobs> {
                             ),
                           ),
                           Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child:
-                                  DateTime(day.year, day.month, day.day) != DateTime(today.year, today.month, today.day)
-                                      ? Text(
-                                          "${getMonth(day.month)}. ${day.day}/${day.year}",
-                                          style: TextStyle(color: Colors.white),
-                                        )
-                                      : Text(
-                                          "Today",
-                                          style: TextStyle(color: Colors.white),
-                                        )),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child:
+                                DateTime(day.year, day.month, day.day) != DateTime(today.year, today.month, today.day)
+                                    ? Text(
+                                        "${getMonth(day.month)} ${day.day}/${day.year}",
+                                        style: const TextStyle(color: Colors.white),
+                                      )
+                                    : const Text(
+                                        "Today",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                          ),
                           const Expanded(
                             child: Divider(
                               color: Colors.grey,

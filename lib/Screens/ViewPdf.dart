@@ -5,45 +5,45 @@ import 'package:flutter_pdfview/flutter_pdfview.dart';
 
 import '../Models/invoiceModel.dart';
 
-class pdfViewPage extends StatefulWidget {
+class PDFViewPage extends StatefulWidget {
   final path;
   Invoice invoice;
   var isReady = false;
   var page = 0;
-  pdfViewPage({super.key, required this.path, required this.invoice});
+  PDFViewPage({super.key, required this.path, required this.invoice});
 
   @override
-  State<pdfViewPage> createState() => _pdfViewPageState();
+  State<PDFViewPage> createState() => _PDFViewPageState();
 }
 
-class _pdfViewPageState extends State<pdfViewPage> {
+class _PDFViewPageState extends State<PDFViewPage> {
   var currentpage = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(
-        color: Color(0xff31384d),
+        color: const Color(0xff31384d),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0),
               child: Text(
                 "${currentpage}/${widget.page}",
-                style: TextStyle(color: Colors.white, fontSize: 20),
+                style: const TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),
       appBar: AppBar(
         elevation: 30,
-        backgroundColor: Color(0xff31384d),
+        backgroundColor: const Color(0xff31384d),
         title: Text(
           "${widget.invoice.job.invoiceNumber} Preview",
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: const TextStyle(color: Colors.white, fontSize: 16),
         ),
         actions: [
           IconButton(
@@ -68,7 +68,7 @@ class _pdfViewPageState extends State<pdfViewPage> {
           color: Colors.white,
         ),
       ),
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       body: SafeArea(
         child: PDFView(
           filePath: widget.path,

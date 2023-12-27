@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +11,10 @@ class JobProvider with ChangeNotifier {
 
   // Different maps of jobs for special UI uses
   //Key,Value {Day : {Id:Job}}
-  Map<DateTime, Map<String, Job>> _jobsCalendar = {};
-  Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
+  final Map<DateTime, Map<String, Job>> _jobsCalendar = {};
+  final Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
   //detect multiples in job update.
-  Map<String, Job> _jobs = {};
+  final Map<String, Job> _jobs = {};
 
   DateTime? _cacheTime;
   DateTime _startOfMonth = DateTime(DateTime.now().year, DateTime.now().month);

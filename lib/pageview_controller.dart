@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:rsforms/Screens/analytics.dart';
 import 'package:rsforms/Screens/calendar.dart';
-import 'package:rsforms/Screens/company_editor.dart';
 import 'package:rsforms/Screens/settings.dart';
 import 'package:rsforms/Screens/uncompleted_jobs.dart';
-import 'package:rsforms/Screens/job_editor.dart';
 
 class PageviewControll extends StatefulWidget {
   const PageviewControll({super.key});
@@ -37,7 +35,6 @@ class _PageviewControllState extends State<PageviewControll> {
             padding: const EdgeInsets.all(10),
             child: GNav(
               duration: Duration(milliseconds: 400),
-              rippleColor: Colors.grey[300]!,
               hoverColor: Colors.grey[100]!,
               gap: 8,
               activeColor: Colors.black,
@@ -52,7 +49,7 @@ class _PageviewControllState extends State<PageviewControll> {
               haptic: true,
               tabs: const [
                 GButton(
-                  icon: Icons.calendar_month,
+                  icon: Icons.ac_unit,
                   text: 'Home',
                   iconActiveColor: Colors.black,
                   iconColor: Colors.white,
@@ -91,7 +88,7 @@ class _PageviewControllState extends State<PageviewControll> {
         },
         children: [
           Calendar(),
-          const uncompletedJobs(),
+          const UncompletedJobs(),
           const Analytics(),
           const Settings(),
         ],

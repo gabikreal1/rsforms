@@ -14,11 +14,11 @@ class PicturePage extends StatefulWidget {
 }
 
 class _PicturePageState extends State<PicturePage> {
-  Set<String> _selectedImages = Set();
+  final Set<String> _selectedImages = {};
   bool _imageSelectedState = false;
 
   void selectFirstImage(String imagelink) {
-    if (_selectedImages.length == 0) {
+    if (_selectedImages.isEmpty) {
       setState(() {
         _imageSelectedState = true;
         _selectedImages.add(imagelink);
@@ -70,7 +70,7 @@ class _PicturePageState extends State<PicturePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Row(
@@ -80,9 +80,9 @@ class _PicturePageState extends State<PicturePage> {
                 onPressed: () {
                   sendImages();
                 },
-                icon: Icon(Icons.file_upload_outlined, color: Colors.white),
+                icon: const Icon(Icons.file_upload_outlined, color: Colors.white),
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 "Selected ${_selectedImages.length}",
                 style: const TextStyle(
@@ -91,12 +91,12 @@ class _PicturePageState extends State<PicturePage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               IconButton(
                   onPressed: () {
                     deleteImages();
                   },
-                  icon: Icon(Icons.delete, color: Colors.white))
+                  icon: const Icon(Icons.delete, color: Colors.white))
             ]
           ],
         ),
@@ -111,31 +111,31 @@ class _PicturePageState extends State<PicturePage> {
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.arrow_back_ios_new,
                         size: 18,
                       ),
                       color: Colors.white,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     IconButton(
                       onPressed: () async {
                         await Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ImageCapture(),
+                            builder: (context) => const ImageCapture(),
                           ),
                         );
                         await value.getImageLinkList();
                       },
-                      icon: Icon(
-                        Icons.add_a_photo,
+                      icon: const Icon(
+                        Icons.add,
                         color: Colors.white,
                       ),
                     ),
                   ],
                 ),
-                if (imageLinks.length != 0)
+                if (imageLinks.isNotEmpty)
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -202,7 +202,7 @@ class _PicturePageState extends State<PicturePage> {
                     ),
                   )
                 else
-                  Text(
+                  const Text(
                     "No images",
                     style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
                   ),

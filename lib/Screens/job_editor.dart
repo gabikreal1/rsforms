@@ -1,8 +1,7 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pdf/pdf.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/APIs/InvoiceApi.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
@@ -13,10 +12,8 @@ import 'package:rsforms/Providers/serviceProvider.dart';
 import 'package:rsforms/Screens/ViewPdf.dart';
 import 'package:rsforms/Screens/job_pictures.dart';
 import 'package:rsforms/Screens/service_adder.dart';
-import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:rsforms/Screens/service_editor.dart';
-import 'package:share_plus/share_plus.dart';
 import '../Models/jobModel.dart';
 import '../Providers/jobProvider.dart';
 
@@ -68,7 +65,7 @@ class JobEditor extends StatelessWidget {
     final pictureProvider = Provider.of<PictureProvider>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: Color(0xff31384d),
+      backgroundColor: const Color(0xff31384d),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Consumer<JobProvider>(
@@ -80,7 +77,7 @@ class JobEditor extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_back_ios_new,
                             size: 18,
                           ),
@@ -88,7 +85,7 @@ class JobEditor extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(
+                    const Text(
                       "Job has been deleted/moved to another day.",
                       style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
@@ -107,13 +104,13 @@ class JobEditor extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_back_ios_new,
                             size: 18,
                           ),
                           color: Colors.white,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         IconButton(
                           onPressed: () async {
                             pictureProvider.jobId = jobId;
@@ -121,7 +118,7 @@ class JobEditor extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return Center(
+                                  return const Center(
                                     child: CircularProgressIndicator.adaptive(),
                                   );
                                 });
@@ -130,11 +127,11 @@ class JobEditor extends StatelessWidget {
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PicturePage(),
+                                builder: (context) => const PicturePage(),
                               ),
                             );
                           },
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.camera_alt,
                             color: Colors.white,
                           ),
@@ -143,67 +140,67 @@ class JobEditor extends StatelessWidget {
                     ),
                     JobEditTile(
                       TileName: "Provider",
-                      TileDescription: "${job.subCompany}",
+                      TileDescription: job.subCompany,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "subcompany", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobEditTile(
                       TileName: "Job No",
-                      TileDescription: "${job.jobNo}",
+                      TileDescription: job.jobNo,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "jobno", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobEditTile(
                       TileName: "Address",
-                      TileDescription: "${job.address}",
+                      TileDescription: job.address,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "address", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobEditTile(
                       TileName: "Postcode",
-                      TileDescription: "${job.postcode}",
+                      TileDescription: job.postcode,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "postcode", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobEditTile(
                       TileName: "Sub-Contractor",
-                      TileDescription: "${job.subContractor}",
+                      TileDescription: job.subContractor,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "subcontractor", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     MultiLineJobEditTile(
                       TileName: "Desciprtion",
-                      TileDescription: "${job.description}",
+                      TileDescription: job.description,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "description", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     MultiLineJobEditTile(
                       TileName: "Contact Number",
-                      TileDescription: "${job.contactNumber}",
+                      TileDescription: job.contactNumber,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "contactnumber", value);
                       },
@@ -217,19 +214,19 @@ class JobEditor extends StatelessWidget {
                         }
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     if (job.YHS != "None")
                       JobEditTile(
                         TileName: "YHS",
-                        TileDescription: "${job.YHS}",
+                        TileDescription: job.YHS,
                         Update: (value) {
                           jobProvider.updateJobParameter(jobId, "YHS", value);
                         },
                       ),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobTimeEditTile(
@@ -239,7 +236,7 @@ class JobEditor extends StatelessWidget {
                         jobProvider.updateJobParameter(jobId, "timestart", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     JobTimeEditTile(
@@ -249,7 +246,7 @@ class JobEditor extends StatelessWidget {
                         jobProvider.updateJobParameter(jobId, "timefinish", value);
                       },
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     //Completed Toggle Button
@@ -262,8 +259,8 @@ class JobEditor extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
                         child: Column(
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 2),
                               child: Text(
                                 "Completed",
                                 style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.bold),
@@ -271,7 +268,7 @@ class JobEditor extends StatelessWidget {
                             ),
                             Center(
                               child: ToggleButtons(
-                                borderRadius: BorderRadius.all(Radius.circular(12)),
+                                borderRadius: const BorderRadius.all(Radius.circular(12)),
                                 children: icons,
                                 isSelected: _selectedCompletion,
                                 onPressed: (index) {
@@ -285,7 +282,7 @@ class JobEditor extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
 
@@ -307,8 +304,8 @@ class JobEditor extends StatelessWidget {
                                         padding: const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 15.0, top: 2),
                                         child: Column(
                                           children: [
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 2),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 2),
                                               child: Text(
                                                 "Service/Part",
                                                 style: TextStyle(
@@ -334,14 +331,15 @@ class JobEditor extends StatelessWidget {
                                                         itemBuilder: (context, index) {
                                                           Services service = value.services[index];
                                                           return Padding(
-                                                              padding: EdgeInsets.symmetric(vertical: 5),
+                                                              padding: const EdgeInsets.symmetric(vertical: 5),
                                                               child: Container(
                                                                 decoration: BoxDecoration(
                                                                   borderRadius: BorderRadius.circular(25.0),
                                                                   border: Border.all(color: Colors.black),
                                                                   color: Colors.white,
                                                                   boxShadow: List.from([
-                                                                    BoxShadow(color: Colors.grey, offset: Offset(5, 5))
+                                                                    const BoxShadow(
+                                                                        color: Colors.grey, offset: Offset(5, 5))
                                                                   ]),
                                                                 ),
                                                                 child: Padding(
@@ -352,11 +350,11 @@ class JobEditor extends StatelessWidget {
                                                                         context: context,
                                                                         builder: (context) {
                                                                           return CupertinoActionSheet(
-                                                                            title: Text(
+                                                                            title: const Text(
                                                                                 "What actions do you want to take?"),
                                                                             actions: [
                                                                               CupertinoActionSheetAction(
-                                                                                child: Text("Edit"),
+                                                                                child: const Text("Edit"),
                                                                                 onPressed: () async {
                                                                                   await Navigator.push(
                                                                                     context,
@@ -386,16 +384,16 @@ class JobEditor extends StatelessWidget {
                                                                                 },
                                                                               ),
                                                                               CupertinoActionSheetAction(
-                                                                                child: Text("Delete"),
                                                                                 onPressed: () {
                                                                                   value.deleteService(service.id!);
                                                                                   Navigator.pop(context);
                                                                                 },
                                                                                 isDestructiveAction: true,
+                                                                                child: const Text("Delete"),
                                                                               ),
                                                                             ],
                                                                             cancelButton: CupertinoActionSheetAction(
-                                                                              child: Text("Cancel"),
+                                                                              child: const Text("Cancel"),
                                                                               onPressed: () {
                                                                                 Navigator.pop(context);
                                                                               },
@@ -408,14 +406,14 @@ class JobEditor extends StatelessWidget {
                                                                       children: [
                                                                         Text(
                                                                           "${service.typeofCharge} ",
-                                                                          style: TextStyle(fontSize: 15),
+                                                                          style: const TextStyle(fontSize: 15),
                                                                         ),
                                                                         Text(
                                                                           service.description,
                                                                           textAlign: TextAlign.center,
-                                                                          style: TextStyle(fontSize: 10),
+                                                                          style: const TextStyle(fontSize: 10),
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                           height: 5,
                                                                         ),
                                                                         Row(
@@ -423,20 +421,20 @@ class JobEditor extends StatelessWidget {
                                                                           children: [
                                                                             Text(
                                                                               " £${service.price.toStringAsFixed(2)} X ",
-                                                                              style: TextStyle(fontSize: 10),
+                                                                              style: const TextStyle(fontSize: 10),
                                                                             ),
                                                                             Text(
                                                                               "${service.quantity}",
-                                                                              style: TextStyle(fontSize: 10),
+                                                                              style: const TextStyle(fontSize: 10),
                                                                             ),
                                                                           ],
                                                                         ),
-                                                                        SizedBox(
+                                                                        const SizedBox(
                                                                           height: 5,
                                                                         ),
                                                                         Text(
                                                                           " £${service.totalPrice.toStringAsFixed(2)}",
-                                                                          style: TextStyle(
+                                                                          style: const TextStyle(
                                                                               fontSize: 14,
                                                                               fontWeight: FontWeight.bold),
                                                                         ),
@@ -447,11 +445,11 @@ class JobEditor extends StatelessWidget {
                                                               ));
                                                         },
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Text("Total Price: £${value.totalPrice.toStringAsFixed(2)}"),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                       Padding(
@@ -461,7 +459,7 @@ class JobEditor extends StatelessWidget {
                                                           children: [
                                                             ElevatedButton(
                                                               style: ElevatedButton.styleFrom(
-                                                                backgroundColor: Color(0xff31384d),
+                                                                backgroundColor: const Color(0xff31384d),
                                                               ),
                                                               onPressed: () async {
                                                                 await Navigator.push(
@@ -481,7 +479,7 @@ class JobEditor extends StatelessWidget {
                                                                   ),
                                                                 );
                                                               },
-                                                              child: Row(
+                                                              child: const Row(
                                                                 children: [
                                                                   Icon(Icons.add_rounded),
                                                                   Text(
@@ -494,7 +492,7 @@ class JobEditor extends StatelessWidget {
                                                           ],
                                                         ),
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 20,
                                                       ),
                                                       Text("Invoice No:  ${job.invoiceNumber}"),
@@ -504,15 +502,16 @@ class JobEditor extends StatelessWidget {
                                                           ElevatedButton.icon(
                                                             onPressed: () async {
                                                               showDialog(
-                                                                  context: context,
-                                                                  builder: ((context) {
-                                                                    return Center(
-                                                                      child: Container(
-                                                                          height: 40,
-                                                                          width: 40,
-                                                                          child: CircularProgressIndicator.adaptive()),
-                                                                    );
-                                                                  }));
+                                                                context: context,
+                                                                builder: ((context) {
+                                                                  return const Center(
+                                                                    child: SizedBox(
+                                                                        height: 40,
+                                                                        width: 40,
+                                                                        child: CircularProgressIndicator.adaptive()),
+                                                                  );
+                                                                }),
+                                                              );
                                                               if (job.invoiceNumber == "Hasn't been set yet") {
                                                                 //
                                                                 await companyProvider.incrementInvoiceCounter();
@@ -534,19 +533,19 @@ class JobEditor extends StatelessWidget {
                                                               await Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(
-                                                                  builder: (context) => pdfViewPage(
+                                                                  builder: (context) => PDFViewPage(
                                                                     path: pdfInvoice.path,
                                                                     invoice: invoice,
                                                                   ),
                                                                 ),
                                                               );
                                                             },
-                                                            label: Text("Generate Invoice"),
-                                                            icon: Icon(Icons.document_scanner_rounded),
+                                                            label: const Text("Generate Invoice"),
+                                                            icon: const Icon(Icons.document_scanner_rounded),
                                                           ),
                                                         ],
                                                       ),
-                                                      SizedBox(
+                                                      const SizedBox(
                                                         height: 10,
                                                       ),
                                                     ],
@@ -559,7 +558,7 @@ class JobEditor extends StatelessWidget {
                                                       children: [
                                                         ElevatedButton(
                                                           style: ElevatedButton.styleFrom(
-                                                            backgroundColor: Color(0xff31384d),
+                                                            backgroundColor: const Color(0xff31384d),
                                                           ),
                                                           onPressed: () async {
                                                             await Navigator.push(
@@ -578,7 +577,7 @@ class JobEditor extends StatelessWidget {
                                                               ),
                                                             );
                                                           },
-                                                          child: Row(
+                                                          child: const Row(
                                                             children: [
                                                               Icon(Icons.add_rounded),
                                                               Text(
@@ -603,7 +602,7 @@ class JobEditor extends StatelessWidget {
                               ),
                             ],
                           )
-                        : SizedBox(
+                        : const SizedBox(
                             height: 10,
                           ),
                   ],

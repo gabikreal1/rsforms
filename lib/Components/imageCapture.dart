@@ -1,12 +1,8 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
 import 'package:rsforms/Components/ImageUploader.dart';
-
-import '../Providers/PictureProvider.dart';
 
 class ImageCapture extends StatefulWidget {
   const ImageCapture({super.key});

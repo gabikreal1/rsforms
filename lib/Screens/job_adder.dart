@@ -15,24 +15,23 @@ class JobAdder extends StatefulWidget {
 class _JobAdderState extends State<JobAdder> {
   int curstep = 0;
   int maxStep = 0;
-  TextEditingController _providerController = TextEditingController();
-  TextEditingController _jobNoController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _postcodeController = TextEditingController();
-  TextEditingController _subContractorController = TextEditingController();
-  TextEditingController _descriptionController = TextEditingController();
-  TextEditingController _YHSController = TextEditingController();
-  TextEditingController _numberController = TextEditingController();
+  final TextEditingController _providerController = TextEditingController();
+  final TextEditingController _jobNoController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _postcodeController = TextEditingController();
+  final TextEditingController _subContractorController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _yhsController = TextEditingController();
+  final TextEditingController _numberController = TextEditingController();
   DateTime earlyTime = DateTime.now();
   DateTime lateTime = DateTime.now();
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     earlyTime = widget.date;
     lateTime = widget.date;
-    _YHSController.text = "None";
+    _yhsController.text = "None";
   }
 
   StepState checkStepState(index) {
@@ -51,7 +50,7 @@ class _JobAdderState extends State<JobAdder> {
     var jobProvider = Provider.of<JobProvider>(context, listen: false);
     List<Step> getSteps() => <Step>[
           Step(
-              title: Text("Provider"),
+              title: const Text("Provider"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -67,7 +66,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 0,
               state: checkStepState(0)),
           Step(
-              title: Text("Job No"),
+              title: const Text("Job No"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -83,7 +82,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 1,
               state: checkStepState(1)),
           Step(
-              title: Text("Address"),
+              title: const Text("Address"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -100,7 +99,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 2,
               state: checkStepState(2)),
           Step(
-              title: Text("Postcode"),
+              title: const Text("Postcode"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -116,7 +115,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 3,
               state: checkStepState(3)),
           Step(
-              title: Text("Sub contractor"),
+              title: const Text("Sub contractor"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -132,7 +131,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 4,
               state: checkStepState(4)),
           Step(
-              title: Text("Description"),
+              title: const Text("Description"),
               content: Center(
                 child: TextFormField(
                   decoration: const InputDecoration(
@@ -148,11 +147,11 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 5,
               state: checkStepState(5)),
           Step(
-              title: Text("Site Contact Number"),
+              title: const Text("Site Contact Number"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("Provide just the number"),
+                    const Text("Provide just the number"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -169,11 +168,11 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 6,
               state: checkStepState(6)),
           Step(
-              title: Text("YHS (Optional)"),
+              title: const Text("YHS (Optional)"),
               content: Center(
                 child: Column(
                   children: [
-                    Text("Leave it as None if you won't use it"),
+                    const Text("Leave it as None if you won't use it"),
                     TextFormField(
                       decoration: const InputDecoration(
                           contentPadding: EdgeInsets.all(2),
@@ -181,7 +180,7 @@ class _JobAdderState extends State<JobAdder> {
                           focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.transparent)),
                           hintText: "YHS",
                           hintStyle: TextStyle(color: Colors.grey)),
-                      controller: _YHSController,
+                      controller: _yhsController,
                       maxLines: null,
                     ),
                   ],
@@ -190,7 +189,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 7,
               state: checkStepState(7)),
           Step(
-              title: Text("Early Time"),
+              title: const Text("Early Time"),
               content: SizedBox(
                 height: 120,
                 child: CupertinoDatePicker(
@@ -207,7 +206,7 @@ class _JobAdderState extends State<JobAdder> {
               isActive: curstep >= 8,
               state: checkStepState(8)),
           Step(
-              title: Text("Late Time"),
+              title: const Text("Late Time"),
               content: SizedBox(
                 height: 120,
                 child: CupertinoDatePicker(
@@ -228,24 +227,24 @@ class _JobAdderState extends State<JobAdder> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(
               children: [
                 Row(
                   children: [
                     IconButton(
                       onPressed: () => Navigator.of(context).pop(),
-                      icon: Icon(Icons.arrow_back),
+                      icon: const Icon(Icons.arrow_back),
                       color: Colors.black,
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Stepper(
                   type: StepperType.vertical,
-                  physics: ClampingScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   steps: getSteps(),
                   currentStep: curstep,
                   onStepTapped: (value) {
@@ -285,7 +284,7 @@ class _JobAdderState extends State<JobAdder> {
                           address: _addressController.text.trim(),
                           postcode: _postcodeController.text.trim(),
                           subContractor: _subContractorController.text.trim(),
-                          YHS: _YHSController.text.trim());
+                          YHS: _yhsController.text.trim());
                       jobProvider.addJob(job);
 
                       Navigator.pop(context);
