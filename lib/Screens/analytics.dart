@@ -65,50 +65,48 @@ class _AnalyticsState extends State<Analytics> {
               int count = min(5, companies.length);
               return Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          var curmonth = value.currentMonth;
-                          curmonth = DateTime(curmonth.year, curmonth.month - 1);
-                          value.setCurrentMonth(curmonth);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                      Text(
-                        "${value.currentMonth.year} ${getMonth(value.currentMonth.month)}",
-                        style: const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          var curmonth = value.currentMonth;
-                          curmonth = DateTime(curmonth.year, curmonth.month + 1);
-                          value.setCurrentMonth(curmonth);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                    ],
-                  ),
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(right: 10, left: 10, bottom: 30),
+                      padding: const EdgeInsets.only(right: 10, left: 10, bottom: 30, top: 5),
                       child: Material(
                         elevation: 20,
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                         child: Column(
                           children: [
-                            const SizedBox(
-                              height: 20,
+                            Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    var curmonth = value.currentMonth;
+                                    curmonth = DateTime(curmonth.year, curmonth.month - 1);
+                                    value.setCurrentMonth(curmonth);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.black,
+                                    size: 16,
+                                  ),
+                                ),
+                                Spacer(),
+                                Text(
+                                  "${value.currentMonth.year} ${getMonth(value.currentMonth.month)}",
+                                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                                ),
+                                Spacer(),
+                                IconButton(
+                                  onPressed: () {
+                                    var curmonth = value.currentMonth;
+                                    curmonth = DateTime(curmonth.year, curmonth.month + 1);
+                                    value.setCurrentMonth(curmonth);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: Colors.black,
+                                    size: 16,
+                                  ),
+                                ),
+                              ],
                             ),
                             Align(
                               alignment: Alignment.centerLeft,
