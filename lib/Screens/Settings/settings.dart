@@ -2,8 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rsforms/Components/my_button.dart';
-import 'package:rsforms/Components/settings_button.dart';
+import 'package:rsforms/Components/Buttons/settings_button.dart';
 
 import 'company_editor.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Providers/userProvider.dart';
 
-import '../Models/jobModel.dart';
+import '../../Models/jobModel.dart';
 
 class CompanyAdder extends StatefulWidget {
   const CompanyAdder({super.key});

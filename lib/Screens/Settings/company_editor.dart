@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
-import 'package:rsforms/Components/NavDrawer.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 
 class ComapanyEditor extends StatefulWidget {

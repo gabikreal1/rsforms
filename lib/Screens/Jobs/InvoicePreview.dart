@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
-import '../Models/invoiceModel.dart';
+import '../../Models/invoiceModel.dart';
 
 class PDFViewPage extends StatefulWidget {
   final path;

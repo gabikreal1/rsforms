@@ -17,13 +17,13 @@ class CompanyProvider with ChangeNotifier {
       id: "0",
       postcode: "9");
   StreamSubscription? _firebaseSubscription;
-  late rsUser _user;
+  late RsUser _user;
   Company get company {
     return _company;
   }
 
   late String companyID;
-  CompanyProvider(rsUser user) {
+  CompanyProvider(RsUser user) {
     _user = user;
     _listenToFirebase();
   }
@@ -50,7 +50,7 @@ class CompanyProvider with ChangeNotifier {
         .update(<String, dynamic>{attribute: value});
   }
 
-  void setUser(rsUser user) {
+  void setUser(RsUser user) {
     _company = company;
     _firebaseSubscription?.cancel();
     _listenToFirebase();

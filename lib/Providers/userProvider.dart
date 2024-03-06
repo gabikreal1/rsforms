@@ -7,9 +7,8 @@ import 'package:rsforms/Models/jobModel.dart';
 
 class UserProvider extends ChangeNotifier {
   StreamSubscription? _firebaseSubscription;
-  rsUser _user = rsUser(companyId: "0", firstname: "loh", lastname: "lohovich");
-  bool isUser = false;
-  rsUser get user {
+  RsUser _user = RsUser(companyId: "0", firstname: "none", lastname: "none");
+  RsUser get user {
     return _user;
   }
 
@@ -23,13 +22,13 @@ class UserProvider extends ChangeNotifier {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .snapshots()
         .listen((event) {
-      _user = rsUser.fromdocument(event);
+      _user = RsUser.fromdocument(event);
       notifyListeners();
     });
 
     var val = await FirebaseFirestore.instance.collection('users').doc(FirebaseAuth.instance.currentUser!.uid).get();
     if (val.exists == false) {
-      _user = rsUser(companyId: "1", firstname: "loh", lastname: "lohovich");
+      _user = RsUser(companyId: "-1", firstname: "none", lastname: "none");
     }
 
     notifyListeners();

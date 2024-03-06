@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Components/JobList.dart';
+import 'package:rsforms/Components/revenue_chart.dart';
 import 'package:rsforms/Providers/analyticsProvider.dart';
 import 'package:rsforms/Providers/jobProvider.dart';
 
@@ -135,75 +136,97 @@ class _AnalyticsState extends State<Analytics> {
                               ),
                             ),
                             const SizedBox(height: 25),
-                            Expanded(
-                              child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                shrinkWrap: true,
-                                itemCount: count,
-                                itemBuilder: ((context, index) {
-                                  CompanyAnalytics companyAnalytics = companies[index];
-                                  companyAnalytics.jobs.sort(
-                                    (a, b) => a.earlyTime.compareTo(b.earlyTime),
-                                  );
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(25.0),
-                                        color: const Color(0xff31384d),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 5),
-                                        child: ExpansionTile(
-                                          backgroundColor: Colors.transparent,
-                                          shape: const Border(),
-                                          controlAffinity: ListTileControlAffinity.leading,
-                                          collapsedIconColor: Colors.white,
-                                          title: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    '${formatProviderName(companyAnalytics.companyName)}',
-                                                    style: const TextStyle(
-                                                        color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 4,
-                                                  ),
-                                                  const Spacer(),
-                                                  Text(
-                                                    '£${companyAnalytics.totalEarnings.toStringAsFixed(2)}',
-                                                    style: const TextStyle(
-                                                        color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
-                                                  ),
-                                                ],
-                                              ),
-                                              const SizedBox(
-                                                height: 2,
-                                              ),
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Text(
-                                                  '${companyAnalytics.jobs.length} Jobs total this month',
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          children: [
-                                            JobList(joblist: companyAnalytics.jobs, scrollable: true, showPrice: true)
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              ),
+                            RevenueChart(
+                              data: value.totalDailyEarnings,
                             ),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            if (value.currentDay != -1) ...[
+                              Text(
+                                  "${value.currentDay} ${getMonth(value.currentMonth.month)}: ${value.currentDayEarnings}"),
+                              Expanded(
+                                child: JobList(
+                                    joblist: value
+                                            .jobsCalendar[DateTime(
+                                                value.currentMonth.year, value.currentMonth.month, value.currentDay)]
+                                            ?.values
+                                            .toList() ??
+                                        [],
+                                    scrollable: true,
+                                    showPrice: true),
+                              )
+                            ]
+
+                            // Expanded(
+                            //   child: ListView.builder(
+                            //     scrollDirection: Axis.vertical,
+                            //     shrinkWrap: true,
+                            //     itemCount: count,
+                            //     itemBuilder: ((context, index) {
+                            //       CompanyAnalytics companyAnalytics = companies[index];
+                            //       companyAnalytics.jobs.sort(
+                            //         (a, b) => a.earlyTime.compareTo(b.earlyTime),
+                            //       );
+                            //       return Padding(
+                            //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            //         child: Container(
+                            //           decoration: BoxDecoration(
+                            //             borderRadius: BorderRadius.circular(25.0),
+                            //             color: const Color(0xff31384d),
+                            //           ),
+                            //           child: Padding(
+                            //             padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 5),
+                            //             child: ExpansionTile(
+                            //               backgroundColor: Colors.transparent,
+                            //               shape: const Border(),
+                            //               controlAffinity: ListTileControlAffinity.leading,
+                            //               collapsedIconColor: Colors.white,
+                            //               title: Column(
+                            //                 children: [
+                            //                   Row(
+                            //                     children: [
+                            //                       Text(
+                            //                         '${formatProviderName(companyAnalytics.companyName)}',
+                            //                         style: const TextStyle(
+                            //                             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                            //                       ),
+                            //                       const SizedBox(
+                            //                         width: 4,
+                            //                       ),
+                            //                       const Spacer(),
+                            //                       Text(
+                            //                         '£${companyAnalytics.totalEarnings.toStringAsFixed(2)}',
+                            //                         style: const TextStyle(
+                            //                             color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                            //                       ),
+                            //                     ],
+                            //                   ),
+                            //                   const SizedBox(
+                            //                     height: 2,
+                            //                   ),
+                            //                   Align(
+                            //                     alignment: Alignment.centerLeft,
+                            //                     child: Text(
+                            //                       '${companyAnalytics.jobs.length} Jobs total this month',
+                            //                       style: const TextStyle(
+                            //                         color: Colors.white,
+                            //                         fontSize: 12,
+                            //                       ),
+                            //                     ),
+                            //                   ),
+                            //                 ],
+                            //               ),
+                            //               children: [
+                            //                 JobList(joblist: companyAnalytics.jobs, scrollable: true, showPrice: true)
+                            //               ],
+                            //             ),
+                            //           ),
+                            //         ),
+                            //       );
+                            //     }),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

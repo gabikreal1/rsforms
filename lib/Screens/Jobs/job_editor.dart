@@ -9,13 +9,13 @@ import 'package:rsforms/Models/invoiceModel.dart';
 import 'package:rsforms/Providers/PictureProvider.dart';
 import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Providers/serviceProvider.dart';
-import 'package:rsforms/Screens/ViewPdf.dart';
-import 'package:rsforms/Screens/job_pictures.dart';
-import 'package:rsforms/Screens/service_adder.dart';
+import 'package:rsforms/Screens/Jobs/InvoicePreview.dart';
+import 'package:rsforms/Screens/Jobs/job_pictures.dart';
+import 'package:rsforms/Screens/Jobs/service_adder.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:rsforms/Screens/service_editor.dart';
-import '../Models/jobModel.dart';
-import '../Providers/jobProvider.dart';
+import 'package:rsforms/Screens/Jobs/service_editor.dart';
+import '../../Models/jobModel.dart';
+import '../../Providers/jobProvider.dart';
 
 const List<Widget> icons = <Widget>[
   Padding(

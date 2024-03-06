@@ -52,12 +52,14 @@ class _UncompletedJobsState extends State<UncompletedJobs> {
             var days = jobProvider.uncompletedJobs.keys.toList();
 
             if (days.isEmpty) {
-              return const Text(
-                "There are no any uncompleted jobs",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
+              return Center(
+                child: const Text(
+                  "There are no any awaiting jobs",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               );
             }

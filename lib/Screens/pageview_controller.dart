@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:rsforms/Screens/analytics.dart';
+import 'package:rsforms/Screens/Analytics/analytics.dart';
 import 'package:rsforms/Screens/calendar.dart';
-import 'package:rsforms/Screens/settings.dart';
+import 'package:rsforms/Screens/Settings/settings.dart';
 import 'package:rsforms/Screens/uncompleted_jobs.dart';
 
 class PageviewControll extends StatefulWidget {

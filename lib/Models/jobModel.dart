@@ -175,21 +175,19 @@ class Services {
   }
 }
 
-class rsUser {
+class RsUser {
   String companyId;
   String firstname;
   String lastname;
-  rsUser({required this.companyId, required this.firstname, required this.lastname});
+  RsUser({required this.companyId, required this.firstname, required this.lastname});
 
-  factory rsUser.fromdocument(DocumentSnapshot doc) {
+  factory RsUser.fromdocument(DocumentSnapshot doc) {
     if (doc.data() == null) {
-      return rsUser(companyId: "0", firstname: "loh", lastname: "lohovich");
+      return RsUser(companyId: "-1", firstname: "loh", lastname: "lohovich");
     }
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    return rsUser(
-        companyId: data['company'] ?? "none",
-        firstname: data['first_name'] ?? "Guest",
-        lastname: data['last_name'] ?? "");
+    return RsUser(
+        companyId: data['company'] ?? "0", firstname: data['first_name'] ?? "Guest", lastname: data['last_name'] ?? "");
   }
 }

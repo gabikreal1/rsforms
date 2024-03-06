@@ -5,7 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../Models/jobModel.dart';
 import '../Providers/jobProvider.dart';
-import '../Screens/job_editor.dart';
+import '../Screens/Jobs/job_editor.dart';
 
 class JobList extends StatefulWidget {
   final List<Job> joblist;
@@ -55,12 +55,11 @@ class _JobListState extends State<JobList> {
       itemBuilder: (context, index) {
         final job = widget.joblist[index];
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(25.0),
-              color: Colors.white,
-            ),
+          padding: EdgeInsets.symmetric(vertical: 4),
+          child: Material(
+            borderRadius: BorderRadius.circular(25.0),
+            color: Colors.white,
+            elevation: 10,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 6.0),
               child: ListTile(
@@ -169,8 +168,8 @@ class _JobListState extends State<JobList> {
                         Spacer(),
                         widget.showPrice ?? false == true
                             ? Text(
-                                '£${job.price?.toStringAsFixed(2) ?? 0}',
-                                style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold),
+                                '+£${job.price?.toStringAsFixed(2) ?? 0}',
+                                style: TextStyle(color: Colors.green[600], fontSize: 13, fontWeight: FontWeight.bold),
                               )
                             : Text('${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
                                 style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold)),
