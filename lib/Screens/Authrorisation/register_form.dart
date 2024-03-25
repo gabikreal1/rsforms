@@ -114,7 +114,7 @@ class _RegisterFormState extends State<RegisterForm> {
                           prefixIcon: Icons.lock_outline,
                         ),
                         const SizedBox(
-                          height: 30,
+                          height: 20,
                         ),
                       ],
                     ),
@@ -129,7 +129,7 @@ class _RegisterFormState extends State<RegisterForm> {
               ),
             ),
             const SizedBox(
-              height: 22,
+              height: 27,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),

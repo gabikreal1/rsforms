@@ -124,6 +124,7 @@ class JobEditor extends StatelessWidget {
                                 });
                             await pictureProvider.getImageLinkList();
                             Navigator.pop(context);
+
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -515,7 +516,6 @@ class JobEditor extends StatelessWidget {
                                                               if (job.invoiceNumber == "Hasn't been set yet") {
                                                                 //
                                                                 await companyProvider.incrementInvoiceCounter();
-                                                                job.invoiceTime = DateTime.now();
                                                                 job.invoiceNumber =
                                                                     companyProvider.company.InvoiceCounter.toString();
                                                                 job.price = value.totalPrice;

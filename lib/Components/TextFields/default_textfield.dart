@@ -6,11 +6,13 @@ class DefaultTextField extends StatefulWidget {
   final bool? autofocus;
   final Function? onSubm;
   final FocusNode? focusNode;
+  final TextAlign? textAlign;
   final Function(String text) onChange;
   const DefaultTextField({
     super.key,
     required this.controller,
     required this.hintText,
+    this.textAlign,
     this.onSubm,
     this.autofocus,
     this.focusNode,
@@ -30,6 +32,7 @@ class _DefaultTextFieldState extends State<DefaultTextField> {
       controller: widget.controller,
       onChanged: (value) => widget.onChange(value),
       textCapitalization: TextCapitalization.words,
+      textAlign: widget.textAlign ?? TextAlign.start,
       focusNode: widget.focusNode,
       decoration: InputDecoration(
         hintText: widget.hintText,

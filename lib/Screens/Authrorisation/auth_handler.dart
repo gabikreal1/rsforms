@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,11 +18,13 @@ class AuthHandler extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
+      canPop: true,
+      
       child: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         initialData: context.watch<User?>(),
         builder: (context, snapshot) {
+          
           return AnimatedSwitcher(
             duration: const Duration(milliseconds: 750),
             layoutBuilder: (widget, list) => Stack(children: [widget!, ...list]),

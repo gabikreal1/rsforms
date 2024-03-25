@@ -1,14 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class NotRequiredJobDetails {
+  String? subCompany;
+  String? subContractor;
+  String? jobNo;
+  String? invoiceNumber;
+  String? description;
+  String? YHS;
+  String? address;
+  String? postcode;
+  double? price;
+  String? contactNumber;
+
+}
+
 class Job {
   String? id;
 
   DateTime earlyTime;
   DateTime lateTime;
-  DateTime? invoiceTime;
   DateTime? lastUpdated;
   bool? removed;
   double? price;
+
 
   String contactNumber;
   List<String>? pictures;
@@ -25,7 +39,7 @@ class Job {
   bool completed;
 
   Job(
-      {this.invoiceTime,
+      {
       this.price,
       this.id,
       required this.lateTime,
@@ -49,7 +63,6 @@ class Job {
       'contactnumber': contactNumber,
       'subcompany': subCompany,
       'jobno': jobNo,
-      'invoicetime': invoiceTime?.millisecondsSinceEpoch,
       'invoicenumber': invoiceNumber,
       'description': description,
       'timestart': earlyTime.millisecondsSinceEpoch,
@@ -83,9 +96,7 @@ class Job {
         postcode: data["postcode"] ?? "None",
         completed: data['completed'] ?? false,
         subContractor: data["subcontractor"] ?? "You",
-        invoiceTime: data["invoicetime"] != null && data["invoicetime"].runtimeType == int
-            ? DateTime.fromMillisecondsSinceEpoch(data["invoicetime"])
-            : null,
+
         price: data['price'] ?? 0.0);
   }
 }

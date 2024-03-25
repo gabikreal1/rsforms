@@ -1,9 +1,8 @@
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:rsforms/Screens/Authrorisation/login_form.dart';
 import 'package:rsforms/Screens/Authrorisation/register_form.dart';
 
@@ -46,16 +45,56 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).colorScheme.primary;
+    var secondaryColor = Theme.of(context).colorScheme.secondary;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 140),
+            const SizedBox(height: 40),
+            AnimatedTextKit(
+              animatedTexts: [
+                TypewriterAnimatedText(
+                  'Less Paperworking',
+                  textStyle: TextStyle(
+                    fontSize: 21.0,
+                    fontWeight: FontWeight.bold,
+                    color: secondaryColor,
+                  ),
+                  speed: const Duration(milliseconds: 75),
+                ),
+                TypewriterAnimatedText(
+                  'More Locksmithing',
+                  textStyle: TextStyle(
+                    fontSize: 21.0,
+                    fontWeight: FontWeight.bold,
+                    color: secondaryColor,
+                  ),
+                  speed: const Duration(milliseconds: 75),
+                ),
+                TypewriterAnimatedText(
+                  'Welcome to RS Forms.',
+                  textStyle: TextStyle(
+                    fontSize: 21.0,
+                    fontWeight: FontWeight.bold,
+                    color: secondaryColor,
+                  ),
+                  speed: const Duration(milliseconds: 75),
+                ),
+              ],
+              totalRepeatCount: 2,
+              isRepeatingAnimation: true,
+              stopPauseOnTap: true,
+              onFinished: () {},
+            ),
+            const SizedBox(
+              height: 70,
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Container(
-                constraints: BoxConstraints.tight(const Size.square(425.0)),
+                constraints: BoxConstraints.tight(const Size.square(415.0)),
                 child: form(),
               ),
             ),

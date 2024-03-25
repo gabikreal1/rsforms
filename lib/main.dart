@@ -16,10 +16,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-  // Fetching the initial value for the auth state
   User? value = await FirebaseAuth.instance.authStateChanges().first;
   String token = await FirebaseAuth.instance.currentUser?.getIdToken() ?? "";
   log(token);
+
   runApp(MyApp(
     authState: value,
   ));
@@ -28,7 +28,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   User? authState;
   MyApp({super.key, required this.authState});
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -44,6 +43,7 @@ class MyApp extends StatelessWidget {
         title: 'RsForms',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          splashFactory: NoSplash.splashFactory,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),

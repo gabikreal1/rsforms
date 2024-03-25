@@ -47,6 +47,7 @@ class _AnalyticsState extends State<Analytics> {
 
   @override
   Widget build(BuildContext context) {
+    var primaryColor = Theme.of(context).colorScheme.primary;
     return ChangeNotifierProxyProvider<JobProvider, AnalyticsProvider>(
       create: (BuildContext context) {
         return AnalyticsProvider(Provider.of<JobProvider>(context, listen: false).jobsCalendar);
@@ -55,7 +56,7 @@ class _AnalyticsState extends State<Analytics> {
         return AnalyticsProvider(value.jobsCalendar, previous?.currentMonth);
       },
       child: Scaffold(
-        backgroundColor: const Color(0xff31384d),
+        backgroundColor: Colors.white,
         body: SafeArea(
           child: Consumer<AnalyticsProvider>(
             builder: (context, value, child) {
@@ -64,175 +65,205 @@ class _AnalyticsState extends State<Analytics> {
                 (b, a) => a.totalEarnings.compareTo(b.totalEarnings),
               );
               int count = min(5, companies.length);
-              return Column(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 10, left: 10, bottom: 30, top: 5),
-                      child: Material(
-                        elevation: 20,
-                        color: Colors.white,
+              return Padding(
+                padding: const EdgeInsets.only(right: 5, left: 5, top: 5),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              var curmonth = value.currentMonth;
+                              curmonth = DateTime(curmonth.year, curmonth.month - 1);
+                              value.setCurrentMonth(curmonth);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_back_ios,
+                              color: Colors.black,
+                              size: 16,
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            "${value.currentMonth.year} ${getMonth(value.currentMonth.month)}",
+                            style: const TextStyle(color: Colors.black, fontSize: 18),
+                          ),
+                          Spacer(),
+                          IconButton(
+                            onPressed: () {
+                              var curmonth = value.currentMonth;
+                              curmonth = DateTime(curmonth.year, curmonth.month + 1);
+                              value.setCurrentMonth(curmonth);
+                            },
+                            icon: const Icon(
+                              Icons.arrow_forward_ios,
+                              color: Colors.black,
+                              size: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Row(children: [
+                            const Icon(Icons.account_balance_sharp),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              " ${getMonth(value.currentMonth.month)} Revenue ",
+                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                            ),
+                          ]),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 40),
+                          child: Text(
+                            "£ ${value.earningsForMonth.toStringAsFixed(2)}",
+                            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.w300),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 15),
+                      Material(
+                        color: const Color(0xff31384d),
                         borderRadius: BorderRadius.circular(20),
+                        elevation: 10,
                         child: Column(
                           children: [
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () {
-                                    var curmonth = value.currentMonth;
-                                    curmonth = DateTime(curmonth.year, curmonth.month - 1);
-                                    value.setCurrentMonth(curmonth);
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_back_ios,
-                                    color: Colors.black,
-                                    size: 16,
-                                  ),
-                                ),
-                                Spacer(),
-                                Text(
-                                  "${value.currentMonth.year} ${getMonth(value.currentMonth.month)}",
-                                  style: const TextStyle(color: Colors.black, fontSize: 18),
-                                ),
-                                Spacer(),
-                                IconButton(
-                                  onPressed: () {
-                                    var curmonth = value.currentMonth;
-                                    curmonth = DateTime(curmonth.year, curmonth.month + 1);
-                                    value.setCurrentMonth(curmonth);
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.black,
-                                    size: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 8.0),
-                                child: Row(children: [
-                                  const Icon(Icons.account_balance_sharp),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "${getMonth(value.currentMonth.month)} Revenue ",
-                                    style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
-                                  ),
-                                ]),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 40),
-                                child: Text(
-                                  "£ ${value.earningsForMonth.toStringAsFixed(2)}",
-                                  style: const TextStyle(fontSize: 27, fontWeight: FontWeight.w300),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 25),
-                            RevenueChart(
-                              data: value.totalDailyEarnings,
-                            ),
                             SizedBox(
                               height: 15,
                             ),
-                            if (value.currentDay != -1) ...[
-                              Text(
-                                  "${value.currentDay} ${getMonth(value.currentMonth.month)}: ${value.currentDayEarnings}"),
-                              Expanded(
-                                child: JobList(
-                                    joblist: value
-                                            .jobsCalendar[DateTime(
-                                                value.currentMonth.year, value.currentMonth.month, value.currentDay)]
-                                            ?.values
-                                            .toList() ??
-                                        [],
-                                    scrollable: true,
-                                    showPrice: true),
+                            if (value.currentDay != -1)
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(left: 45),
+                                    child: Text(
+                                      "${value.currentDay} ${getMonth(value.currentMonth.month)}",
+                                      style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 20.0),
+                                    child: Text(
+                                      "+£${value.currentDayEarnings.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                          color: Colors.green[300], fontSize: 16, fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
                               )
-                            ]
-
-                            // Expanded(
-                            //   child: ListView.builder(
-                            //     scrollDirection: Axis.vertical,
-                            //     shrinkWrap: true,
-                            //     itemCount: count,
-                            //     itemBuilder: ((context, index) {
-                            //       CompanyAnalytics companyAnalytics = companies[index];
-                            //       companyAnalytics.jobs.sort(
-                            //         (a, b) => a.earlyTime.compareTo(b.earlyTime),
-                            //       );
-                            //       return Padding(
-                            //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            //         child: Container(
-                            //           decoration: BoxDecoration(
-                            //             borderRadius: BorderRadius.circular(25.0),
-                            //             color: const Color(0xff31384d),
-                            //           ),
-                            //           child: Padding(
-                            //             padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 5),
-                            //             child: ExpansionTile(
-                            //               backgroundColor: Colors.transparent,
-                            //               shape: const Border(),
-                            //               controlAffinity: ListTileControlAffinity.leading,
-                            //               collapsedIconColor: Colors.white,
-                            //               title: Column(
-                            //                 children: [
-                            //                   Row(
-                            //                     children: [
-                            //                       Text(
-                            //                         '${formatProviderName(companyAnalytics.companyName)}',
-                            //                         style: const TextStyle(
-                            //                             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
-                            //                       ),
-                            //                       const SizedBox(
-                            //                         width: 4,
-                            //                       ),
-                            //                       const Spacer(),
-                            //                       Text(
-                            //                         '£${companyAnalytics.totalEarnings.toStringAsFixed(2)}',
-                            //                         style: const TextStyle(
-                            //                             color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
-                            //                       ),
-                            //                     ],
-                            //                   ),
-                            //                   const SizedBox(
-                            //                     height: 2,
-                            //                   ),
-                            //                   Align(
-                            //                     alignment: Alignment.centerLeft,
-                            //                     child: Text(
-                            //                       '${companyAnalytics.jobs.length} Jobs total this month',
-                            //                       style: const TextStyle(
-                            //                         color: Colors.white,
-                            //                         fontSize: 12,
-                            //                       ),
-                            //                     ),
-                            //                   ),
-                            //                 ],
-                            //               ),
-                            //               children: [
-                            //                 JobList(joblist: companyAnalytics.jobs, scrollable: true, showPrice: true)
-                            //               ],
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       );
-                            //     }),
-                            //   ),
-                            // ),
+                            else
+                              SizedBox(
+                                height: 23,
+                              ),
+                            RevenueChart(
+                              data: value.cumulativeDailyEarnings,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
+                              child: Column(
+                                children: [
+                                  (value.currentDay != -1)
+                                      ? JobList(
+                                          joblist: value
+                                                  .jobsCalendar[DateTime(value.currentMonth.year,
+                                                      value.currentMonth.month, value.currentDay)]
+                                                  ?.values
+                                                  .toList() ??
+                                              [],
+                                          scrollable: true,
+                                          showPrice: true)
+                                      : Container(
+                                          height: 10,
+                                        ),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
-                    ),
+
+                      // Expanded(
+                      //   child: ListView.builder(
+                      //     scrollDirection: Axis.vertical,
+                      //     shrinkWrap: true,
+                      //     itemCount: count,
+                      //     itemBuilder: ((context, index) {
+                      //       CompanyAnalytics companyAnalytics = companies[index];
+                      //       companyAnalytics.jobs.sort(
+                      //         (a, b) => a.earlyTime.compareTo(b.earlyTime),
+                      //       );
+                      //       return Padding(
+                      //         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                      //         child: Container(
+                      //           decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(25.0),
+                      //             color: const Color(0xff31384d),
+                      //           ),
+                      //           child: Padding(
+                      //             padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 5),
+                      //             child: ExpansionTile(
+                      //               backgroundColor: Colors.transparent,
+                      //               shape: const Border(),
+                      //               controlAffinity: ListTileControlAffinity.leading,
+                      //               collapsedIconColor: Colors.white,
+                      //               title: Column(
+                      //                 children: [
+                      //                   Row(
+                      //                     children: [
+                      //                       Text(
+                      //                         '${formatProviderName(companyAnalytics.companyName)}',
+                      //                         style: const TextStyle(
+                      //                             color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15),
+                      //                       ),
+                      //                       const SizedBox(
+                      //                         width: 4,
+                      //                       ),
+                      //                       const Spacer(),
+                      //                       Text(
+                      //                         '£${companyAnalytics.totalEarnings.toStringAsFixed(2)}',
+                      //                         style: const TextStyle(
+                      //                             color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
+                      //                       ),
+                      //                     ],
+                      //                   ),
+                      //                   const SizedBox(
+                      //                     height: 2,
+                      //                   ),
+                      //                   Align(
+                      //                     alignment: Alignment.centerLeft,
+                      //                     child: Text(
+                      //                       '${companyAnalytics.jobs.length} Jobs total this month',
+                      //                       style: const TextStyle(
+                      //                         color: Colors.white,
+                      //                         fontSize: 12,
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //               children: [
+                      //                 JobList(joblist: companyAnalytics.jobs, scrollable: true, showPrice: true)
+                      //               ],
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       );
+                      //     }),
+                      //   ),
+                      // ),
+                    ],
                   ),
-                ],
+                ),
               );
             },
           ),

@@ -7,6 +7,7 @@ import 'package:rsforms/Components/TextFields/auth_textfield.dart';
 import '../../APIs/auth_service.dart';
 import '../../Components/Buttons/main_button.dart';
 import '../../Components/Dialogs/auth_error_dialog.dart';
+import 'forgot_password.dart';
 
 class LoginForm extends StatefulWidget {
   final Function()? flip;
@@ -60,7 +61,14 @@ class _LoginFormState extends State<LoginForm> {
       });
     }
 
-    void navigateToForgotPassowrdPage() async {}
+    void navigateToForgotPassowrdPage() async {
+      await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ForgotPasswordPage(),
+        ),
+      );
+    }
 
     var primaryColor = Theme.of(context).colorScheme.primary;
     var secondaryColor = Theme.of(context).colorScheme.secondary;
@@ -111,20 +119,20 @@ class _LoginFormState extends State<LoginForm> {
                     ),
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 4,
                   ),
-                  // Padding(
-                  //   padding: EdgeInsets.only(right: 15),
-                  //   child: Align(
-                  //     alignment: Alignment.centerRight,
-                  //     child: RichText(
-                  //       text: TextSpan(
-                  //           text: "Forgot Password ?",
-                  //           style: TextStyle(color: primaryColor),
-                  //           recognizer: TapGestureRecognizer()..onTap = () => navigateToForgotPassowrdPage()),
-                  //     ),
-                  //   ),
-                  // ),
+                  Padding(
+                    padding: EdgeInsets.only(right: 10),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: RichText(
+                        text: TextSpan(
+                            text: "Forgot Password ?",
+                            style: TextStyle(color: Colors.blue[900], fontSize: 12),
+                            recognizer: TapGestureRecognizer()..onTap = () => navigateToForgotPassowrdPage()),
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 10,
                   ),
@@ -138,38 +146,12 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             const SizedBox(
-              height: 5,
+              height: 10,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
               child: Column(
                 children: [
-                  const Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5,
-                        ),
-                        child: Text(
-                          "OR",
-                          style: TextStyle(color: Colors.black, fontSize: 12),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
                   IntegratedAuthButton(
                     onTap: () async {
                       if (_signInProgress) {
@@ -198,7 +180,7 @@ class _LoginFormState extends State<LoginForm> {
                     inProgress: _googleSignInProgress,
                   ),
                   const SizedBox(
-                    height: 15,
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

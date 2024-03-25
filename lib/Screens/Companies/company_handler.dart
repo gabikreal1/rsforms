@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rsforms/Screens/Companies/company_adder.dart';
+import 'package:rsforms/Screens/Companies/company_handler_screen.dart';
 
 import '../../Providers/PictureProvider.dart';
 import '../../Providers/companyProvider.dart';
@@ -28,7 +29,7 @@ class _CompanyHandlerState extends State<CompanyHandler> {
         return Consumer<UserProvider>(
           builder: (context, provider, child) {
             if (provider.user.companyId == "-1") {
-              return CompanyAdder();
+              return CompanyHandlerScreen();
             } else if (provider.user.companyId == "0") {
               return Scaffold(
                 body: Center(
@@ -54,9 +55,9 @@ class _CompanyHandlerState extends State<CompanyHandler> {
                       create: (context) {
                         return JobProvider(Provider.of<CompanyProvider>(context, listen: false).company);
                       },
-                      update: (context, company, _) {
-                        _!.setCompany(company.company);
-                        return _;
+                      update: (context, company, previous) {
+                        previous!.setCompany(company.company);
+                        return previous;
                       },
                     ),
                     ChangeNotifierProvider<PictureProvider>(

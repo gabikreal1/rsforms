@@ -202,76 +202,81 @@ class _CompanyAdderState extends State<CompanyAdder> {
               isActive: curstep >= 8,
               state: checkStepState(8)),
         ];
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 15,
-                ),
-                const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Add  Your Company",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+    return ChangeNotifierProvider(create: (context) {
+      return UserProvider();
+    }, builder: (context, child) {
+      return Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 15,
                   ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Stepper(
-                  type: StepperType.vertical,
-                  physics: const ClampingScrollPhysics(),
-                  steps: getSteps(),
-                  currentStep: curstep,
-                  onStepTapped: (value) {
-                    if (value <= maxStep) {
-                      setState(() {
-                        curstep = value;
-                      });
-                    }
-                  },
-                  onStepCancel: () {
-                    if (curstep > 0) {
-                      setState(() {
-                        curstep -= 1;
-                      });
-                    } else {
-                      Navigator.pop(context);
-                    }
-                  },
-                  onStepContinue: () {
-                    if (curstep < getSteps().length - 1) {
-                      setState(() {
-                        if (curstep == maxStep) {
-                          maxStep += 1;
-                        }
-                        curstep += 1;
-                      });
-                    } else {
-                      Company company = Company(
-                          InvoiceCounter: int.tryParse(_companyInvoiceCounter.text.trim()) ?? 0,
-                          name: _companyName.text.trim(),
-                          address: _companyAddress.text.trim(),
-                          city: _companyTown.text.trim(),
-                          postcode: _companyPostcode.text.trim(),
-                          phoneNumber: _companyPhone.text.trim(),
-                          bankName: _companyBankName.text.trim(),
-                          accountNumber: _companyAccountNumber.text.trim(),
-                          sortCode: _companySortCode.text.trim());
-                      var provider = Provider.of<UserProvider>(context, listen: false);
-                      provider.addCompany(company);
-                    }
-                  },
-                ),
-              ],
+                  const Align(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Add  Your Company",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Stepper(
+                    type: StepperType.vertical,
+                    physics: const ClampingScrollPhysics(),
+                    steps: getSteps(),
+                    currentStep: curstep,
+                    onStepTapped: (value) {
+                      if (value <= maxStep) {
+                        setState(() {
+                          curstep = value;
+                        });
+                      }
+                    },
+                    onStepCancel: () {
+                      if (curstep > 0) {
+                        setState(() {
+                          curstep -= 1;
+                        });
+                      } else {
+                        Navigator.pop(context);
+                      }
+                    },
+                    onStepContinue: () async {
+                      if (curstep < getSteps().length - 1) {
+                        setState(() {
+                          if (curstep == maxStep) {
+                            maxStep += 1;
+                          }
+                          curstep += 1;
+                        });
+                      } else {
+                        Company company = Company(
+                            InvoiceCounter: int.tryParse(_companyInvoiceCounter.text.trim()) ?? 0,
+                            name: _companyName.text.trim(),
+                            address: _companyAddress.text.trim(),
+                            city: _companyTown.text.trim(),
+                            postcode: _companyPostcode.text.trim(),
+                            phoneNumber: _companyPhone.text.trim(),
+                            bankName: _companyBankName.text.trim(),
+                            accountNumber: _companyAccountNumber.text.trim(),
+                            sortCode: _companySortCode.text.trim());
+                        var provider = Provider.of<UserProvider>(context, listen: false);
+                        await provider.addCompany(company);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

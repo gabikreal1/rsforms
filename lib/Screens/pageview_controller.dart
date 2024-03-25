@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:rsforms/Screens/Analytics/analytics.dart';
-import 'package:rsforms/Screens/calendar.dart';
+import 'package:rsforms/Screens/Jobs/calendar.dart';
 import 'package:rsforms/Screens/Settings/settings.dart';
 import 'package:rsforms/Screens/uncompleted_jobs.dart';
 
@@ -49,8 +49,8 @@ class _PageviewControllState extends State<PageviewControll> {
               haptic: true,
               tabs: const [
                 GButton(
-                  icon: Icons.ac_unit,
-                  text: 'Home',
+                  icon: Icons.calendar_month,
+                  text: 'Calendar',
                   iconActiveColor: Colors.black,
                   iconColor: Colors.white,
                 ),

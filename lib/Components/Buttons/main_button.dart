@@ -91,10 +91,10 @@ class IntegratedAuthButton extends StatelessWidget {
               padding: !inProgress
                   ? const EdgeInsets.only(
                       left: 9,
-                      bottom: 12,
-                      top: 12,
+                      bottom: 15,
+                      top: 15,
                     )
-                  : const EdgeInsets.all(0),
+                  : const EdgeInsets.symmetric(vertical: 14.2),
               child: Center(
                 child: inProgress
                     ? Container(
