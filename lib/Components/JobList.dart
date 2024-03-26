@@ -10,8 +10,9 @@ import '../Screens/Jobs/job_editor.dart';
 class JobList extends StatefulWidget {
   final List<Job> joblist;
   final bool scrollable;
+  final BuildContext context;
   final bool? showPrice;
-  const JobList({super.key, required this.joblist, required this.scrollable, this.showPrice});
+  const JobList({super.key, required this.joblist, required this.scrollable, this.showPrice, required this.context});
 
   @override
   State<JobList> createState() => _JobListState();
@@ -94,7 +95,7 @@ class _JobListState extends State<JobList> {
                             onPressed: () async {
                               Navigator.pop(context);
                               await Navigator.push(
-                                context,
+                                widget.context,
                                 MaterialPageRoute(
                                   builder: (context) => JobEditor(
                                     jobId: job.id!,
@@ -120,7 +121,7 @@ class _JobListState extends State<JobList> {
                                           onPressed: () => Navigator.pop(context), child: Text("Cancel")),
                                       CupertinoDialogAction(
                                         onPressed: () {
-                                          Provider.of<JobProvider>(context, listen: false).deleteJob(job.id!);
+                                          Provider.of<JobProvider>(widget.context, listen: false).deleteJob(job.id!);
                                           Navigator.pop(context);
                                         },
                                         isDestructiveAction: true,

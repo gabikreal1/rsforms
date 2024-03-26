@@ -103,6 +103,7 @@ class _UncompletedJobsState extends State<UncompletedJobs> {
                         ],
                       ),
                       JobList(
+                        context: context,
                         joblist: joblist,
                         scrollable: false,
                       ),

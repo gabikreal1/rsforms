@@ -156,46 +156,54 @@ class _PicturePageState extends State<PicturePage> {
                             onTap: () {
                               selectImage(imageLink);
                             },
-                            child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: CachedNetworkImageProvider(imageLink),
-                                  ),
-                                ),
-                                child: (_selectedImages.contains(imageLink))
-                                    ? Container(
-                                        decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.25),
-                                            borderRadius: BorderRadius.circular(10)),
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(4.0),
-                                          child: Align(
-                                            alignment: Alignment.bottomRight,
-                                            child: Icon(
-                                              Icons.check_circle_outline_outlined,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : (_imageSelectedState)
+                            child: CachedNetworkImage(
+                              imageUrl: imageLink,
+                              placeholder: (context, url) {
+                                return Container(height: 10, width: 10, child: CircularProgressIndicator.adaptive());
+                              },
+                              imageBuilder: (context, imageProvider) {
+                                return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      image: DecorationImage(
+                                        fit: BoxFit.cover,
+                                        image: imageProvider,
+                                      ),
+                                    ),
+                                    child: (_selectedImages.contains(imageLink))
                                         ? Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.blue.withOpacity(0.25),
+                                                borderRadius: BorderRadius.circular(10)),
                                             child: const Padding(
                                               padding: EdgeInsets.all(4.0),
                                               child: Align(
                                                 alignment: Alignment.bottomRight,
                                                 child: Icon(
-                                                  Icons.circle_outlined,
+                                                  Icons.check_circle_outline_outlined,
                                                   color: Colors.white,
                                                   size: 20,
                                                 ),
                                               ),
                                             ),
                                           )
-                                        : Container()),
+                                        : (_imageSelectedState)
+                                            ? Container(
+                                                child: const Padding(
+                                                  padding: EdgeInsets.all(4.0),
+                                                  child: Align(
+                                                    alignment: Alignment.bottomRight,
+                                                    child: Icon(
+                                                      Icons.circle_outlined,
+                                                      color: Colors.white,
+                                                      size: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
+                                            : Container());
+                              },
+                            ),
                           );
                         },
                       ),

@@ -118,13 +118,12 @@ class JobEditor extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return const Center(
+                                  return Center(
                                     child: CircularProgressIndicator.adaptive(),
                                   );
                                 });
                             await pictureProvider.getImageLinkList();
-                            Navigator.pop(context);
-
+                            Navigator.of(context, rootNavigator: true).pop();
                             await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -503,16 +502,12 @@ class JobEditor extends StatelessWidget {
                                                           ElevatedButton.icon(
                                                             onPressed: () async {
                                                               showDialog(
-                                                                context: context,
-                                                                builder: ((context) {
-                                                                  return const Center(
-                                                                    child: SizedBox(
-                                                                        height: 40,
-                                                                        width: 40,
-                                                                        child: CircularProgressIndicator.adaptive()),
-                                                                  );
-                                                                }),
-                                                              );
+                                                                  context: context,
+                                                                  builder: (context) {
+                                                                    return Center(
+                                                                      child: CircularProgressIndicator.adaptive(),
+                                                                    );
+                                                                  });
                                                               if (job.invoiceNumber == "Hasn't been set yet") {
                                                                 //
                                                                 await companyProvider.incrementInvoiceCounter();
@@ -527,9 +522,7 @@ class JobEditor extends StatelessWidget {
                                                                   job: job,
                                                                   services: value.services);
                                                               final pdfInvoice = await InvoiceApi.generate(invoice);
-                                                              Navigator.pop(context);
-
-                                                              // ignore: use_build_context_synchronously
+                                                              Navigator.of(context, rootNavigator: true).pop();
                                                               await Navigator.push(
                                                                 context,
                                                                 MaterialPageRoute(

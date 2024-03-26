@@ -174,6 +174,7 @@ class _AnalyticsState extends State<Analytics> {
                                 children: [
                                   (value.currentDay != -1)
                                       ? JobList(
+                                          context: context,
                                           joblist: value
                                                   .jobsCalendar[DateTime(value.currentMonth.year,
                                                       value.currentMonth.month, value.currentDay)]

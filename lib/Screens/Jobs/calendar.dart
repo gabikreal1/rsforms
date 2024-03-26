@@ -163,6 +163,7 @@ class _CalendarState extends State<Calendar> {
                           var joblist = jobProvider.jobsCalendar[jobprovider.selectedDay]!.values.toList();
                           joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
                           return JobList(
+                            context: context,
                             joblist: joblist,
                             scrollable: true,
                           );
