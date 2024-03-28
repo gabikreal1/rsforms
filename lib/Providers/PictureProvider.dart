@@ -56,7 +56,7 @@ class PictureProvider with ChangeNotifier {
   }
 
   Future<void> getImageLinkList() async {
-    List<String> imageIds = [];
+    List<String> _imageIds = [];
     _firebaseSubscription = await FirebaseFirestore.instance
         .collection('companies')
         .doc(_companyId)
@@ -66,11 +66,12 @@ class PictureProvider with ChangeNotifier {
         .get()
         .then((values) async {
       _imageLinkList.clear();
+      _imageIds.clear();
 
       for (var image in values.docs) {
-        imageIds.add(image.id);
+        _imageIds.add(image.id);
       }
-      for (var imageId in imageIds) {
+      for (var imageId in _imageIds) {
         var imageUrl = await cacheImage('images/${imageId}.jpg');
         _imageLinkList.add(imageUrl);
       }

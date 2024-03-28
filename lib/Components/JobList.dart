@@ -40,8 +40,8 @@ class _JobListState extends State<JobList> {
   }
 
   String formatProviderName(String providerName) {
-    if (providerName.length > 18) {
-      return "${providerName.substring(0, 15)}...";
+    if (providerName.length > 21) {
+      return "${providerName.substring(0, 18)}...";
     }
     return providerName;
   }
@@ -156,24 +156,28 @@ class _JobListState extends State<JobList> {
                         SizedBox(
                           width: 4,
                         ),
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: job.completed
-                                ? Colors.green
-                                : Colors.yellow, // color that contrasts with the cell color
-                          ),
-                        ),
                         Spacer(),
-                        widget.showPrice ?? false == true
-                            ? Text(
-                                '+£${job.price?.toStringAsFixed(2) ?? 0}',
-                                style: TextStyle(color: Colors.green[600], fontSize: 13, fontWeight: FontWeight.bold),
-                              )
-                            : Text('${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
-                                style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.bold)),
+                        if (widget.showPrice == true)
+                          Text(
+                            '+£${job.price?.toStringAsFixed(2) ?? 0}',
+                            style: TextStyle(color: Colors.green[600], fontSize: 13, fontWeight: FontWeight.bold),
+                          )
+                        else if (job.completed == true)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5.0),
+                            child: Icon(
+                              Icons.check_circle_outline,
+                              color: Colors.green[600],
+                            ),
+                          )
+                        else
+                          Text('${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
+                              style: TextStyle(
+                                  color: job.earlyTime.difference(DateTime.now()).inHours < 3
+                                      ? Colors.yellow[800]
+                                      : Colors.black,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold))
                       ],
                     ),
                     SizedBox(

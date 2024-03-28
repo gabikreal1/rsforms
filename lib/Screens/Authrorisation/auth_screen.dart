@@ -94,7 +94,8 @@ class _AuthScreenState extends State<AuthScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
               child: Container(
-                constraints: BoxConstraints.tight(const Size.square(415.0)),
+                height: 420,
+                width: 350,
                 child: form(),
               ),
             ),

@@ -79,6 +79,7 @@ class _PageviewControllState extends State<PageviewControll> {
       ),
       body: PageView(
         controller: _pageController,
+        physics: NeverScrollableScrollPhysics(),
         onPageChanged: (index) {
           if (_inPageSwitchAnimation == false) {
             setState(() {

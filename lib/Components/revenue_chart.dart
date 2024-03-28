@@ -42,8 +42,8 @@ class _RevenueChartState extends State<RevenueChart> {
     const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white);
     Widget text;
     int intVal = value.toInt();
-    if (intVal == 0) {
-      text = const Text('1', style: style);
+    if ((intVal + 1) % 5 == 0 && intVal <= 26) {
+      text = Text((intVal + 1).toString(), style: style);
     } else if (intVal == widget.data.length - 1) {
       text = Text((widget.data.length).toString(), style: style);
     } else {
@@ -69,32 +69,51 @@ class _RevenueChartState extends State<RevenueChart> {
   LineChartData mainData() {
     return LineChartData(
       lineTouchData: LineTouchData(
-        touchCallback: (p0, p1) {
-          if (p1 != null && p1.lineBarSpots != null && p1.lineBarSpots!.isNotEmpty) {
-            var x = p1.lineBarSpots!.first.x;
-            if (Provider.of<AnalyticsProvider>(context, listen: false).currentDay != x.toInt() && Platform.isIOS) {
-              HapticFeedback.lightImpact();
+          touchCallback: (p0, p1) {
+            if (p1 != null && p1.lineBarSpots != null && p1.lineBarSpots!.isNotEmpty) {
+              var x = p1.lineBarSpots!.first.x;
+              if (Provider.of<AnalyticsProvider>(context, listen: false).currentDay != x.toInt() + 1) {
+                HapticFeedback.lightImpact();
+              }
+              Provider.of<AnalyticsProvider>(context, listen: false).setCurrentDay(x);
             }
-            Provider.of<AnalyticsProvider>(context, listen: false).setCurrentDay(x);
-          }
-        },
-        touchSpotThreshold: 1000,
-        handleBuiltInTouches: false,
-      ),
+          },
+          touchSpotThreshold: 1000,
+          handleBuiltInTouches: true,
+          touchTooltipData: LineTouchTooltipData(
+            tooltipRoundedRadius: 10,
+            fitInsideVertically: true,
+            tooltipBgColor: Colors.white,
+            showOnTopOfTheChartBoxArea: false,
+            getTooltipItems: (touchedSpots) {
+              return touchedSpots.map((LineBarSpot touchedSpot) {
+                final textStyle = TextStyle(
+                  color: const Color(0xff31384d),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                );
+                return LineTooltipItem(
+                  '£${(touchedSpot.y * 100).toInt()}',
+                  textStyle,
+                );
+              }).toList();
+            },
+          )),
       gridData: FlGridData(
-        show: false,
+        show: true,
         drawVerticalLine: true,
-        horizontalInterval: 1,
-        verticalInterval: 1,
+        drawHorizontalLine: true,
+        horizontalInterval: 15,
+        verticalInterval: 5,
         getDrawingHorizontalLine: (value) {
           return const FlLine(
-            color: Colors.black,
+            color: Colors.grey,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
           return const FlLine(
-            color: Colors.black,
+            color: Colors.grey,
             strokeWidth: 1,
           );
         },
@@ -137,7 +156,7 @@ class _RevenueChartState extends State<RevenueChart> {
           spots: widget.data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value / 100)).toList(),
           isCurved: true,
           curveSmoothness: 0.3,
-          preventCurveOvershootingThreshold: 0,
+          preventCurveOvershootingThreshold: 10,
           preventCurveOverShooting: true,
           gradient: LinearGradient(
             colors: gradientColors,
