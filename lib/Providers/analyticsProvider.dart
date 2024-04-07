@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import '../Models/jobModel.dart';
@@ -58,14 +59,34 @@ class AnalyticsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentDay(double day) {
-    _currentDay = day.toInt() + 1;
-    _currentDayEarnings = _totalDailyEarnings[day.toInt()];
+  void setCurrentDay(int day) {
+    _currentDay = day.toInt();
+    _currentDayEarnings = _totalDailyEarnings[day.toInt() - 1];
     notifyListeners();
   }
 
   int getMonthLength(DateTime CurrentMonth) {
-    return DateTime(CurrentMonth.year, CurrentMonth.month + 1).difference(CurrentMonth).inDays;
+    // Edge case for febuary in leap years
+    if (CurrentMonth.year % 4 == 0 && CurrentMonth.month == 2) {
+      return 29;
+    }
+    //map of month - monthLenght
+    Map<int, int> monthToMonthLength = {
+      1: 31,
+      2: 28,
+      3: 31,
+      4: 30,
+      5: 31,
+      6: 30,
+      7: 31,
+      8: 31,
+      9: 30,
+      10: 31,
+      11: 30,
+      12: 31,
+    };
+
+    return monthToMonthLength[CurrentMonth.month] ?? 0;
   }
 
   DateTime monthAndYear(DateTime time) {
@@ -80,14 +101,21 @@ class AnalyticsProvider with ChangeNotifier {
   void populateCurrentMonthJobs() {
     _subCompanyToJobMap.clear();
     _totalMonthly.clear();
-    _totalDailyEarnings = List.filled(getMonthLength(_currentMonth), 0);
-    _cumulativeDailyEarnings = List.filled(getMonthLength(_currentMonth), 0);
+
+    if (_currentMonth.month == DateTime.now().month && _currentMonth.year == DateTime.now().year) {
+      _totalDailyEarnings = List.filled(DateTime.now().day, 0);
+      _cumulativeDailyEarnings = List.filled(DateTime.now().day, 0);
+    } else {
+      _totalDailyEarnings = List.filled(getMonthLength(_currentMonth), 0);
+      _cumulativeDailyEarnings = List.filled(getMonthLength(_currentMonth), 0);
+    }
 
     var jobDays = _jobsCalendar.keys;
     for (var day in jobDays) {
-      if (day.month == _currentMonth.month) {
+      if (day.month == _currentMonth.month && day.year == _currentMonth.year) {
         for (var job in _jobsCalendar[day]!.values) {
-          if (job.price != 0) {
+          //checks if the job price is more than 0 and checks if the price is assigned on the day or after.
+          if (job.price != 0 && day.day <= _totalDailyEarnings.length) {
             _totalDailyEarnings[day.day - 1] += job.price!;
             _subCompanyToJobMap.putIfAbsent(job.subCompany, () => CompanyAnalytics([], job.subCompany)).addJob(job);
             _totalMonthly.addJob(job);

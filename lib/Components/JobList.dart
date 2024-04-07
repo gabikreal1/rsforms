@@ -1,3 +1,6 @@
+import 'dart:ffi';
+
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,7 +32,17 @@ class _JobListState extends State<JobList> {
       }
       if (await canLaunchUrl(googleUrlAndroid)) await launchUrl(googleUrlAndroid, mode: LaunchMode.externalApplication);
     } catch (e) {
-      print(e);
+      return;
+    }
+  }
+
+  void callPhoneNumber(String phoneNumber) async {
+    Uri url = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
     }
   }
 
@@ -51,18 +64,18 @@ class _JobListState extends State<JobList> {
     return ListView.builder(
       scrollDirection: Axis.vertical,
       shrinkWrap: true,
-      physics: widget.scrollable ? ScrollPhysics() : NeverScrollableScrollPhysics(),
+      physics: widget.scrollable ? const ScrollPhysics() : const NeverScrollableScrollPhysics(),
       itemCount: widget.joblist.length,
       itemBuilder: (context, index) {
         final job = widget.joblist[index];
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 4),
+          padding: const EdgeInsets.symmetric(vertical: 4),
           child: Material(
             borderRadius: BorderRadius.circular(25.0),
             color: Colors.white,
             elevation: 10,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6.0),
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: ListTile(
                 onTap: () async {
                   //todo:rerouting
@@ -81,44 +94,21 @@ class _JobListState extends State<JobList> {
                     context: context,
                     builder: (context) {
                       return CupertinoActionSheet(
-                        title: Text("What actions do you want to take?"),
+                        title: const Text("What action do you want to take?"),
                         actions: [
                           CupertinoActionSheetAction(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              launchMaps(job.postcode);
-                            },
-                            child: Text("✈️ Navigate"),
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Text("Edit"),
-                            onPressed: () async {
-                              Navigator.pop(context);
-                              await Navigator.push(
-                                widget.context,
-                                MaterialPageRoute(
-                                  builder: (context) => JobEditor(
-                                    jobId: job.id!,
-                                    day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                          CupertinoActionSheetAction(
-                            child: Text("Delete"),
                             onPressed: () async {
                               Navigator.pop(context);
                               showCupertinoDialog(
                                 context: context,
                                 builder: (context) {
                                   return CupertinoAlertDialog(
-                                    title: Text(
+                                    title: const Text(
                                       "Confirm Deletion",
                                     ),
                                     actions: [
                                       CupertinoDialogAction(
-                                          onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+                                          onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
                                       CupertinoDialogAction(
                                         onPressed: () {
                                           Provider.of<JobProvider>(widget.context, listen: false).deleteJob(job.id!);
@@ -133,10 +123,11 @@ class _JobListState extends State<JobList> {
                               );
                             },
                             isDestructiveAction: true,
+                            child: const Text("Delete"),
                           ),
                         ],
                         cancelButton: CupertinoActionSheetAction(
-                          child: Text("Cancel"),
+                          child: const Text("Cancel"),
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -150,17 +141,22 @@ class _JobListState extends State<JobList> {
                     Row(
                       children: [
                         Text(
-                          '${formatProviderName(job!.subCompany)}',
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
+                          formatProviderName(job.subCompany),
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 4,
                         ),
-                        Spacer(),
+                        const Spacer(),
                         if (widget.showPrice == true)
                           Text(
                             '+£${job.price?.toStringAsFixed(2) ?? 0}',
                             style: TextStyle(color: Colors.green[600], fontSize: 13, fontWeight: FontWeight.bold),
+                          )
+                        else if (int.tryParse(job.invoiceNumber) != null && job.invoiceNumber != "-1")
+                          Text(
+                            'Invoice #${job.invoiceNumber}',
+                            style: TextStyle(color: Colors.green[600], fontSize: 12, fontWeight: FontWeight.bold),
                           )
                         else if (job.completed == true)
                           Padding(
@@ -180,29 +176,67 @@ class _JobListState extends State<JobList> {
                                   fontWeight: FontWeight.bold))
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 2,
                     ),
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
                         '${job.address}',
-                        style: TextStyle(color: Colors.black, fontSize: 12),
+                        style: const TextStyle(color: Colors.black, fontSize: 12),
                       ),
                     ),
                     Row(
                       children: [
-                        Text(
-                          '${job.postcode} ',
-                          style: TextStyle(color: Colors.black, fontSize: 12),
-                        ),
-                        Spacer(),
+                        // Text(
+                        //   '${job.postcode} ',
+                        //   style: const TextStyle(color: Colors.black, fontSize: 12),
+                        // ),
+                        const Spacer(),
                         Text(
                           '${job.subContractor.toUpperCase()} ',
-                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
+                          style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
                         ),
                       ],
                     ),
+                    if ((widget.showPrice == false || widget.showPrice == null) &&
+                        (job.postcode.isNotEmpty || job.contactNumber.isNotEmpty))
+                      // ExpandableNotifier(
+                      //   child: Expandable(
+                      //       collapsed: ExpandableButton(child: Icon(Icons.keyboard_arrow_down)),
+                      //       expanded:
+                      Column(
+                        children: [
+                          if (job.postcode.isNotEmpty)
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextButton.icon(
+                                style: TextButton.styleFrom(visualDensity: VisualDensity(vertical: -2)),
+                                onPressed: () => launchMaps(job.postcode),
+                                icon: Icon(
+                                  Icons.navigation_outlined,
+                                  color: Colors.black,
+                                ),
+                                label: Text(
+                                  job.postcode,
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ),
+                            ),
+                          if (job.contactNumber.isNotEmpty)
+                            SizedBox(
+                              width: double.infinity,
+                              child: TextButton(
+                                  style: TextButton.styleFrom(visualDensity: VisualDensity(vertical: -2)),
+                                  onPressed: () => callPhoneNumber(job.contactNumber),
+                                  child: Text(
+                                    "📞 ${job.contactNumber} ",
+                                    style: TextStyle(fontSize: 14),
+                                  )),
+                            )
+                        ],
+                        // )),
+                      )
                   ],
                 ),
               ),

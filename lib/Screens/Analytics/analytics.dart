@@ -191,7 +191,7 @@ class _AnalyticsState extends State<Analytics> {
                                       height: 23,
                                     ),
                                   RevenueChart(
-                                    data: value.cumulativeDailyEarnings,
+                                    revenueData: value.cumulativeDailyEarnings,
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10),
@@ -222,6 +222,7 @@ class _AnalyticsState extends State<Analytics> {
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 10.0),
                                 child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
                                   itemCount: count,

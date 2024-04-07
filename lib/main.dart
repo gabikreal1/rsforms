@@ -17,8 +17,6 @@ void main() async {
   );
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   User? value = await FirebaseAuth.instance.authStateChanges().first;
-  String token = await FirebaseAuth.instance.currentUser?.getIdToken() ?? "";
-  log(token);
 
   runApp(MyApp(
     authState: value,

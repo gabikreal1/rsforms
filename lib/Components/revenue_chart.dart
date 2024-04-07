@@ -8,9 +8,9 @@ import 'package:rsforms/Providers/analyticsProvider.dart';
 import 'dart:io' show Platform;
 
 class RevenueChart extends StatefulWidget {
-  final List<double> data;
+  final List<double> revenueData;
 
-  const RevenueChart({super.key, required this.data});
+  const RevenueChart({super.key, required this.revenueData});
 
   @override
   State<RevenueChart> createState() => _RevenueChartState();
@@ -40,12 +40,15 @@ class _RevenueChartState extends State<RevenueChart> {
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white);
+
     Widget text;
-    int intVal = value.toInt();
-    if ((intVal + 1) % 5 == 0 && intVal <= 26) {
-      text = Text((intVal + 1).toString(), style: style);
-    } else if (intVal == widget.data.length - 1) {
-      text = Text((widget.data.length).toString(), style: style);
+
+    int curDay = value.toInt();
+
+    if ((curDay + 1) % 5 == 0 && curDay <= 26) {
+      text = Text((curDay + 1).toString(), style: style);
+    } else if (curDay == widget.revenueData.length - 1) {
+      text = Text((widget.revenueData.length).toString(), style: style);
     } else {
       text = const Text('', style: style);
     }
@@ -58,6 +61,8 @@ class _RevenueChartState extends State<RevenueChart> {
 
   Widget leftTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Colors.white);
+
+    //step 3k
     if (value % 30 != 0) {
       return Container();
     }
@@ -69,13 +74,14 @@ class _RevenueChartState extends State<RevenueChart> {
   LineChartData mainData() {
     return LineChartData(
       lineTouchData: LineTouchData(
-          touchCallback: (p0, p1) {
+          touchCallback: (_, p1) {
+            AnalyticsProvider analyticsProvider = Provider.of<AnalyticsProvider>(context, listen: false);
             if (p1 != null && p1.lineBarSpots != null && p1.lineBarSpots!.isNotEmpty) {
-              var x = p1.lineBarSpots!.first.x;
-              if (Provider.of<AnalyticsProvider>(context, listen: false).currentDay != x.toInt() + 1) {
+              var day = p1.lineBarSpots!.first.x.toInt() + 1;
+              if (analyticsProvider.currentDay != day) {
                 HapticFeedback.lightImpact();
               }
-              Provider.of<AnalyticsProvider>(context, listen: false).setCurrentDay(x);
+              analyticsProvider.setCurrentDay(day);
             }
           },
           touchSpotThreshold: 1000,
@@ -87,8 +93,8 @@ class _RevenueChartState extends State<RevenueChart> {
             showOnTopOfTheChartBoxArea: false,
             getTooltipItems: (touchedSpots) {
               return touchedSpots.map((LineBarSpot touchedSpot) {
-                final textStyle = TextStyle(
-                  color: const Color(0xff31384d),
+                const textStyle = TextStyle(
+                  color: Color(0xff31384d),
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
                 );
@@ -148,12 +154,12 @@ class _RevenueChartState extends State<RevenueChart> {
         border: Border.all(color: Colors.white),
       ),
       minX: 0,
-      maxX: widget.data.length - 1,
+      maxX: widget.revenueData.length - 1,
       minY: 0,
-      maxY: widget.data.reduce(max) / 100 + 5,
+      maxY: widget.revenueData.reduce(max) / 100 + 5,
       lineBarsData: [
         LineChartBarData(
-          spots: widget.data.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value / 100)).toList(),
+          spots: widget.revenueData.asMap().entries.map((e) => FlSpot(e.key.toDouble(), e.value / 100)).toList(),
           isCurved: true,
           curveSmoothness: 0.3,
           preventCurveOvershootingThreshold: 10,
