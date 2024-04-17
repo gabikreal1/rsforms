@@ -90,14 +90,17 @@ class _AuthScreenState extends State<AuthScreen> {
               onFinished: () {},
             ),
             const SizedBox(
-              height: 70,
+              height: 90,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: Container(
-                height: 420,
-                width: 350,
-                child: form(),
+            Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: Container(
+                  height: 420,
+                  width: 350,
+                  child: form(),
+                ),
               ),
             ),
             const SizedBox(

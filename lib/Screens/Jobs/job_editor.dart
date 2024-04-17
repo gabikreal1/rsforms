@@ -46,13 +46,6 @@ const List<Widget> icons = <Widget>[
   ),
 ];
 
-String formatDescription(String description) {
-  if (description.length > 18) {
-    return "${description.substring(0, 15)}...";
-  }
-  return description;
-}
-
 class JobEditor extends StatelessWidget {
   final String jobId;
   final DateTime day;
@@ -118,7 +111,7 @@ class JobEditor extends StatelessWidget {
                             showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return Center(
+                                  return const Center(
                                     child: CircularProgressIndicator.adaptive(),
                                   );
                                 });
@@ -504,7 +497,7 @@ class JobEditor extends StatelessWidget {
                                                               showDialog(
                                                                   context: context,
                                                                   builder: (context) {
-                                                                    return Center(
+                                                                    return const Center(
                                                                       child: CircularProgressIndicator.adaptive(),
                                                                     );
                                                                   });

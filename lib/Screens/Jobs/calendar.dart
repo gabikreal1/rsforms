@@ -150,7 +150,7 @@ class _CalendarState extends State<Calendar> {
               Flexible(
                 flex: 5,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
                     decoration: const BoxDecoration(
                         color: Color(0xff31384d),
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(50), topRight: Radius.circular(50))),

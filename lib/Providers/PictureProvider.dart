@@ -31,6 +31,7 @@ class PictureProvider with ChangeNotifier {
 
   List<String> get imageList => _imageLinkList;
   PictureProvider() {}
+
   @override
   void dispose() {
     _firebaseSubscription?.cancel();
@@ -56,7 +57,6 @@ class PictureProvider with ChangeNotifier {
   }
 
   Future<void> getImageLinkList() async {
-    List<String> _imageIds = [];
     _firebaseSubscription = await FirebaseFirestore.instance
         .collection('companies')
         .doc(_companyId)
@@ -66,15 +66,19 @@ class PictureProvider with ChangeNotifier {
         .get()
         .then((values) async {
       _imageLinkList.clear();
-      _imageIds.clear();
+
+      List<String> imageLinkList = [];
+      List<String> imageIds = [];
 
       for (var image in values.docs) {
-        _imageIds.add(image.id);
+        imageIds.add(image.id);
       }
-      for (var imageId in _imageIds) {
-        var imageUrl = await cacheImage('images/${imageId}.jpg');
-        _imageLinkList.add(imageUrl);
+      for (var imageId in imageIds) {
+        String imageUrl = await cacheImage('images/$imageId.jpg');
+        imageLinkList.add(imageUrl);
       }
+      _imageLinkList = imageLinkList;
+      print(_imageLinkList.length);
       notifyListeners();
     });
   }

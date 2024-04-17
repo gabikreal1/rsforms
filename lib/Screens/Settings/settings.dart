@@ -3,6 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rsforms/Components/Buttons/settings_button.dart';
+import 'package:rsforms/Screens/Settings/company_contractors.dart';
+import 'package:rsforms/Screens/Settings/company_frequent_clients.dart';
+import 'package:rsforms/Screens/Settings/company_members.dart';
+import 'package:rsforms/Screens/Settings/job_template_editor.dart';
 
 import 'company_editor.dart';
 
@@ -41,13 +45,21 @@ class _SettingsState extends State<Settings> {
     await Navigator.push(context, MaterialPageRoute(builder: (context) => ComapanyEditor()));
   }
 
-  void navigateToCompanyMembers() async {}
+  void navigateToJobTemplate() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => JobTemplatePage()));
+  }
 
-  void navigateToJobTemplate() async {}
+  void navigateToCompanyMembers() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyMembersPage()));
+  }
 
-  void navigateToContractors() async {}
+  void navigateToContractors() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyContractorsPage()));
+  }
 
-  void navigateToFrequentClients() async {}
+  void navigateToFrequentClients() async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyFrequentClientsPage()));
+  }
 
   void exitCompany() async {}
   void logout() {

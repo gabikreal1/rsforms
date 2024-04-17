@@ -75,7 +75,7 @@ class _JobListState extends State<JobList> {
             color: Colors.white,
             elevation: 10,
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              padding: EdgeInsets.only(top: 7.00, bottom: (widget.showPrice ?? false) ? 6.00 : 0),
               child: ListTile(
                 onTap: () async {
                   //todo:rerouting
@@ -182,16 +182,16 @@ class _JobListState extends State<JobList> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        '${job.address}',
+                        job.address,
                         style: const TextStyle(color: Colors.black, fontSize: 12),
                       ),
                     ),
                     Row(
                       children: [
-                        // Text(
-                        //   '${job.postcode} ',
-                        //   style: const TextStyle(color: Colors.black, fontSize: 12),
-                        // ),
+                        Text(
+                          job.postcode,
+                          style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w500),
+                        ),
                         const Spacer(),
                         Text(
                           '${job.subContractor.toUpperCase()} ',
@@ -205,33 +205,47 @@ class _JobListState extends State<JobList> {
                       //   child: Expandable(
                       //       collapsed: ExpandableButton(child: Icon(Icons.keyboard_arrow_down)),
                       //       expanded:
-                      Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           if (job.postcode.isNotEmpty)
                             SizedBox(
-                              width: double.infinity,
+                              width: 120,
                               child: TextButton.icon(
-                                style: TextButton.styleFrom(visualDensity: VisualDensity(vertical: -2)),
+                                style: TextButton.styleFrom(
+                                    visualDensity: VisualDensity(
+                                      vertical: -2,
+                                    ),
+                                    alignment: Alignment.centerLeft),
                                 onPressed: () => launchMaps(job.postcode),
                                 icon: Icon(
                                   Icons.navigation_outlined,
                                   color: Colors.black,
+                                  size: 18,
                                 ),
                                 label: Text(
-                                  job.postcode,
-                                  style: TextStyle(fontSize: 14),
+                                  "Navigate",
+                                  softWrap: false,
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               ),
                             ),
                           if (job.contactNumber.isNotEmpty)
                             SizedBox(
-                              width: double.infinity,
-                              child: TextButton(
-                                  style: TextButton.styleFrom(visualDensity: VisualDensity(vertical: -2)),
+                              width: 150,
+                              child: TextButton.icon(
+                                  style: TextButton.styleFrom(
+                                      visualDensity: VisualDensity(vertical: -2), alignment: Alignment.centerLeft),
                                   onPressed: () => callPhoneNumber(job.contactNumber),
-                                  child: Text(
-                                    "📞 ${job.contactNumber} ",
-                                    style: TextStyle(fontSize: 14),
+                                  icon: Icon(
+                                    Icons.phone_outlined,
+                                    color: Colors.black,
+                                    size: 18,
+                                  ),
+                                  label: Text(
+                                    "${job.contactNumber} ",
+                                    style: TextStyle(fontSize: 13),
+                                    softWrap: false,
                                   )),
                             )
                         ],
