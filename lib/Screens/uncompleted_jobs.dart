@@ -69,7 +69,7 @@ class _UncompletedJobsState extends State<UncompletedJobs> {
                 itemBuilder: (context, index) {
                   var day = days[index];
                   var joblist = jobProvider.uncompletedJobs[day]!.values.toList();
-                  joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
+                  joblist.sort((a, b) => a.startTime.compareTo(b.startTime));
                   return Column(
                     children: [
                       Row(

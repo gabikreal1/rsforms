@@ -117,7 +117,7 @@ class AnalyticsProvider with ChangeNotifier {
           //checks if the job price is more than 0 and checks if the price is assigned on the day or after.
           if (job.price != 0 && day.day <= _totalDailyEarnings.length) {
             _totalDailyEarnings[day.day - 1] += job.price!;
-            _subCompanyToJobMap.putIfAbsent(job.subCompany, () => CompanyAnalytics([], job.subCompany)).addJob(job);
+            _subCompanyToJobMap.putIfAbsent(job.client, () => CompanyAnalytics([], job.client)).addJob(job);
             _totalMonthly.addJob(job);
           }
         }

@@ -1,9 +1,23 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  late String userToken;
+  static final StreamController<String?> _userTokenStream = StreamController<String>();
+
+  static StreamController<String?> get userTokenStream => _userTokenStream;
+
+  static listenToUserTokenChange() {
+    FirebaseAuth.instance.idTokenChanges().listen((event) async {
+      if (event != null) {
+        String? idToken = await event.getIdToken();
+        _userTokenStream.sink.add(idToken);
+      }
+      _userTokenStream.sink.add(null);
+    });
+  }
 
   static signInWithGoogle() async {
     try {

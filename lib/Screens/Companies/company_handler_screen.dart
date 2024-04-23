@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rsforms/Screens/Companies/company_adder.dart';
 import 'package:rsforms/Screens/Companies/company_joiner.dart';
 
-import '../../APIs/auth_service.dart';
+import '../../Services/auth_service.dart';
 
 class CompanyHandlerScreen extends StatelessWidget {
   const CompanyHandlerScreen({super.key});

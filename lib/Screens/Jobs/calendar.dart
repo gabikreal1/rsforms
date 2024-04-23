@@ -161,7 +161,7 @@ class _CalendarState extends State<Calendar> {
                         if (jobprovider.jobsCalendar[jobprovider.selectedDay] != null &&
                             jobProvider.jobsCalendar[jobprovider.selectedDay]!.isNotEmpty) {
                           var joblist = jobProvider.jobsCalendar[jobprovider.selectedDay]!.values.toList();
-                          joblist.sort((a, b) => a.earlyTime.compareTo(b.earlyTime));
+                          joblist.sort((a, b) => a.startTime.compareTo(b.startTime));
                           return JobList(
                             context: context,
                             joblist: joblist,

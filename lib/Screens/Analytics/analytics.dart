@@ -229,7 +229,7 @@ class _AnalyticsState extends State<Analytics> {
                                   itemBuilder: ((context, index) {
                                     CompanyAnalytics companyAnalytics = companies[index];
                                     companyAnalytics.jobs.sort(
-                                      (a, b) => a.earlyTime.compareTo(b.earlyTime),
+                                      (a, b) => a.startTime.compareTo(b.startTime),
                                     );
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

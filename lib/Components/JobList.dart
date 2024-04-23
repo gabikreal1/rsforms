@@ -1,6 +1,5 @@
 import 'dart:ffi';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,7 +83,7 @@ class _JobListState extends State<JobList> {
                     MaterialPageRoute(
                       builder: (context) => JobEditor(
                         jobId: job.id!,
-                        day: DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day),
+                        day: DateTime(job.startTime.year, job.startTime.month, job.startTime.day),
                       ),
                     ),
                   );
@@ -141,7 +140,7 @@ class _JobListState extends State<JobList> {
                     Row(
                       children: [
                         Text(
-                          formatProviderName(job.subCompany),
+                          formatProviderName(job.client),
                           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                         const SizedBox(
@@ -167,9 +166,9 @@ class _JobListState extends State<JobList> {
                             ),
                           )
                         else
-                          Text('${formatTime(job.earlyTime)} - ${formatTime(job.lateTime)}',
+                          Text('${formatTime(job.startTime)} - ${formatTime(job.endTime)}',
                               style: TextStyle(
-                                  color: job.earlyTime.difference(DateTime.now()).inHours < 3
+                                  color: job.startTime.difference(DateTime.now()).inHours < 3
                                       ? Colors.yellow[800]
                                       : Colors.black,
                                   fontSize: 13,
@@ -194,7 +193,7 @@ class _JobListState extends State<JobList> {
                         ),
                         const Spacer(),
                         Text(
-                          '${job.subContractor.toUpperCase()} ',
+                          '${job.agent.toUpperCase()} ',
                           style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 10),
                         ),
                       ],

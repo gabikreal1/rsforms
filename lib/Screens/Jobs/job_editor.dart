@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rsforms/APIs/InvoiceApi.dart';
+import 'package:rsforms/Services/invoice_service.dart';
 import 'package:rsforms/Components/JobEditTile.dart';
 import 'package:rsforms/Models/invoiceModel.dart';
 import 'package:rsforms/Providers/PictureProvider.dart';
@@ -133,7 +133,7 @@ class JobEditor extends StatelessWidget {
                     ),
                     JobEditTile(
                       TileName: "Provider",
-                      TileDescription: job.subCompany,
+                      TileDescription: job.client,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "subcompany", value);
                       },
@@ -173,7 +173,7 @@ class JobEditor extends StatelessWidget {
                     ),
                     JobEditTile(
                       TileName: "Sub-Contractor",
-                      TileDescription: job.subContractor,
+                      TileDescription: job.agent,
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "subcontractor", value);
                       },
@@ -223,7 +223,7 @@ class JobEditor extends StatelessWidget {
                       height: 10,
                     ),
                     JobTimeEditTile(
-                      date: job.earlyTime,
+                      date: job.startTime,
                       TileName: "Early Time",
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "timestart", value);
@@ -233,7 +233,7 @@ class JobEditor extends StatelessWidget {
                       height: 10,
                     ),
                     JobTimeEditTile(
-                      date: job.lateTime,
+                      date: job.endTime,
                       TileName: "Late Time",
                       Update: (value) {
                         jobProvider.updateJobParameter(jobId, "timefinish", value);
@@ -462,6 +462,7 @@ class JobEditor extends StatelessWidget {
                                                                       Add:
                                                                           (typeofCharge, description, quantity, price) {
                                                                         Services service = Services(
+                                                                            jobId: job.id ?? "",
                                                                             description: description,
                                                                             price: price,
                                                                             quantity: quantity,
@@ -514,7 +515,7 @@ class JobEditor extends StatelessWidget {
                                                                   company: companyProvider.company,
                                                                   job: job,
                                                                   services: value.services);
-                                                              final pdfInvoice = await InvoiceApi.generate(invoice);
+                                                              final pdfInvoice = await InvoiceService.generate(invoice);
                                                               Navigator.of(context, rootNavigator: true).pop();
                                                               await Navigator.push(
                                                                 context,
@@ -553,6 +554,7 @@ class JobEditor extends StatelessWidget {
                                                                 builder: (context) => ServiceAdder(
                                                                   Add: (typeofCharge, description, quantity, price) {
                                                                     Services service = Services(
+                                                                        jobId: job.id ?? "",
                                                                         description: description,
                                                                         price: price,
                                                                         quantity: quantity,

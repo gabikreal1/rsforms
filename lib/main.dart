@@ -6,24 +6,25 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:rsforms/Services/auth_service.dart';
+import 'package:rsforms/Services/config_service.dart';
 import 'package:rsforms/firebase_options.dart';
 import 'Screens/Authrorisation/auth_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await ConfigService.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
-  User? value = await FirebaseAuth.instance.authStateChanges().first;
-  if (FirebaseAuth.instance.currentUser != null) {
-    String token = await FirebaseAuth.instance.currentUser?.getIdToken() ?? "";
-    log(token);
-  }
+
+  User? user = await FirebaseAuth.instance.authStateChanges().first;
+  AuthService.listenToUserTokenChange();
 
   runApp(MyApp(
-    authState: value,
+    authState: user,
   ));
 }
 

@@ -13,7 +13,7 @@ class JobProvider with ChangeNotifier {
   //Key,Value {Day : {Id:Job}}
   final Map<DateTime, Map<String, Job>> _jobsCalendar = {};
   final Map<DateTime, Map<String, Job>> _uncompletedJobs = {};
-  //detect multiples in job update.
+  //detect duplicates in job update.
   final Map<String, Job> _jobs = {};
 
   DateTime? _cacheTime;
@@ -74,7 +74,7 @@ class JobProvider with ChangeNotifier {
         for (var document in value.docs) {
           Job job = Job.fromdocument(document);
           _jobs[job.id!] = job;
-          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+          DateTime key = DateTime(job.startTime.year, job.startTime.month, job.startTime.day);
 
           if (job.lastUpdated != null) {
             if (maxTime.compareTo(job.lastUpdated!) < 0) {
@@ -116,7 +116,7 @@ class JobProvider with ChangeNotifier {
           if (_jobs.containsKey(job.id)) {
             //remove prev duplicate from the calendar map
             Job prevJob = _jobs[job.id]!;
-            DateTime prevKey = DateTime(prevJob.earlyTime.year, prevJob.earlyTime.month, prevJob.earlyTime.day);
+            DateTime prevKey = DateTime(prevJob.startTime.year, prevJob.startTime.month, prevJob.startTime.day);
             _jobsCalendar[prevKey]?.remove(prevJob.id);
             if (_jobsCalendar[prevKey] != null && _jobsCalendar[prevKey]!.values.isEmpty) {
               _jobsCalendar.remove(prevKey);
@@ -131,7 +131,7 @@ class JobProvider with ChangeNotifier {
           }
           _jobs[job.id!] = job;
 
-          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+          DateTime key = DateTime(job.startTime.year, job.startTime.month, job.startTime.day);
 
           if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
             _jobsCalendar.putIfAbsent(key, () => {})[job.id!] = job;
@@ -156,7 +156,7 @@ class JobProvider with ChangeNotifier {
           if (_jobs.containsKey(job.id)) {
             //remove prev duplicate from the calendar map
             Job prevJob = _jobs[job.id]!;
-            DateTime prevKey = DateTime(prevJob.earlyTime.year, prevJob.earlyTime.month, prevJob.earlyTime.day);
+            DateTime prevKey = DateTime(prevJob.startTime.year, prevJob.startTime.month, prevJob.startTime.day);
             _jobsCalendar[prevKey]?.remove(prevJob.id);
             if (_jobsCalendar[prevKey] != null && _jobsCalendar[prevKey]!.values.isEmpty) {
               _jobsCalendar.remove(prevKey);
@@ -171,7 +171,7 @@ class JobProvider with ChangeNotifier {
           }
           _jobs[job.id!] = job;
 
-          DateTime key = DateTime(job.earlyTime.year, job.earlyTime.month, job.earlyTime.day);
+          DateTime key = DateTime(job.startTime.year, job.startTime.month, job.startTime.day);
 
           if ((document.data()["removed"] == null || document.data()["removed"] != true)) {
             _jobsCalendar.putIfAbsent(key, () => {})[job.id!] = job;

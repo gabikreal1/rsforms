@@ -273,16 +273,16 @@ class _JobAdderState extends State<JobAdder> {
                     } else {
                       Job job = Job(
                           contactNumber: _numberController.text.trim(),
-                          lateTime: lateTime,
+                          endTime: lateTime,
                           completed: false,
-                          subCompany: _providerController.text.trim(),
+                          client: _providerController.text.trim(),
                           jobNo: _jobNoController.text.trim(),
                           invoiceNumber: "Hasn't been set yet",
                           description: _descriptionController.text.trim(),
-                          earlyTime: earlyTime,
+                          startTime: earlyTime,
                           address: _addressController.text.trim(),
                           postcode: _postcodeController.text.trim(),
-                          subContractor: _subContractorController.text.trim(),
+                          agent: _subContractorController.text.trim(),
                           YHS: _yhsController.text.trim());
                       jobProvider.addJob(job);
 

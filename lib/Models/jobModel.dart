@@ -1,4 +1,7 @@
+// ignore_for_file: prefer_null_aware_operators
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class NotRequiredJobDetails {
   String? subCompany;
@@ -11,24 +14,22 @@ class NotRequiredJobDetails {
   String? postcode;
   double? price;
   String? contactNumber;
-
 }
 
 class Job {
   String? id;
 
-  DateTime earlyTime;
-  DateTime lateTime;
+  DateTime startTime;
+  DateTime endTime;
   DateTime? lastUpdated;
   bool? removed;
   double? price;
 
-
   String contactNumber;
   List<String>? pictures;
 
-  String subCompany;
-  String subContractor;
+  String client;
+  String agent;
   String jobNo;
   String invoiceNumber;
   String description;
@@ -39,21 +40,20 @@ class Job {
   bool completed;
 
   Job(
-      {
-      this.price,
+      {this.price,
       this.id,
-      required this.lateTime,
+      required this.endTime,
       required this.completed,
-      required this.subCompany,
+      required this.client,
       required this.jobNo,
       required this.invoiceNumber,
       required this.description,
       this.pictures,
       required this.contactNumber,
-      required this.earlyTime,
+      required this.startTime,
       required this.address,
       required this.postcode,
-      required this.subContractor,
+      required this.agent,
       required this.YHS,
       this.lastUpdated,
       this.removed});
@@ -61,21 +61,42 @@ class Job {
   Map<String, dynamic> toMap() {
     return {
       'contactnumber': contactNumber,
-      'subcompany': subCompany,
+      'subcompany': client,
       'jobno': jobNo,
       'invoicenumber': invoiceNumber,
       'description': description,
-      'timestart': earlyTime.millisecondsSinceEpoch,
-      'timefinish': lateTime.millisecondsSinceEpoch,
+      'timestart': startTime.millisecondsSinceEpoch,
+      'timefinish': endTime.millisecondsSinceEpoch,
       'address': address,
       'postcode': postcode,
       'completed': completed,
-      'subcontractor': subContractor,
+      'subcontractor': agent,
       'YHS': YHS,
       'lastupdated': lastUpdated ?? DateTime.now(),
       'removed': removed ?? false,
       'price': price ?? 0.0,
     };
+  }
+
+  factory Job.fromJson(data) {
+    return Job(
+      id: data["id"],
+      client: data["client"] ?? "",
+      agent: data["agent"] ?? "",
+      address: data["address"] ?? "",
+      postcode: data["postcode"] ?? "",
+      description: data["description"] ?? "",
+      contactNumber: data["contactNumber"] ?? "",
+      startTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"] ?? 0),
+      endTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? 0),
+      completed: data["isCompleted"] ?? false,
+      price: data["price"] ?? 0.0,
+      invoiceNumber: (data["invoiceNumber"] ?? -1).toString(),
+      YHS: data["YHS"] ?? "None",
+      jobNo: data["jobNo"] ?? "None",
+      lastUpdated: data["lastUpdatedTime"] != null ? data["lastUpdatedTime"].toDate() : null,
+      removed: data["removed"] ?? false,
+    );
   }
 
   factory Job.fromdocument(DocumentSnapshot doc) {
@@ -85,18 +106,17 @@ class Job {
         removed: data['removed'] ?? false,
         lastUpdated: data['lastupdated'] != null ? data["lastupdated"].toDate() : null,
         contactNumber: data['contactnumber'] ?? "0",
-        subCompany: data['subcompany'] ?? "None",
+        client: data['subcompany'] ?? "None",
         jobNo: data['jobno'] ?? "None",
         invoiceNumber: data["invoicenumber"] ?? "Hasn't been set yet",
         description: data["description"] ?? "None",
-        earlyTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
-        lateTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
+        startTime: DateTime.fromMillisecondsSinceEpoch(data["timestart"]),
+        endTime: DateTime.fromMillisecondsSinceEpoch(data["timefinish"] ?? DateTime.now().millisecondsSinceEpoch),
         address: data["address"] ?? "None",
         YHS: data["YHS"] ?? "None",
         postcode: data["postcode"] ?? "None",
         completed: data['completed'] ?? false,
-        subContractor: data["subcontractor"] ?? "You",
-
+        agent: data["subcontractor"] ?? "You",
         price: data['price'] ?? 0.0);
   }
 }
@@ -112,10 +132,12 @@ class Company {
   String sortCode;
   String? id;
   int InvoiceCounter;
+  List<RsUser?>? users;
 
   Company(
       {required this.InvoiceCounter,
       this.id,
+      this.users,
       required this.name,
       required this.address,
       required this.city,
@@ -139,6 +161,7 @@ class Company {
     };
   }
 
+  // For Firebase
   factory Company.fromDocument(dynamic data, String id) {
     return Company(
         id: id,
@@ -152,17 +175,48 @@ class Company {
         accountNumber: data['account_number'] ?? " ",
         bankName: data['bank_name'] ?? " ");
   }
+
+  factory Company.fromJson(dynamic data) {
+    List<RsUser?>? _users;
+
+    if (data["users"] != null) {
+      _users = List.empty(growable: true);
+      for (var user in data["users"]) {
+        _users.add(RsUser.fromdocument(user));
+      }
+    }
+
+    return Company(
+      id: data["id"] ?? "-1",
+      InvoiceCounter: data["invoiceCounter"] ?? 0,
+      name: data["name"] ?? "",
+      address: data["address"] ?? "",
+      city: data["city"] ?? "",
+      postcode: data["postcode"] ?? "",
+      phoneNumber: data["phoneNumber"] ?? "",
+      bankName: data["bankName"] ?? "",
+      accountNumber: data["accountNumber"],
+      sortCode: data["sortCode"] ?? "",
+      users: _users,
+    );
+  }
 }
 
 class Services {
   String? id;
+  String jobId;
   String typeofCharge;
   String description;
   double price;
   int quantity;
   late double totalPrice;
   Services(
-      {required this.description, required this.price, required this.quantity, required this.typeofCharge, this.id}) {
+      {required this.description,
+      required this.price,
+      required this.quantity,
+      required this.typeofCharge,
+      this.id,
+      required this.jobId}) {
     totalPrice = price * quantity;
   }
   Map<String, dynamic> toMap() {
@@ -175,10 +229,21 @@ class Services {
   }
 
   // complete desirialisation
+  factory Services.fromJson(dynamic data) {
+    return Services(
+        id: data["id"],
+        jobId: data["jobId"],
+        typeofCharge: data['type'],
+        description: data['description'],
+        price: data['price'],
+        quantity: data['quantity']);
+  }
+
   factory Services.fromdocument(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Services(
         id: doc.id,
+        jobId: "none",
         typeofCharge: data['type'],
         description: data['description'],
         price: data['price'],
@@ -187,18 +252,26 @@ class Services {
 }
 
 class RsUser {
+  String? id;
+  String? fcmToken;
   String companyId;
-  String firstname;
-  String lastname;
-  RsUser({required this.companyId, required this.firstname, required this.lastname});
+  String email;
+  RsUser({required this.companyId, required this.email, this.id, this.fcmToken});
+
+  factory RsUser.fromJson(dynamic data) {
+    String _companyId = "";
+    if (data["company"] != null) {
+      String _companyId = Company.fromJson(data["company"]).id ?? "";
+    }
+    return RsUser(companyId: _companyId, email: data["email"]);
+  }
 
   factory RsUser.fromdocument(DocumentSnapshot doc) {
     if (doc.data() == null) {
-      return RsUser(companyId: "-1", firstname: "loh", lastname: "lohovich");
+      return RsUser(companyId: "-1", email: "none");
     }
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    return RsUser(
-        companyId: data['company'] ?? "0", firstname: data['first_name'] ?? "Guest", lastname: data['last_name'] ?? "");
+    return RsUser(companyId: data['company'] ?? "0", email: "none");
   }
 }

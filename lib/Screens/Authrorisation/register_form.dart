@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:flutter/material.dart';
-import 'package:rsforms/APIs/auth_service.dart';
+import 'package:rsforms/Services/auth_service.dart';
 import '../../Components/Dialogs/auth_error_dialog.dart';
 import '../../Components/Buttons/main_button.dart';
 import '../../Components/TextFields/auth_textfield.dart';

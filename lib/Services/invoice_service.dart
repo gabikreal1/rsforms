@@ -6,7 +6,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 
-class InvoiceApi {
+class InvoiceService {
   static Future<File> generate(Invoice invoice) async {
     final pdf = pw.Document();
 
@@ -97,7 +97,7 @@ class InvoiceApi {
                             style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
                           ),
                           pw.Text(
-                            invoice.job.subCompany,
+                            invoice.job.client,
                             style: pw.TextStyle(fontSize: 12),
                           ),
                           pw.Text(
@@ -286,9 +286,9 @@ class InvoiceApi {
     final dir = await getApplicationDocumentsDirectory();
     var file;
     if (invoice.job.invoiceNumber != "Hasn't been set yet") {
-      file = File('${dir.path}/RS${invoice.job.invoiceNumber}_${invoice.job.subCompany}.pdf');
+      file = File('${dir.path}/RS${invoice.job.invoiceNumber}_${invoice.job.client}.pdf');
     } else {
-      file = File('${dir.path}/RS${invoice.company.InvoiceCounter}_${invoice.job.subCompany}.pdf');
+      file = File('${dir.path}/RS${invoice.company.InvoiceCounter}_${invoice.job.client}.pdf');
     }
 
     await file.writeAsBytes(bytes);

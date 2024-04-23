@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:rsforms/Components/TextFields/auth_textfield.dart';
 
-import '../../APIs/auth_service.dart';
+import '../../Services/auth_service.dart';
 import '../../Components/Buttons/main_button.dart';
 import '../../Components/Dialogs/auth_error_dialog.dart';
 import 'forgot_password.dart';

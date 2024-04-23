@@ -6,7 +6,7 @@ import 'package:rsforms/Components/Buttons/main_button.dart';
 import 'package:rsforms/Components/Dialogs/auth_error_dialog.dart';
 import 'package:rsforms/Components/TextFields/auth_textfield.dart';
 
-import '../../APIs/auth_service.dart';
+import '../../Services/auth_service.dart';
 
 class ForgotPasswordPage extends StatelessWidget {
   ForgotPasswordPage({super.key});
