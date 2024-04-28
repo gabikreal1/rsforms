@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:rsforms/Components/Buttons/settings_button.dart';
+import 'package:rsforms/Providers/companyProvider.dart';
 import 'package:rsforms/Screens/Settings/company_contractors.dart';
 import 'package:rsforms/Screens/Settings/company_frequent_clients.dart';
 import 'package:rsforms/Screens/Settings/company_members.dart';
@@ -50,7 +52,12 @@ class _SettingsState extends State<Settings> {
   }
 
   void navigateToCompanyMembers() async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => CompanyMembersPage()));
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CompanyMembersPage(),
+      ),
+    );
   }
 
   void navigateToContractors() async {
@@ -124,7 +131,7 @@ class _SettingsState extends State<Settings> {
               elevation: 20,
               borderRadius: const BorderRadius.all(Radius.circular(20)),
               child: Container(
-                height: 115,
+                height: 180,
                 width: double.infinity,
                 child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   SettingsButton(
@@ -134,77 +141,90 @@ class _SettingsState extends State<Settings> {
                   ),
                   const SettingsDivider(),
                   SettingsButton(
-                    text: "Company Job Template",
-                    icon: Icons.build,
-                    onTap: navigateToJobTemplate,
+                    text: "Company Members",
+                    icon: Icons.business_rounded,
+                    onTap: navigateToCompanyMembers,
                   ),
+                  const SettingsDivider(),
+                  SettingsButton(
+                    text: "Logout",
+                    icon: Icons.logout,
+                    textColor: Colors.red,
+                    iconColor: Colors.red,
+                    onTap: logout,
+                  ),
+                  // SettingsButton(
+                  //   text: "Company Job Template",
+                  //   icon: Icons.build,
+                  //   onTap: navigateToJobTemplate,
+                  // ),
                 ]),
               ),
             ),
             SizedBox(
               height: 10,
             ),
-            Material(
-              elevation: 20,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: Container(
-                height: 180,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SettingsButton(
-                      text: "Company Members",
-                      icon: Icons.business_rounded,
-                      onTap: navigateToCompanyMembers,
-                    ),
-                    const SettingsDivider(),
-                    SettingsButton(
-                      text: "Company Contractors",
-                      icon: Icons.work,
-                      onTap: navigateToContractors,
-                    ),
-                    const SettingsDivider(),
-                    SettingsButton(
-                      text: "Company Frequent Clients",
-                      icon: Icons.people,
-                      onTap: navigateToFrequentClients,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Material(
-              elevation: 20,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              child: Container(
-                height: 115,
-                width: double.infinity,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SettingsButton(
-                      text: "Leave Company",
-                      icon: Icons.exit_to_app,
-                      textColor: Colors.red,
-                      iconColor: Colors.red,
-                      onTap: exitCompany,
-                    ),
-                    const SettingsDivider(),
-                    SettingsButton(
-                      text: "Logout",
-                      icon: Icons.logout,
-                      textColor: Colors.red,
-                      iconColor: Colors.red,
-                      onTap: logout,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            // Material(
+            //   elevation: 20,
+            //   borderRadius: const BorderRadius.all(Radius.circular(20)),
+            //   child: Container(
+            //     height: 180,
+            //     width: double.infinity,
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         SettingsButton(
+            //           text: "Company Members",
+            //           icon: Icons.business_rounded,
+            //           onTap: navigateToCompanyMembers,
+            //         ),
+            //         const SettingsDivider(),
+            //         SettingsButton(
+            //           text: "Company Contractors",
+            //           icon: Icons.work,
+            //           onTap: navigateToContractors,
+            //         ),
+            //         const SettingsDivider(),
+            //         SettingsButton(
+            //           text: "Company Frequent Clients",
+            //           icon: Icons.people,
+            //           onTap: navigateToFrequentClients,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // Material(
+            //   elevation: 20,
+            //   borderRadius: const BorderRadius.all(Radius.circular(20)),
+            //   child: Container(
+            //     height: 115,
+            //     width: double.infinity,
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.start,
+            //       children: [
+            //         SettingsButton(
+            //           text: "Leave Company",
+            //           icon: Icons.exit_to_app,
+            //           textColor: Colors.red,
+            //           iconColor: Colors.red,
+            //           onTap: exitCompany,
+            //         ),
+            //         const SettingsDivider(),
+            //         SettingsButton(
+            //           text: "Logout",
+            //           icon: Icons.logout,
+            //           textColor: Colors.red,
+            //           iconColor: Colors.red,
+            //           onTap: logout,
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       )),

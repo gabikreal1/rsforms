@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:rsforms/Models/jobModel.dart';
+import 'package:rsforms/Repositories/company_repository.dart';
 
 class UserProvider extends ChangeNotifier {
   StreamSubscription? _firebaseSubscription;
@@ -13,7 +14,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   UserProvider() {
-    listenToFirebase();
+    // listenToFirebase();
   }
 
   void listenToFirebase() async {
@@ -35,16 +36,17 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> addCompany(Company company) async {
-    try {
-      DocumentReference docRef = await FirebaseFirestore.instance.collection('companies').add(company.toMap());
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .set({"company": docRef.id});
-      notifyListeners();
-    } catch (e) {
-      print(e);
-    }
+    CompanyRepository.createCompany(company);
+    // try {
+    //   DocumentReference docRef = await FirebaseFirestore.instance.collection('companies').add(company.toMap());
+    //   await FirebaseFirestore.instance
+    //       .collection("users")
+    //       .doc(FirebaseAuth.instance.currentUser!.uid)
+    //       .set({"company": docRef.id});
+    //   notifyListeners();
+    // } catch (e) {
+    //   print(e);
+    // }
   }
 
   @override

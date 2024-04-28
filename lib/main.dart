@@ -6,9 +6,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:rsforms/Services/auth_service.dart';
+import 'package:rsforms/Repositories/jobs_repository.dart';
+import 'package:rsforms/Repositories/services_repository.dart';
 import 'package:rsforms/Services/config_service.dart';
 import 'package:rsforms/firebase_options.dart';
+import 'Repositories/company_repository.dart';
 import 'Screens/Authrorisation/auth_handler.dart';
 
 void main() async {
@@ -21,7 +23,6 @@ void main() async {
   FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
 
   User? user = await FirebaseAuth.instance.authStateChanges().first;
-  AuthService.listenToUserTokenChange();
 
   runApp(MyApp(
     authState: user,

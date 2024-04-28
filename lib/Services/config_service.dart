@@ -4,6 +4,6 @@ class ConfigService {
   static String get defaultApiPath => _defaultApiPath ?? "";
 
   static initialize() async {
-    _defaultApiPath = "http://localhost:3000";
+    _defaultApiPath = "http://192.168.1.21:8080";
   }
 }

@@ -23,14 +23,12 @@ class _CompanyHandlerState extends State<CompanyHandler> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) {
-        return UserProvider();
+        return CompanyProvider();
       },
       builder: (context, child) {
-        return Consumer<UserProvider>(
+        return Consumer<CompanyProvider>(
           builder: (context, provider, child) {
-            if (provider.user.companyId == "-1") {
-              return CompanyHandlerScreen();
-            } else if (provider.user.companyId == "0") {
+            if (provider.company.id == "0") {
               return Scaffold(
                 body: Center(
                   child: Container(
@@ -40,41 +38,37 @@ class _CompanyHandlerState extends State<CompanyHandler> {
                   ),
                 ),
               );
+            } else if (provider.company.id == "-1" ||
+                (provider.company.users != null &&
+                    provider.company.users!
+                        .where((element) => element.id == FirebaseAuth.instance.currentUser?.uid)
+                        .isEmpty)) {
+              return CompanyHandlerScreen();
             } else {
-              return ChangeNotifierProxyProvider<UserProvider, CompanyProvider>(
-                create: (context) {
-                  return CompanyProvider(Provider.of<UserProvider>(context, listen: false).user);
-                },
-                update: (context, value, previous) {
-                  previous!.setUser(value.user);
-                  return previous;
-                },
-                builder: (context, child) => MultiProvider(
-                  providers: [
-                    ChangeNotifierProxyProvider<CompanyProvider, JobProvider>(
-                      create: (context) {
-                        return JobProvider(Provider.of<CompanyProvider>(context, listen: false).company);
-                      },
-                      update: (context, company, previous) {
-                        previous!.setCompany(company.company);
-                        return previous;
-                      },
-                    ),
-                    ChangeNotifierProvider<PictureProvider>(
-                      create: (context) {
-                        return PictureProvider();
-                      },
-                    )
-                  ],
-                  child: MaterialApp(
-                    debugShowCheckedModeBanner: false,
-                    title: 'RsForms',
-                    theme: ThemeData(
-                      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-                      useMaterial3: true,
-                    ),
-                    home: const PageviewControll(),
+              return MultiProvider(
+                providers: [
+                  ChangeNotifierProxyProvider<CompanyProvider, JobProvider>(
+                    create: (context) {
+                      return JobProvider();
+                    },
+                    update: (context, company, previous) {
+                      return previous!;
+                    },
                   ),
+                  ChangeNotifierProvider<PictureProvider>(
+                    create: (context) {
+                      return PictureProvider();
+                    },
+                  )
+                ],
+                child: MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'RsForms',
+                  theme: ThemeData(
+                    colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+                    useMaterial3: true,
+                  ),
+                  home: const PageviewControll(),
                 ),
               );
             }

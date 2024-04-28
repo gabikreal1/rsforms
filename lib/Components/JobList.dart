@@ -110,7 +110,7 @@ class _JobListState extends State<JobList> {
                                           onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
                                       CupertinoDialogAction(
                                         onPressed: () {
-                                          Provider.of<JobProvider>(widget.context, listen: false).deleteJob(job.id!);
+                                          Provider.of<JobProvider>(widget.context, listen: false).deleteJob(job);
                                           Navigator.pop(context);
                                         },
                                         isDestructiveAction: true,

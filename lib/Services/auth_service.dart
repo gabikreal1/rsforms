@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
-  static final StreamController<String?> _userTokenStream = StreamController<String>();
+  static final StreamController<String?> _userTokenStream = StreamController<String>.broadcast();
 
   static StreamController<String?> get userTokenStream => _userTokenStream;
 

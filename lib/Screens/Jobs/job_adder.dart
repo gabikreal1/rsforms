@@ -277,7 +277,7 @@ class _JobAdderState extends State<JobAdder> {
                           completed: false,
                           client: _providerController.text.trim(),
                           jobNo: _jobNoController.text.trim(),
-                          invoiceNumber: "Hasn't been set yet",
+                          invoiceNumber: "-1",
                           description: _descriptionController.text.trim(),
                           startTime: earlyTime,
                           address: _addressController.text.trim(),

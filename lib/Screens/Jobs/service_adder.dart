@@ -156,11 +156,6 @@ class _ServiceAdderState extends State<ServiceAdder> {
                       color: Colors.black,
                     ),
                     const Spacer(),
-                    IconButton(
-                      onPressed: () => {},
-                      icon: const Icon(Icons.settings),
-                      color: Colors.black,
-                    ),
                   ],
                 ),
                 Stepper(

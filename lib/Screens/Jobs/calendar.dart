@@ -66,6 +66,7 @@ class _CalendarState extends State<Calendar> {
                   TableCalendar(
                     calendarBuilders: CalendarBuilders(
                       markerBuilder: (context, date, events) {
+                        
                         if (events.isNotEmpty) {
                           return Positioned(
                             bottom: 1.75,
@@ -105,6 +106,7 @@ class _CalendarState extends State<Calendar> {
                     eventLoader: (day) {
                       return jobProvider.jobsCalendar[DateTime(day.year, day.month, day.day)]?.values.toList() ?? [];
                     },
+                    
                     firstDay: DateTime.utc(1990, 1, 1),
                     lastDay: DateTime.utc(2040, 12, 31),
                     focusedDay: jobProvider.focusedDay,

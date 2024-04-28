@@ -50,7 +50,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Name",
                     TileDescription: company.name,
                     Update: (value) {
-                      companyProvider.updateCompany("name", value);
+                      company.name = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -60,17 +61,19 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Address",
                     TileDescription: company.address,
                     Update: (value) {
-                      companyProvider.updateCompany("address", value);
+                      company.address = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
                     height: 10,
                   ),
                   JobEditTile(
-                    TileName: "Town",
+                    TileName: "City",
                     TileDescription: company.city,
                     Update: (value) {
-                      companyProvider.updateCompany("town", value);
+                      company.city = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -80,7 +83,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Post Code",
                     TileDescription: company.postcode,
                     Update: (value) {
-                      companyProvider.updateCompany("post_code", value);
+                      company.postcode = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -90,7 +94,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Phone",
                     TileDescription: company.phoneNumber,
                     Update: (value) {
-                      companyProvider.updateCompany("phone", value);
+                      company.phoneNumber = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -100,7 +105,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Bank Name",
                     TileDescription: company.bankName,
                     Update: (value) {
-                      companyProvider.updateCompany("bank_name", value);
+                      company.bankName = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -110,7 +116,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Account Number",
                     TileDescription: company.accountNumber,
                     Update: (value) {
-                      companyProvider.updateCompany("account_number", value);
+                      company.accountNumber = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -120,7 +127,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Sort Code",
                     TileDescription: company.sortCode,
                     Update: (value) {
-                      companyProvider.updateCompany("sort_code", value);
+                      company.sortCode = value;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(
@@ -130,7 +138,8 @@ class _ComapanyEditorState extends State<ComapanyEditor> {
                     TileName: "Invoice Counter",
                     TileDescription: company.InvoiceCounter.toString(),
                     Update: (value) {
-                      companyProvider.updateCompany("invoice_counter", int.parse(value));
+                      company.InvoiceCounter = int.tryParse(value) ?? company.InvoiceCounter;
+                      companyProvider.updateCompany(company);
                     },
                   ),
                   const SizedBox(

@@ -132,10 +132,11 @@ class JobEditor extends StatelessWidget {
                       ],
                     ),
                     JobEditTile(
-                      TileName: "Provider",
+                      TileName: "Client",
                       TileDescription: job.client,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "subcompany", value);
+                        job.client = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
@@ -145,7 +146,8 @@ class JobEditor extends StatelessWidget {
                       TileName: "Job No",
                       TileDescription: job.jobNo,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "jobno", value);
+                        job.jobNo = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
@@ -155,7 +157,8 @@ class JobEditor extends StatelessWidget {
                       TileName: "Address",
                       TileDescription: job.address,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "address", value);
+                        job.address = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
@@ -165,17 +168,19 @@ class JobEditor extends StatelessWidget {
                       TileName: "Postcode",
                       TileDescription: job.postcode,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "postcode", value);
+                        job.postcode = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
                       height: 10,
                     ),
                     JobEditTile(
-                      TileName: "Sub-Contractor",
+                      TileName: "Agent",
                       TileDescription: job.agent,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "subcontractor", value);
+                        job.agent = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
@@ -185,7 +190,8 @@ class JobEditor extends StatelessWidget {
                       TileName: "Desciprtion",
                       TileDescription: job.description,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "description", value);
+                        job.description = value;
+                        jobProvider.updateJob(job);
                       },
                     ),
                     const SizedBox(
@@ -195,7 +201,8 @@ class JobEditor extends StatelessWidget {
                       TileName: "Contact Number",
                       TileDescription: job.contactNumber,
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "contactnumber", value);
+                        job.contactNumber = value;
+                        jobProvider.updateJob(job);
                       },
                       Callback: () async {
                         Uri url = Uri(
@@ -215,7 +222,8 @@ class JobEditor extends StatelessWidget {
                         TileName: "YHS",
                         TileDescription: job.YHS,
                         Update: (value) {
-                          jobProvider.updateJobParameter(jobId, "YHS", value);
+                          job.YHS = value;
+                          jobProvider.updateJob(job);
                         },
                       ),
 
@@ -226,7 +234,9 @@ class JobEditor extends StatelessWidget {
                       date: job.startTime,
                       TileName: "Early Time",
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "timestart", value);
+                        var newJob = Job.clone(job);
+                        newJob.startTime = DateTime.fromMillisecondsSinceEpoch(value);
+                        jobProvider.updateJob(newJob);
                       },
                     ),
                     const SizedBox(
@@ -236,7 +246,9 @@ class JobEditor extends StatelessWidget {
                       date: job.endTime,
                       TileName: "Late Time",
                       Update: (value) {
-                        jobProvider.updateJobParameter(jobId, "timefinish", value);
+                        var newJob = Job.clone(job);
+                        newJob.endTime = DateTime.fromMillisecondsSinceEpoch(value);
+                        jobProvider.updateJob(newJob);
                       },
                     ),
                     const SizedBox(
@@ -265,7 +277,9 @@ class JobEditor extends StatelessWidget {
                                 children: icons,
                                 isSelected: _selectedCompletion,
                                 onPressed: (index) {
-                                  jobProvider.updateJobParameter(jobId, "completed", index == 0);
+                                  Job newJob = Job.clone(job);
+                                  newJob.completed = (index == 0);
+                                  jobProvider.updateJob(newJob);
                                   _selectedCompletion[0] = !_selectedCompletion[0];
                                   _selectedCompletion[1] = !_selectedCompletion[1];
                                 },
@@ -284,7 +298,7 @@ class JobEditor extends StatelessWidget {
                             children: [
                               ChangeNotifierProvider<ServiceProvider>(
                                 create: (context) {
-                                  return ServiceProvider(jobId, provider.company.id!);
+                                  return ServiceProvider(jobId);
                                 },
                                 child: Column(
                                   children: [
@@ -358,12 +372,13 @@ class JobEditor extends StatelessWidget {
                                                                                             description,
                                                                                             quantity,
                                                                                             price) {
-                                                                                          value.updateService(
-                                                                                              service.id!,
-                                                                                              description,
-                                                                                              price,
-                                                                                              quantity,
-                                                                                              typeofCharge);
+                                                                                          service.typeofCharge =
+                                                                                              typeofCharge;
+                                                                                          service.description =
+                                                                                              description;
+                                                                                          service.quantity = quantity;
+                                                                                          service.price = price;
+                                                                                          value.updateService(service);
                                                                                         },
                                                                                         type: service.typeofCharge,
                                                                                         quantity: service.quantity,
@@ -502,15 +517,14 @@ class JobEditor extends StatelessWidget {
                                                                       child: CircularProgressIndicator.adaptive(),
                                                                     );
                                                                   });
-                                                              if (job.invoiceNumber == "Hasn't been set yet") {
+                                                              if (job.invoiceNumber == "-1") {
                                                                 //
                                                                 await companyProvider.incrementInvoiceCounter();
                                                                 job.invoiceNumber =
                                                                     companyProvider.company.InvoiceCounter.toString();
-                                                                job.price = value.totalPrice;
-                                                                await jobProvider.updateJob(job);
                                                               }
-
+                                                              job.price = value.totalPrice;
+                                                              await jobProvider.updateJob(job);
                                                               var invoice = Invoice(
                                                                   company: companyProvider.company,
                                                                   job: job,

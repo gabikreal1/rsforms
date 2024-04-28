@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:rsforms/Components/Buttons/main_button.dart';
 import 'package:rsforms/Components/TextFields/default_textfield.dart';
+import 'package:rsforms/Repositories/company_repository.dart';
 
 class CompanyJoiner extends StatefulWidget {
   CompanyJoiner({super.key});
@@ -16,7 +17,9 @@ class _CompanyJoinerState extends State<CompanyJoiner> {
   bool isEnabled = false;
   bool inProgress = false;
 
-  void onType(String val) {
+  void onType(
+    String val,
+  ) {
     if (val.isNotEmpty) {
       setState(() {
         isEnabled = true;
@@ -28,14 +31,17 @@ class _CompanyJoinerState extends State<CompanyJoiner> {
     }
   }
 
-  void onMainButtonTap() async {
+  void onJoin() async {
     setState(() {
       inProgress = true;
     });
-    await Future.delayed(Duration(seconds: 2));
+
+    ///Really not beautiful to call repository from here
+    await CompanyRepository.joinCompany(controller.text.trim());
     setState(() {
       inProgress = false;
     });
+    Navigator.of(context).pop();
   }
 
   @override
@@ -63,7 +69,7 @@ class _CompanyJoinerState extends State<CompanyJoiner> {
               height: 20,
             ),
             MainButton(
-              onTap: onMainButtonTap,
+              onTap: onJoin,
               text: "Join",
               inProgress: inProgress,
               padding: 17,
